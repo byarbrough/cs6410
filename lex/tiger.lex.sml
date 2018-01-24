@@ -35,9 +35,9 @@ val s = [
 \\000"
 ),
  (1, 
-"\003\003\003\003\003\003\003\003\003\003\098\003\003\003\003\003\
+"\003\003\003\003\003\003\003\003\003\098\099\003\003\003\003\003\
 \\003\003\003\003\003\003\003\003\003\003\003\003\003\003\003\003\
-\\003\003\092\003\003\003\091\003\090\089\088\087\086\084\083\082\
+\\098\003\092\003\003\003\091\003\090\089\088\087\086\084\083\082\
 \\080\080\080\080\080\080\080\080\080\080\078\077\074\073\071\003\
 \\003\007\007\007\007\007\007\007\007\007\007\007\007\007\007\007\
 \\007\007\007\007\007\007\007\007\007\007\007\070\003\069\003\003\
@@ -628,101 +628,102 @@ in Vector.fromList(List.map g
 [{fin = [], trans = 0},
 {fin = [], trans = 1},
 {fin = [], trans = 1},
-{fin = [(N 162)], trans = 0},
-{fin = [(N 15),(N 162)], trans = 0},
-{fin = [(N 50),(N 162)], trans = 0},
-{fin = [(N 13),(N 162)], trans = 0},
-{fin = [(N 149),(N 162)], trans = 7},
-{fin = [(N 149)], trans = 7},
-{fin = [(N 149),(N 162)], trans = 9},
-{fin = [(N 149)], trans = 10},
-{fin = [(N 149)], trans = 11},
-{fin = [(N 149)], trans = 12},
-{fin = [(N 111),(N 149)], trans = 7},
-{fin = [(N 149),(N 162)], trans = 14},
-{fin = [(N 149)], trans = 15},
-{fin = [(N 62),(N 149)], trans = 7},
-{fin = [(N 149),(N 162)], trans = 17},
-{fin = [(N 149)], trans = 18},
-{fin = [(N 149)], trans = 19},
-{fin = [(N 58),(N 149)], trans = 7},
-{fin = [(N 101),(N 149)], trans = 7},
-{fin = [(N 149)], trans = 22},
-{fin = [(N 149)], trans = 23},
-{fin = [(N 121),(N 149)], trans = 7},
-{fin = [(N 149),(N 162)], trans = 25},
-{fin = [(N 80),(N 149)], trans = 7},
-{fin = [(N 149),(N 162)], trans = 27},
-{fin = [(N 149)], trans = 28},
-{fin = [(N 91),(N 149)], trans = 7},
-{fin = [(N 149),(N 162)], trans = 30},
-{fin = [(N 149)], trans = 31},
-{fin = [(N 95),(N 149)], trans = 7},
-{fin = [(N 149),(N 162)], trans = 33},
-{fin = [(N 87),(N 149)], trans = 7},
-{fin = [(N 124),(N 149)], trans = 7},
-{fin = [(N 149),(N 162)], trans = 36},
-{fin = [(N 149)], trans = 37},
-{fin = [(N 149)], trans = 38},
-{fin = [(N 149)], trans = 39},
-{fin = [(N 149)], trans = 40},
-{fin = [(N 149)], trans = 41},
-{fin = [(N 149)], trans = 42},
-{fin = [(N 71),(N 149)], trans = 7},
-{fin = [(N 149)], trans = 44},
-{fin = [(N 105),(N 149)], trans = 7},
-{fin = [(N 149),(N 162)], trans = 46},
-{fin = [(N 149)], trans = 47},
-{fin = [(N 84),(N 149)], trans = 7},
-{fin = [(N 149)], trans = 49},
-{fin = [(N 149)], trans = 50},
-{fin = [(N 116),(N 149)], trans = 7},
-{fin = [(N 149),(N 162)], trans = 52},
-{fin = [(N 98),(N 149)], trans = 7},
-{fin = [(N 149),(N 162)], trans = 54},
-{fin = [(N 149)], trans = 55},
-{fin = [(N 149)], trans = 56},
-{fin = [(N 149)], trans = 57},
-{fin = [(N 77),(N 149)], trans = 7},
-{fin = [(N 149),(N 162)], trans = 59},
-{fin = [(N 149)], trans = 60},
-{fin = [(N 149)], trans = 61},
-{fin = [(N 149)], trans = 62},
-{fin = [(N 149)], trans = 63},
-{fin = [(N 137),(N 149)], trans = 7},
-{fin = [(N 149)], trans = 65},
-{fin = [(N 149)], trans = 66},
-{fin = [(N 149)], trans = 67},
-{fin = [(N 130),(N 149)], trans = 7},
-{fin = [(N 11),(N 162)], trans = 0},
-{fin = [(N 9),(N 162)], trans = 0},
-{fin = [(N 37),(N 162)], trans = 71},
-{fin = [(N 43)], trans = 0},
-{fin = [(N 33),(N 162)], trans = 0},
-{fin = [(N 35),(N 162)], trans = 74},
-{fin = [(N 40)], trans = 0},
+{fin = [(N 165)], trans = 0},
+{fin = [(N 18),(N 165)], trans = 0},
+{fin = [(N 53),(N 165)], trans = 0},
+{fin = [(N 16),(N 165)], trans = 0},
+{fin = [(N 152),(N 165)], trans = 7},
+{fin = [(N 152)], trans = 7},
+{fin = [(N 152),(N 165)], trans = 9},
+{fin = [(N 152)], trans = 10},
+{fin = [(N 152)], trans = 11},
+{fin = [(N 152)], trans = 12},
+{fin = [(N 114),(N 152)], trans = 7},
+{fin = [(N 152),(N 165)], trans = 14},
+{fin = [(N 152)], trans = 15},
+{fin = [(N 65),(N 152)], trans = 7},
+{fin = [(N 152),(N 165)], trans = 17},
+{fin = [(N 152)], trans = 18},
+{fin = [(N 152)], trans = 19},
+{fin = [(N 61),(N 152)], trans = 7},
+{fin = [(N 104),(N 152)], trans = 7},
+{fin = [(N 152)], trans = 22},
+{fin = [(N 152)], trans = 23},
+{fin = [(N 124),(N 152)], trans = 7},
+{fin = [(N 152),(N 165)], trans = 25},
+{fin = [(N 83),(N 152)], trans = 7},
+{fin = [(N 152),(N 165)], trans = 27},
+{fin = [(N 152)], trans = 28},
+{fin = [(N 94),(N 152)], trans = 7},
+{fin = [(N 152),(N 165)], trans = 30},
+{fin = [(N 152)], trans = 31},
+{fin = [(N 98),(N 152)], trans = 7},
+{fin = [(N 152),(N 165)], trans = 33},
+{fin = [(N 90),(N 152)], trans = 7},
+{fin = [(N 127),(N 152)], trans = 7},
+{fin = [(N 152),(N 165)], trans = 36},
+{fin = [(N 152)], trans = 37},
+{fin = [(N 152)], trans = 38},
+{fin = [(N 152)], trans = 39},
+{fin = [(N 152)], trans = 40},
+{fin = [(N 152)], trans = 41},
+{fin = [(N 152)], trans = 42},
+{fin = [(N 74),(N 152)], trans = 7},
+{fin = [(N 152)], trans = 44},
+{fin = [(N 108),(N 152)], trans = 7},
+{fin = [(N 152),(N 165)], trans = 46},
+{fin = [(N 152)], trans = 47},
+{fin = [(N 87),(N 152)], trans = 7},
+{fin = [(N 152)], trans = 49},
+{fin = [(N 152)], trans = 50},
+{fin = [(N 119),(N 152)], trans = 7},
+{fin = [(N 152),(N 165)], trans = 52},
+{fin = [(N 101),(N 152)], trans = 7},
+{fin = [(N 152),(N 165)], trans = 54},
+{fin = [(N 152)], trans = 55},
+{fin = [(N 152)], trans = 56},
+{fin = [(N 152)], trans = 57},
+{fin = [(N 80),(N 152)], trans = 7},
+{fin = [(N 152),(N 165)], trans = 59},
+{fin = [(N 152)], trans = 60},
+{fin = [(N 152)], trans = 61},
+{fin = [(N 152)], trans = 62},
+{fin = [(N 152)], trans = 63},
+{fin = [(N 140),(N 152)], trans = 7},
+{fin = [(N 152)], trans = 65},
+{fin = [(N 152)], trans = 66},
+{fin = [(N 152)], trans = 67},
+{fin = [(N 133),(N 152)], trans = 7},
+{fin = [(N 14),(N 165)], trans = 0},
+{fin = [(N 12),(N 165)], trans = 0},
+{fin = [(N 40),(N 165)], trans = 71},
 {fin = [(N 46)], trans = 0},
-{fin = [(N 19),(N 162)], trans = 0},
-{fin = [(N 21),(N 162)], trans = 78},
-{fin = [(N 53)], trans = 0},
-{fin = [(N 144),(N 162)], trans = 80},
-{fin = [(N 144)], trans = 80},
-{fin = [(N 29),(N 162)], trans = 0},
-{fin = [(N 17),(N 162)], trans = 0},
-{fin = [(N 25),(N 162)], trans = 84},
-{fin = [(N 141)], trans = 85},
-{fin = [(N 3),(N 23),(N 162)], trans = 0},
-{fin = [(N 31),(N 162)], trans = 0},
-{fin = [(N 27),(N 162)], trans = 0},
-{fin = [(N 7),(N 162)], trans = 0},
-{fin = [(N 5),(N 162)], trans = 0},
-{fin = [(N 48),(N 162)], trans = 0},
-{fin = [(N 162)], trans = 92},
-{fin = [(N 160)], trans = 0},
-{fin = [(N 160)], trans = 94},
-{fin = [(N 160)], trans = 92},
+{fin = [(N 36),(N 165)], trans = 0},
+{fin = [(N 38),(N 165)], trans = 74},
+{fin = [(N 43)], trans = 0},
+{fin = [(N 49)], trans = 0},
+{fin = [(N 22),(N 165)], trans = 0},
+{fin = [(N 24),(N 165)], trans = 78},
+{fin = [(N 56)], trans = 0},
+{fin = [(N 147),(N 165)], trans = 80},
+{fin = [(N 147)], trans = 80},
+{fin = [(N 32),(N 165)], trans = 0},
+{fin = [(N 20),(N 165)], trans = 0},
+{fin = [(N 28),(N 165)], trans = 84},
+{fin = [(N 144)], trans = 85},
+{fin = [(N 6),(N 26),(N 165)], trans = 0},
+{fin = [(N 34),(N 165)], trans = 0},
+{fin = [(N 30),(N 165)], trans = 0},
+{fin = [(N 10),(N 165)], trans = 0},
+{fin = [(N 8),(N 165)], trans = 0},
+{fin = [(N 51),(N 165)], trans = 0},
+{fin = [(N 165)], trans = 92},
+{fin = [(N 163)], trans = 0},
+{fin = [(N 163)], trans = 94},
+{fin = [(N 163)], trans = 92},
 {fin = [], trans = 92},
-{fin = [(N 160)], trans = 97},
+{fin = [(N 163)], trans = 97},
+{fin = [(N 4),(N 165)], trans = 0},
 {fin = [(N 1)], trans = 0}])
 end
 structure StartStates =
@@ -766,53 +767,54 @@ let fun continue() = lex() in
 			(* Application actions *)
 
   1 => (lineNum := !lineNum+1; linePos := yypos :: !linePos; continue())
-| 101 => (Tokens.TO(!lineNum, hd(!linePos)))
-| 105 => (Tokens.FOR(!lineNum, hd(!linePos)))
-| 11 => (Tokens.RBRACE(!lineNum, hd(!linePos)))
-| 111 => (Tokens.WHILE(!lineNum, hd(!linePos)))
-| 116 => (Tokens.ELSE(!lineNum, hd(!linePos)))
-| 121 => (Tokens.THEN(!lineNum, hd(!linePos)))
-| 124 => (Tokens.IF(!lineNum, hd(!linePos)))
-| 13 => (Tokens.LBRACK(!lineNum, hd(!linePos)))
-| 130 => (Tokens.ARRAY(!lineNum, hd(!linePos)))
-| 137 => (Tokens.ASSIGN(!lineNum, hd(!linePos)))
-| 141 => let val yytext=yymktext() in Tokens.INT(yytext, !lineNum, hd(!linePos)) end
-| 144 => let val yytext=yymktext() in Tokens.INT(yytext, !lineNum, hd(!linePos)) end
-| 149 => let val yytext=yymktext() in Tokens.ID(yytext, !lineNum, hd(!linePos)) end
-| 15 => (Tokens.RBRACK(!lineNum, hd(!linePos)))
-| 160 => let val yytext=yymktext() in Tokens.STRING(yytext, !lineNum, hd(!linePos)) end
-| 162 => let val yytext=yymktext() in ErrorMsg.error yypos ("illegal character " ^ yytext); continue() end
-| 17 => (Tokens.DOT(!lineNum, hd(!linePos)))
-| 19 => (Tokens.SEMICOLON(!lineNum, hd(!linePos)))
-| 21 => (Tokens.COLON(!lineNum, hd(!linePos)))
-| 23 => (Tokens.COMMA(!lineNum, hd(!linePos)))
-| 25 => (Tokens.MINUS(!lineNum, hd(!linePos)))
-| 27 => (Tokens.TIMES(!lineNum, hd(!linePos)))
-| 29 => (Tokens.DIVIDE(!lineNum, hd(!linePos)))
-| 3 => (Tokens.COMMA(yypos,yypos+1))
-| 31 => (Tokens.PLUS(!lineNum, hd(!linePos)))
-| 33 => (Tokens.EQ(!lineNum, hd(!linePos)))
-| 35 => (Tokens.LT(!lineNum, hd(!linePos)))
-| 37 => (Tokens.GT(!lineNum, hd(!linePos)))
-| 40 => (Tokens.NEQ(!lineNum, hd(!linePos)))
-| 43 => (Tokens.GE(!lineNum, hd(!linePos)))
-| 46 => (Tokens.LE(!lineNum, hd(!linePos)))
-| 48 => (Tokens.AND(!lineNum, hd(!linePos)))
-| 5 => (Tokens.LPAREN(!lineNum, hd(!linePos)))
-| 50 => (Tokens.OR(!lineNum, hd(!linePos)))
-| 53 => (Tokens.ASSIGN(!lineNum, hd(!linePos)))
-| 58 => (Tokens.TYPE(!lineNum, hd(!linePos)))
-| 62 => (Tokens.VAR(!lineNum, hd(!linePos)))
-| 7 => (Tokens.RPAREN(!lineNum, hd(!linePos)))
-| 71 => (Tokens.FUNCTION(!lineNum, hd(!linePos)))
-| 77 => (Tokens.BREAK(!lineNum, hd(!linePos)))
-| 80 => (Tokens.OF(!lineNum, hd(!linePos)))
-| 84 => (Tokens.END(!lineNum, hd(!linePos)))
-| 87 => (Tokens.IN(!lineNum, hd(!linePos)))
-| 9 => (Tokens.LBRACE(!lineNum, hd(!linePos)))
-| 91 => (Tokens.NIL(!lineNum, hd(!linePos)))
-| 95 => (Tokens.LET(!lineNum, hd(!linePos)))
-| 98 => (Tokens.DO(!lineNum, hd(!linePos)))
+| 10 => (Tokens.RPAREN(!lineNum, hd(!linePos)))
+| 101 => (Tokens.DO(!lineNum, hd(!linePos)))
+| 104 => (Tokens.TO(!lineNum, hd(!linePos)))
+| 108 => (Tokens.FOR(!lineNum, hd(!linePos)))
+| 114 => (Tokens.WHILE(!lineNum, hd(!linePos)))
+| 119 => (Tokens.ELSE(!lineNum, hd(!linePos)))
+| 12 => (Tokens.LBRACE(!lineNum, hd(!linePos)))
+| 124 => (Tokens.THEN(!lineNum, hd(!linePos)))
+| 127 => (Tokens.IF(!lineNum, hd(!linePos)))
+| 133 => (Tokens.ARRAY(!lineNum, hd(!linePos)))
+| 14 => (Tokens.RBRACE(!lineNum, hd(!linePos)))
+| 140 => (Tokens.ASSIGN(!lineNum, hd(!linePos)))
+| 144 => let val yytext=yymktext() in Tokens.INT( Option.getOpt(Int.fromString(yytext),0), !lineNum, hd(!linePos)) end
+| 147 => let val yytext=yymktext() in Tokens.INT( Option.getOpt(Int.fromString(yytext),0), !lineNum, hd(!linePos)) end
+| 152 => let val yytext=yymktext() in Tokens.ID(yytext, !lineNum, hd(!linePos)) end
+| 16 => (Tokens.LBRACK(!lineNum, hd(!linePos)))
+| 163 => let val yytext=yymktext() in Tokens.STRING(yytext, !lineNum, hd(!linePos)) end
+| 165 => let val yytext=yymktext() in ErrorMsg.error yypos ("illegal character " ^ yytext); continue() end
+| 18 => (Tokens.RBRACK(!lineNum, hd(!linePos)))
+| 20 => (Tokens.DOT(!lineNum, hd(!linePos)))
+| 22 => (Tokens.SEMICOLON(!lineNum, hd(!linePos)))
+| 24 => (Tokens.COLON(!lineNum, hd(!linePos)))
+| 26 => (Tokens.COMMA(!lineNum, hd(!linePos)))
+| 28 => (Tokens.MINUS(!lineNum, hd(!linePos)))
+| 30 => (Tokens.TIMES(!lineNum, hd(!linePos)))
+| 32 => (Tokens.DIVIDE(!lineNum, hd(!linePos)))
+| 34 => (Tokens.PLUS(!lineNum, hd(!linePos)))
+| 36 => (Tokens.EQ(!lineNum, hd(!linePos)))
+| 38 => (Tokens.LT(!lineNum, hd(!linePos)))
+| 4 => (linePos := yypos :: !linePos; continue())
+| 40 => (Tokens.GT(!lineNum, hd(!linePos)))
+| 43 => (Tokens.NEQ(!lineNum, hd(!linePos)))
+| 46 => (Tokens.GE(!lineNum, hd(!linePos)))
+| 49 => (Tokens.LE(!lineNum, hd(!linePos)))
+| 51 => (Tokens.AND(!lineNum, hd(!linePos)))
+| 53 => (Tokens.OR(!lineNum, hd(!linePos)))
+| 56 => (Tokens.ASSIGN(!lineNum, hd(!linePos)))
+| 6 => (Tokens.COMMA(yypos,yypos+1))
+| 61 => (Tokens.TYPE(!lineNum, hd(!linePos)))
+| 65 => (Tokens.VAR(!lineNum, hd(!linePos)))
+| 74 => (Tokens.FUNCTION(!lineNum, hd(!linePos)))
+| 8 => (Tokens.LPAREN(!lineNum, hd(!linePos)))
+| 80 => (Tokens.BREAK(!lineNum, hd(!linePos)))
+| 83 => (Tokens.OF(!lineNum, hd(!linePos)))
+| 87 => (Tokens.END(!lineNum, hd(!linePos)))
+| 90 => (Tokens.IN(!lineNum, hd(!linePos)))
+| 94 => (Tokens.NIL(!lineNum, hd(!linePos)))
+| 98 => (Tokens.LET(!lineNum, hd(!linePos)))
 | _ => raise Internal.LexerError
 
 		) end )

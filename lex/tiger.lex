@@ -14,6 +14,7 @@ alpha=[A-Za-z];
 ctrl=[a-z];
 %%
 \n	=> (lineNum := !lineNum+1; linePos := yypos :: !linePos; continue());
+" "|"\t"     => (linePos := yypos :: !linePos; continue());
 ","	=> (Tokens.COMMA(yypos,yypos+1));
 
 "("     => (Tokens.LPAREN(!lineNum, hd(!linePos)));
@@ -60,8 +61,8 @@ ctrl=[a-z];
 "if"     => (Tokens.IF(!lineNum, hd(!linePos)));
 "array"     => (Tokens.ARRAY(!lineNum, hd(!linePos)));	     
 "assign"     => (Tokens.ASSIGN(!lineNum, hd(!linePos)));	    	       
--[1-9][0-9]* => (Tokens.INT(yytext, !lineNum, hd(!linePos))); 
-[0-9]+      =>  (Tokens.INT(yytext, !lineNum, hd(!linePos)));		 
+-[1-9][0-9]* => (Tokens.INT( Option.getOpt(Int.fromString(yytext),0), !lineNum, hd(!linePos))); 
+[0-9]+      =>  (Tokens.INT( Option.getOpt(Int.fromString(yytext),0), !lineNum, hd(!linePos)));		 
 {alpha}({alpha}|[0-9]|_)* =>  (Tokens.ID(yytext, !lineNum, hd(!linePos)));
 "\""("\\"(n|t|{ctrl}|[0-127]|"\""|" "*)|"\\")*[^"\""]  =>  (Tokens.STRING(yytext, !lineNum, hd(!linePos)));
 .       => (ErrorMsg.error yypos ("illegal character " ^ yytext); continue());
