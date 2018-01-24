@@ -11,6 +11,7 @@ fun eof() = let val pos = hd(!linePos) in Tokens.EOF(pos,pos) end
 
 %%
 alpha=[A-Za-z];
+ctrl=[a-z];
 %%
 \n	=> (lineNum := !lineNum+1; linePos := yypos :: !linePos; continue());
 ","	=> (Tokens.COMMA(yypos,yypos+1));
@@ -61,5 +62,6 @@ alpha=[A-Za-z];
 "assign"     => (Tokens.ASSIGN(!lineNum, hd(!linePos)));	    	       
 -[1-9][0-9]* => (Tokens.INT(yytext, !lineNum, hd(!linePos))); 
 [0-9]+      =>  (Tokens.INT(yytext, !lineNum, hd(!linePos)));		 
-{alpha}({alpha}|[0-9]|_)* =>  (Tokens.ID(yytext, !lineNum, hd(!linePos)));			       
-  .       => (ErrorMsg.error yypos ("illegal character " ^ yytext); continue());
+{alpha}({alpha}|[0-9]|_)* =>  (Tokens.ID(yytext, !lineNum, hd(!linePos)));
+"\""("\\"(n|t|{ctrl}|[0-127]|"\""|" "*)|"\\")*[^"\""]  =>  (Tokens.STRING(yytext, !lineNum, hd(!linePos)));
+.       => (ErrorMsg.error yypos ("illegal character " ^ yytext); continue());
