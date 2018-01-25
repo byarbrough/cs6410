@@ -1,0 +1,14 @@
+Thomas Kowalski - BS student in CCIS
+Brian Yarbrough - MS student in EECE
+
+Handling Comments:
+
+Handling Errors:
+Errors are caught at the end of the lexer by anything that is not previously caught.
+The printed error message gives the line number and position of the illegal character.
+We maintained the line number with a global variable that was incremented anytime a \n was encountered.
+The column position is kept in a global list and uses an offset from the yypos value.
+
+Handling the EOF:
+
+Other things of interest:
