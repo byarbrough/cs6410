@@ -11,6 +11,4 @@ We maintained the line number with a global variable that was incremented anytim
 The column position is kept in a global list and uses an offset from the yypos value.
 
 Handling the EOF:
-If a comment is not closed and EOF is reached a LexerException is thrown with the line and column number.
-
-Other things of interest:
+If a comment is not closed and EOF is reached a LexerException is thrown with the line and column number. Comment nesting is handled by a global variable. It is incremented whenever a new comment is opened and decremented when a comment is closed. 
