@@ -104,13 +104,14 @@ COMMENT | E_COMMENT | INITIAL | B_COMMENT
 
 type pos = int
 type lexresult = Tokens.token
-
+exception lexerException of int * int
+			
 val lineNum = ErrorMsg.lineNum
 val linePos = ErrorMsg.linePos
 val commentNest = ref 0;
 fun err(p1,p2) = ErrorMsg.error p1
 
-    fun eof() = Tokens.EOF(!lineNum,0)
+    fun eof() = if !commentNest > 0 then raise lexerException(!lineNum, 0) else Tokens.EOF(!lineNum,0)
 
 
 
@@ -1849,7 +1850,7 @@ fun yyAction57 (strm, lastMatch : yymatch) = let
       val yytext = yymktext(strm)
       in
         yystrm := strm;
-        (ErrorMsg.error yypos ("illegal character " ^ yytext); continue())
+        ((ErrorMsg.error yypos ("illegal character " ^ yytext)); raise lexerException(!lineNum, yypos - hd(!linePos)))
       end
 val yyactTable = Vector.fromList([yyAction0, yyAction1, yyAction2, yyAction3,
   yyAction4, yyAction5, yyAction6, yyAction7, yyAction8, yyAction9, yyAction10,

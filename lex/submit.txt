@@ -5,10 +5,12 @@ Handling Comments:
 
 Handling Errors:
 Errors are caught at the end of the lexer by anything that is not previously caught.
-The printed error message gives the line number and position of the illegal character.
+An error message is returned and gives the line number and position of the illegal character.
+A LexerException is raised once an illegal character is reached. The exception is given the line and column number of the illegal character. 
 We maintained the line number with a global variable that was incremented anytime a \n was encountered.
 The column position is kept in a global list and uses an offset from the yypos value.
 
 Handling the EOF:
+If a comment is not closed and EOF is reached a LexerException is thrown with the line and column number.
 
 Other things of interest:

@@ -1,12 +1,13 @@
 type pos = int
 type lexresult = Tokens.token
-
+exception LexerException of int * int
+			
 val lineNum = ErrorMsg.lineNum
 val linePos = ErrorMsg.linePos
 val commentNest = ref 0;
 fun err(p1,p2) = ErrorMsg.error p1
 
-    fun eof() = Tokens.EOF(!lineNum,0)
+    fun eof() = if !commentNest > 0 then raise LexerException(!lineNum, 0) else Tokens.EOF(!lineNum,0)
 
 
 
@@ -75,4 +76,4 @@ ctrl=[a-z];
 [0-9]+       =>  (Tokens.INT( Option.getOpt(Int.fromString(yytext),0), !lineNum, yypos - hd(!linePos)));		 
 {alpha}({alpha}|[0-9]|_)* =>  (Tokens.ID(yytext, !lineNum, yypos - hd(!linePos)));
 "\""(("\\"(n|t|{ctrl}|[0-127]|"\""|(" "*"\\")))|[^"\""])*"\""  =>  (Tokens.STRING(yytext, !lineNum, yypos - hd(!linePos)));
-.            => (ErrorMsg.error yypos ("illegal character " ^ yytext); continue());
+.            => ((ErrorMsg.error yypos ("illegal character " ^ yytext)); raise LexerException(!lineNum, yypos - hd(!linePos)));
