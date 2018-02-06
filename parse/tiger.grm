@@ -11,7 +11,7 @@
   | BREAK | NIL
   | FUNCTION | VAR | TYPE 
 
-%nonterm  exp | program
+%nonterm  exp | program | decs | dec | tydec | ty | tyfields | tyfieldscont | vardec | fundec | lvalue | typeid
 
 %pos int
 %verbose
@@ -41,4 +41,38 @@ program	: exp				()
 
 	
 exp: 			()
+
+
+/* Defintions */
+decs : LBRACE dec RBRACE ()
+dec : tydec ()
+    | vardec ()
+    | fundec ()
+	  
+tydec : TYPE typeid EQ ty ()
+
+ty : typeid ()
+   | LBRACE tyfields RBRACE ()
+   | ARRAY OF typeid ()
+
+tyfields : ()
+         | ID COLON typeid tyfieldscont ()
+            
+tyfieldscont : () 
+             | COMMA ID COLON typeid tyfieldscont ()
+
+vardec : VAR ID COLON EQ exp ()
+       | VAR ID COLON typeid COLON EQ exp ()
+
+fundec : FUNCTION ID LPAREN tyfields RPAREN EQ exp ()
+       | FUNCTION ID LPAREN tyfields RPAREN COLON typeid EQ exp ()
+
+lvalue : ID ()
+       | lvalue DOT ID ()
+       | lvalue LBRACK exp RBRACK ()
+
+typeid : ID ()
+
+/* End of Definitions */
+
 

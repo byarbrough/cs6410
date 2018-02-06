@@ -1,5 +1,7 @@
+type svalue = Tokens.svalue
 type pos = int
-type lexresult = Tokens.token
+type ('a,'b) token = ('a,'b) Tokens.token
+type lexresult = (svalue, pos) token
 exception LexerException of int * int
 			
 val lineNum = ErrorMsg.lineNum
@@ -12,6 +14,7 @@ fun err(p1,p2) = ErrorMsg.error p1
 
 
 %%
+%header (functor TigerLexFun (structure Tokens: Tiger_TOKENS));
 alpha=[A-Za-z];
 ctrl=[a-z];
 %s COMMENT E_COMMENT B_COMMENT;
