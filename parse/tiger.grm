@@ -19,6 +19,12 @@
 %eop EOF
 %noshift EOF
 
+%noassoc AND OR
+%noassoc GE GT LE LT NEQ EQ
+%left PLUS MINUS
+%left TIMES DIVIDE
+%left UMINUS
+
 %name Tiger
 
 %keyword WHILE FOR TO BREAK LET IN END FUNCTION VAR TYPE ARRAY IF THEN ELSE 
@@ -40,8 +46,13 @@
 program	: exp				()
 
 	
-exp: 			()
-
+exp: INT ()
+    | exp PLUS exp ()
+    | exp MINUS exp ()
+    | exp TIMES exp ()
+    | exp DIVIDE exp ()
+    | MINUS exp %prec UMINUS ()
+    
 
 /* Defintions */
 decs : LBRACE dec RBRACE ()
