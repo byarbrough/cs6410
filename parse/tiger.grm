@@ -9,7 +9,7 @@
   | AND | OR | ASSIGN
   | ARRAY | IF | THEN | ELSE | WHILE | FOR | TO | DO | LET | IN | END | OF 
   | BREAK | NIL
-  | FUNCTION | VAR | TYPE 
+  | FUNCTION | VAR | TYPE | UMINUS
 
 %nonterm  exp | program | decs | dec | tydec | ty | tyfields | tyfieldscont | vardec | fundec | lvalue | typeid
 
@@ -19,8 +19,8 @@
 %eop EOF
 %noshift EOF
 
-%noassoc AND OR
-%noassoc GE GT LE LT NEQ EQ
+%nonassoc AND OR
+%nonassoc GE GT LE LT NEQ EQ
 %left PLUS MINUS
 %left TIMES DIVIDE
 %left UMINUS
@@ -54,7 +54,7 @@ exp: INT ()
     | MINUS exp %prec UMINUS ()
     
 
-/* Defintions */
+(* Defintions *)
 decs : LBRACE dec RBRACE ()
 dec : tydec ()
     | vardec ()
@@ -84,6 +84,6 @@ lvalue : ID ()
 
 typeid : ID ()
 
-/* End of Definitions */
+(* End of Definitions *)
 
 
