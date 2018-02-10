@@ -1,0 +1,4 @@
+for c:= 8*2 to 100 do 
+	if 1 < 2 then  3+4
+        else break
+
