@@ -11,7 +11,7 @@
   | BREAK | NIL
   | FUNCTION | VAR | TYPE | UMINUS
 
-%nonterm  exp | program | decs | dec | tydec | ty | tyfields | tyfieldscont | vardec | fundec | lvalue | typeid
+%nonterm  exp | program | decs | dec | tydec | ty | tyfields | tyfieldscont | vardec | fundec | lvalue | typeid | op | cond | work
 
 %pos int
 %verbose
@@ -27,8 +27,7 @@
 
 %name Tiger
 
-%keyword WHILE FOR TO BREAK LET IN END FUNCTION VAR TYPE ARRAY IF THEN ELSE 
-	DO OF NIL
+%keyword WHILE FOR TO BREAK LET IN END FUNCTION VAR TYPE ARRAY IF THEN ELSE DO OF NIL
 
 %prefer THEN ELSE LPAREN
 
@@ -46,15 +45,34 @@
 program	: exp				()
 
 	
-exp: INT ()
-    | ID ()
-    | exp PLUS exp ()
-    | exp MINUS exp ()
-    | exp TIMES exp ()
-    | exp DIVIDE exp ()
+exp:  ()
+    | INT ()
+    | vardec ()
+    | cond ()
+    | exp op exp ()
     | LPAREN exp RPAREN ()
     | MINUS exp %prec UMINUS ()
     
+op:   AND ()
+    | OR ()
+    | GE ()
+    | GT ()
+    | LE ()
+    | LT ()
+    | NEQ ()
+    | EQ ()
+    | PLUS ()
+    | MINUS ()
+    | TIMES ()
+    | DIVIDE ()
+
+cond: IF exp THEN exp ELSE exp ()
+    | IF exp THEN exp ()
+    | WHILE exp DO work ()
+    | FOR ID ASSIGN exp TO exp DO work ()
+
+work: exp ()
+    | exp BREAK exp ()
 
 
 (* Defintions *)
