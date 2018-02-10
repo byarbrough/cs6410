@@ -12,8 +12,8 @@ warning: rule <tyfields : > will never be reduced
 warning: rule <tyfields : ID COLON typeid tyfieldscont > will never be reduced
 warning: rule <tyfieldscont : > will never be reduced
 warning: rule <tyfieldscont : COMMA ID COLON typeid tyfieldscont > will never be reduced
-warning: rule <vardec : VAR ID COLON EQ exp > will never be reduced
-warning: rule <vardec : VAR ID COLON typeid COLON EQ exp > will never be reduced
+warning: rule <vardec : VAR ID ASSIGN exp > will never be reduced
+warning: rule <vardec : VAR ID COLON typeid ASSIGN exp > will never be reduced
 warning: rule <fundec : FUNCTION ID LPAREN tyfields RPAREN EQ exp > will never be reduced
 warning: rule <fundec : FUNCTION ID LPAREN tyfields RPAREN COLON typeid EQ exp > will never be reduced
 warning: rule <lvalue : ID > will never be reduced
@@ -25,11 +25,13 @@ state 0:
 
 	program : . exp 
 
-	INT	shift 3
+	ID	shift 5
+	INT	shift 4
+	LPAREN	shift 3
 	MINUS	shift 2
 
 	exp	goto 1
-	program	goto 13
+	program	goto 17
 
 	.	error
 
@@ -42,10 +44,10 @@ state 1:
 	exp : exp . DIVIDE exp 
 	program : exp .  (reduce by rule 0)
 
-	PLUS	shift 7
-	MINUS	shift 6
-	TIMES	shift 5
-	DIVIDE	shift 4
+	PLUS	shift 9
+	MINUS	shift 8
+	TIMES	shift 7
+	DIVIDE	shift 6
 
 
 	.	reduce by rule 0
@@ -55,15 +57,31 @@ state 2:
 
 	exp : MINUS . exp 
 
-	INT	shift 3
+	ID	shift 5
+	INT	shift 4
+	LPAREN	shift 3
 	MINUS	shift 2
 
-	exp	goto 8
+	exp	goto 10
 
 	.	error
 
 
 state 3:
+
+	exp : LPAREN . exp RPAREN 
+
+	ID	shift 5
+	INT	shift 4
+	LPAREN	shift 3
+	MINUS	shift 2
+
+	exp	goto 11
+
+	.	error
+
+
+state 4:
 
 	exp : INT .  (reduce by rule 1)
 
@@ -72,47 +90,22 @@ state 3:
 	.	reduce by rule 1
 
 
-state 4:
-
-	exp : exp DIVIDE . exp 
-
-	INT	shift 3
-	MINUS	shift 2
-
-	exp	goto 9
-
-	.	error
-
-
 state 5:
 
-	exp : exp TIMES . exp 
+	exp : ID .  (reduce by rule 2)
 
-	INT	shift 3
-	MINUS	shift 2
 
-	exp	goto 10
 
-	.	error
+	.	reduce by rule 2
 
 
 state 6:
 
-	exp : exp MINUS . exp 
+	exp : exp DIVIDE . exp 
 
-	INT	shift 3
-	MINUS	shift 2
-
-	exp	goto 11
-
-	.	error
-
-
-state 7:
-
-	exp : exp PLUS . exp 
-
-	INT	shift 3
+	ID	shift 5
+	INT	shift 4
+	LPAREN	shift 3
 	MINUS	shift 2
 
 	exp	goto 12
@@ -120,30 +113,46 @@ state 7:
 	.	error
 
 
+state 7:
+
+	exp : exp TIMES . exp 
+
+	ID	shift 5
+	INT	shift 4
+	LPAREN	shift 3
+	MINUS	shift 2
+
+	exp	goto 13
+
+	.	error
+
+
 state 8:
 
-	exp : exp . PLUS exp 
-	exp : exp . MINUS exp 
-	exp : exp . TIMES exp 
-	exp : exp . DIVIDE exp 
-	exp : MINUS exp .  (reduce by rule 6)
+	exp : exp MINUS . exp 
 
+	ID	shift 5
+	INT	shift 4
+	LPAREN	shift 3
+	MINUS	shift 2
 
+	exp	goto 14
 
-	.	reduce by rule 6
+	.	error
 
 
 state 9:
 
-	exp : exp . PLUS exp 
-	exp : exp . MINUS exp 
-	exp : exp . TIMES exp 
-	exp : exp . DIVIDE exp 
-	exp : exp DIVIDE exp .  (reduce by rule 5)
+	exp : exp PLUS . exp 
 
+	ID	shift 5
+	INT	shift 4
+	LPAREN	shift 3
+	MINUS	shift 2
 
+	exp	goto 15
 
-	.	reduce by rule 5
+	.	error
 
 
 state 10:
@@ -151,45 +160,98 @@ state 10:
 	exp : exp . PLUS exp 
 	exp : exp . MINUS exp 
 	exp : exp . TIMES exp 
-	exp : exp TIMES exp .  (reduce by rule 4)
 	exp : exp . DIVIDE exp 
+	exp : MINUS exp .  (reduce by rule 8)
 
 
 
-	.	reduce by rule 4
+	.	reduce by rule 8
 
 
 state 11:
 
 	exp : exp . PLUS exp 
 	exp : exp . MINUS exp 
-	exp : exp MINUS exp .  (reduce by rule 3)
 	exp : exp . TIMES exp 
 	exp : exp . DIVIDE exp 
+	exp : LPAREN exp . RPAREN 
 
-	TIMES	shift 5
-	DIVIDE	shift 4
+	RPAREN	shift 16
+	PLUS	shift 9
+	MINUS	shift 8
+	TIMES	shift 7
+	DIVIDE	shift 6
 
 
-	.	reduce by rule 3
+	.	error
 
 
 state 12:
 
 	exp : exp . PLUS exp 
-	exp : exp PLUS exp .  (reduce by rule 2)
+	exp : exp . MINUS exp 
+	exp : exp . TIMES exp 
+	exp : exp . DIVIDE exp 
+	exp : exp DIVIDE exp .  (reduce by rule 6)
+
+
+
+	.	reduce by rule 6
+
+
+state 13:
+
+	exp : exp . PLUS exp 
+	exp : exp . MINUS exp 
+	exp : exp . TIMES exp 
+	exp : exp TIMES exp .  (reduce by rule 5)
+	exp : exp . DIVIDE exp 
+
+
+
+	.	reduce by rule 5
+
+
+state 14:
+
+	exp : exp . PLUS exp 
+	exp : exp . MINUS exp 
+	exp : exp MINUS exp .  (reduce by rule 4)
+	exp : exp . TIMES exp 
+	exp : exp . DIVIDE exp 
+
+	TIMES	shift 7
+	DIVIDE	shift 6
+
+
+	.	reduce by rule 4
+
+
+state 15:
+
+	exp : exp . PLUS exp 
+	exp : exp PLUS exp .  (reduce by rule 3)
 	exp : exp . MINUS exp 
 	exp : exp . TIMES exp 
 	exp : exp . DIVIDE exp 
 
-	TIMES	shift 5
-	DIVIDE	shift 4
+	TIMES	shift 7
+	DIVIDE	shift 6
 
 
-	.	reduce by rule 2
+	.	reduce by rule 3
 
 
-state 13:
+state 16:
+
+	exp : LPAREN exp RPAREN .  (reduce by rule 7)
+
+
+
+	.	reduce by rule 7
+
+
+state 17:
 
 
 	EOF	accept
@@ -197,5 +259,5 @@ state 13:
 
 	.	error
 
-11 of 35 action table entries left after compaction
-7 goto table entries
+18 of 60 action table entries left after compaction
+8 goto table entries

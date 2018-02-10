@@ -47,12 +47,15 @@ program	: exp				()
 
 	
 exp: INT ()
+    | ID ()
     | exp PLUS exp ()
     | exp MINUS exp ()
     | exp TIMES exp ()
     | exp DIVIDE exp ()
+    | LPAREN exp RPAREN ()
     | MINUS exp %prec UMINUS ()
     
+
 
 (* Defintions *)
 decs : LBRACE dec RBRACE ()
@@ -72,8 +75,8 @@ tyfields : ()
 tyfieldscont : () 
              | COMMA ID COLON typeid tyfieldscont ()
 
-vardec : VAR ID COLON EQ exp ()
-       | VAR ID COLON typeid COLON EQ exp ()
+vardec : VAR ID ASSIGN exp ()
+       | VAR ID COLON typeid ASSIGN exp ()
 
 fundec : FUNCTION ID LPAREN tyfields RPAREN EQ exp ()
        | FUNCTION ID LPAREN tyfields RPAREN COLON typeid EQ exp ()
