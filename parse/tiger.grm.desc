@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 101 shift/reduce conflicts
 17 rules not reduced
 
@@ -61,10 +62,49 @@ error:  state 42: shift/reduce conflict (shift LE, reduce by rule 24)
 error:  state 42: shift/reduce conflict (shift LT, reduce by rule 24)
 error:  state 42: shift/reduce conflict (shift NEQ, reduce by rule 24)
 error:  state 42: shift/reduce conflict (shift EQ, reduce by rule 24)
+=======
+58 shift/reduce conflicts
+3 rules not reduced
+
+warning: rule <lvalue : ID > will never be reduced
+warning: rule <lvalue : lvalue DOT ID > will never be reduced
+warning: rule <lvalue : lvalue LBRACK exp RBRACK > will never be reduced
+error:  state 0: shift/reduce conflict (shift MINUS, reduce by rule 12)
+error:  state 5: shift/reduce conflict (shift TYPE, reduce by rule 12)
+error:  state 5: shift/reduce conflict (shift VAR, reduce by rule 12)
+error:  state 5: shift/reduce conflict (shift FUNCTION, reduce by rule 12)
+error:  state 11: shift/reduce conflict (shift TYPE, reduce by rule 12)
+error:  state 11: shift/reduce conflict (shift VAR, reduce by rule 12)
+error:  state 11: shift/reduce conflict (shift FUNCTION, reduce by rule 12)
+error:  state 11: shift/reduce conflict (shift MINUS, reduce by rule 12)
+error:  state 12: shift/reduce conflict (shift MINUS, reduce by rule 12)
+error:  state 15: shift/reduce conflict (shift MINUS, reduce by rule 12)
+error:  state 17: shift/reduce conflict (shift TYPE, reduce by rule 12)
+error:  state 17: shift/reduce conflict (shift VAR, reduce by rule 12)
+error:  state 17: shift/reduce conflict (shift FUNCTION, reduce by rule 12)
+error:  state 17: shift/reduce conflict (shift MINUS, reduce by rule 12)
+error:  state 18: shift/reduce conflict (shift TYPE, reduce by rule 12)
+error:  state 18: shift/reduce conflict (shift VAR, reduce by rule 12)
+error:  state 18: shift/reduce conflict (shift FUNCTION, reduce by rule 12)
+error:  state 18: shift/reduce conflict (shift MINUS, reduce by rule 12)
+error:  state 19: shift/reduce conflict (shift TYPE, reduce by rule 12)
+error:  state 19: shift/reduce conflict (shift VAR, reduce by rule 12)
+error:  state 19: shift/reduce conflict (shift FUNCTION, reduce by rule 12)
+error:  state 19: shift/reduce conflict (shift MINUS, reduce by rule 12)
+error:  state 20: shift/reduce conflict (shift TYPE, reduce by rule 12)
+error:  state 20: shift/reduce conflict (shift VAR, reduce by rule 12)
+error:  state 20: shift/reduce conflict (shift FUNCTION, reduce by rule 12)
+error:  state 20: shift/reduce conflict (shift MINUS, reduce by rule 12)
+error:  state 33: shift/reduce conflict (shift TYPE, reduce by rule 12)
+error:  state 33: shift/reduce conflict (shift VAR, reduce by rule 12)
+error:  state 33: shift/reduce conflict (shift FUNCTION, reduce by rule 12)
+error:  state 33: shift/reduce conflict (shift MINUS, reduce by rule 12)
+>>>>>>> Stashed changes
 error:  state 42: shift/reduce conflict (shift DIVIDE, reduce by rule 24)
 error:  state 42: shift/reduce conflict (shift TIMES, reduce by rule 24)
 error:  state 42: shift/reduce conflict (shift MINUS, reduce by rule 24)
 error:  state 42: shift/reduce conflict (shift PLUS, reduce by rule 24)
+<<<<<<< Updated upstream
 error:  state 43: shift/reduce conflict (shift ELSE, reduce by rule 21)
 error:  state 43: shift/reduce conflict (shift OR, reduce by rule 21)
 error:  state 43: shift/reduce conflict (shift AND, reduce by rule 21)
@@ -120,11 +160,39 @@ error:  state 51: shift/reduce conflict (shift MINUS, reduce by rule 20)
 error:  state 51: shift/reduce conflict (shift PLUS, reduce by rule 20)
 error:  state 52: shift/reduce conflict (shift MINUS, reduce by rule 1)
 error:  state 0: shift/reduce conflict (shift MINUS, reduce by rule 1)
+=======
+error:  state 46: shift/reduce conflict (shift TYPE, reduce by rule 12)
+error:  state 46: shift/reduce conflict (shift VAR, reduce by rule 12)
+error:  state 46: shift/reduce conflict (shift FUNCTION, reduce by rule 12)
+error:  state 46: shift/reduce conflict (shift MINUS, reduce by rule 12)
+error:  state 49: shift/reduce conflict (shift TYPE, reduce by rule 12)
+error:  state 49: shift/reduce conflict (shift VAR, reduce by rule 12)
+error:  state 49: shift/reduce conflict (shift FUNCTION, reduce by rule 12)
+error:  state 49: shift/reduce conflict (shift MINUS, reduce by rule 12)
+error:  state 52: shift/reduce conflict (shift DIVIDE, reduce by rule 10)
+error:  state 52: shift/reduce conflict (shift TIMES, reduce by rule 10)
+error:  state 52: shift/reduce conflict (shift MINUS, reduce by rule 10)
+error:  state 52: shift/reduce conflict (shift PLUS, reduce by rule 10)
+error:  state 55: shift/reduce conflict (shift DIVIDE, reduce by rule 25)
+error:  state 55: shift/reduce conflict (shift TIMES, reduce by rule 25)
+error:  state 55: shift/reduce conflict (shift MINUS, reduce by rule 25)
+error:  state 55: shift/reduce conflict (shift PLUS, reduce by rule 25)
+error:  state 56: shift/reduce conflict (shift TYPE, reduce by rule 12)
+error:  state 56: shift/reduce conflict (shift VAR, reduce by rule 12)
+error:  state 56: shift/reduce conflict (shift FUNCTION, reduce by rule 12)
+error:  state 56: shift/reduce conflict (shift MINUS, reduce by rule 12)
+error:  state 63: shift/reduce conflict (shift TYPE, reduce by rule 12)
+error:  state 63: shift/reduce conflict (shift VAR, reduce by rule 12)
+error:  state 63: shift/reduce conflict (shift FUNCTION, reduce by rule 12)
+error:  state 63: shift/reduce conflict (shift MINUS, reduce by rule 12)
+error:  state 0: shift/reduce conflict (shift MINUS, reduce by rule 12)
+>>>>>>> Stashed changes
 
 state 0:
 
 	program : . exp 
 
+<<<<<<< Updated upstream
 	INT	shift 10
 	LPAREN	shift 9
 	MINUS	shift 8
@@ -139,28 +207,136 @@ state 0:
 	cond	goto 1
 
 	.	reduce by rule 1
+=======
+	ID	shift 14
+	INT	shift 13
+	LPAREN	shift 12
+	MINUS	shift 11
+	FUNCTION	shift 10
+	VAR	shift 9
+	TYPE	shift 8
+
+	exp	goto 7
+	program	goto 69
+	decs	goto 6
+	dec	goto 5
+	tydec	goto 4
+	vardec	goto 3
+	fundec	goto 2
+	typeid	goto 1
+
+	.	reduce by rule 12
+>>>>>>> Stashed changes
 
 
 state 1:
 
+<<<<<<< Updated upstream
 	exp : cond .  (reduce by rule 4)
 
+=======
+	exp : typeid . LBRACK exp RBRACK OF exp 
+
+	LBRACK	shift 15
+
+
+	.	error
+
+
+state 2:
+
+	dec : fundec .  (reduce by rule 15)
+
+
+
+	.	reduce by rule 15
+
+
+state 3:
+
+	dec : vardec .  (reduce by rule 14)
+
+
+
+	.	reduce by rule 14
+
+
+state 4:
+
+	dec : tydec .  (reduce by rule 13)
+
+
+
+	.	reduce by rule 13
+
+error:  state 5: shift/reduce conflict (shift TYPE, reduce by rule 12)
+error:  state 5: shift/reduce conflict (shift VAR, reduce by rule 12)
+error:  state 5: shift/reduce conflict (shift FUNCTION, reduce by rule 12)
+
+state 5:
+
+	decs : dec . decs 
+
+	FUNCTION	shift 10
+	VAR	shift 9
+	TYPE	shift 8
+
+	decs	goto 16
+	dec	goto 5
+	tydec	goto 4
+	vardec	goto 3
+	fundec	goto 2
+
+	.	reduce by rule 12
+
+
+state 6:
+
+	exp : decs .  (reduce by rule 9)
+
+
+
+	.	reduce by rule 9
+
+
+state 7:
+
+	exp : exp . PLUS exp 
+	exp : exp . MINUS exp 
+	exp : exp . TIMES exp 
+	exp : exp . DIVIDE exp 
+	program : exp .  (reduce by rule 0)
+
+	PLUS	shift 20
+	MINUS	shift 19
+	TIMES	shift 18
+	DIVIDE	shift 17
+>>>>>>> Stashed changes
 
 
 	.	reduce by rule 4
 
 
-state 2:
+state 8:
 
+<<<<<<< Updated upstream
 	exp : vardec .  (reduce by rule 3)
 
 
+=======
+	tydec : TYPE . typeid EQ ty 
+
+	ID	shift 22
+
+	typeid	goto 21
+>>>>>>> Stashed changes
 
 	.	reduce by rule 3
 
 
-state 3:
+state 9:
 
+<<<<<<< Updated upstream
 	exp : exp . op exp 
 	program : exp .  (reduce by rule 0)
 
@@ -178,11 +354,80 @@ state 3:
 	OR	shift 12
 
 	op	goto 11
+=======
+	vardec : VAR . ID ASSIGN exp 
+	vardec : VAR . ID COLON typeid ASSIGN exp 
+
+	ID	shift 23
+
+>>>>>>> Stashed changes
 
 	.	reduce by rule 0
 
 
-state 4:
+state 10:
+
+	fundec : FUNCTION . ID LPAREN tyfields RPAREN EQ exp 
+	fundec : FUNCTION . ID LPAREN tyfields RPAREN COLON typeid EQ exp 
+
+	ID	shift 24
+
+
+	.	error
+
+error:  state 11: shift/reduce conflict (shift TYPE, reduce by rule 12)
+error:  state 11: shift/reduce conflict (shift VAR, reduce by rule 12)
+error:  state 11: shift/reduce conflict (shift FUNCTION, reduce by rule 12)
+error:  state 11: shift/reduce conflict (shift MINUS, reduce by rule 12)
+
+state 11:
+
+	exp : MINUS . exp 
+
+	ID	shift 14
+	INT	shift 13
+	LPAREN	shift 12
+	MINUS	shift 11
+	FUNCTION	shift 10
+	VAR	shift 9
+	TYPE	shift 8
+
+	exp	goto 25
+	decs	goto 6
+	dec	goto 5
+	tydec	goto 4
+	vardec	goto 3
+	fundec	goto 2
+	typeid	goto 1
+
+	.	reduce by rule 12
+
+error:  state 12: shift/reduce conflict (shift MINUS, reduce by rule 12)
+
+state 12:
+
+	exp : LPAREN . exp RPAREN 
+
+	ID	shift 14
+	INT	shift 13
+	LPAREN	shift 12
+	MINUS	shift 11
+	FUNCTION	shift 10
+	VAR	shift 9
+	TYPE	shift 8
+
+	exp	goto 26
+	decs	goto 6
+	dec	goto 5
+	tydec	goto 4
+	vardec	goto 3
+	fundec	goto 2
+	typeid	goto 1
+
+	.	reduce by rule 12
+
+
+state 13:
 
 	vardec : VAR . ID ASSIGN exp 
 	vardec : VAR . ID COLON typeid ASSIGN exp 
@@ -193,21 +438,79 @@ state 4:
 	.	error
 
 
-state 5:
+state 14:
 
+<<<<<<< Updated upstream
 	cond : FOR . ID ASSIGN exp TO exp DO work 
 
 	ID	shift 25
+=======
+	exp : ID .  (reduce by rule 2)
+	typeid : ID .  (reduce by rule 31)
+
+	EOF	reduce by rule 2
+	RPAREN	reduce by rule 2
+	LBRACK	reduce by rule 31
+	RBRACK	reduce by rule 2
+	PLUS	reduce by rule 2
+	MINUS	reduce by rule 2
+	TIMES	reduce by rule 2
+	DIVIDE	reduce by rule 2
+	FUNCTION	reduce by rule 2
+	VAR	reduce by rule 2
+	TYPE	reduce by rule 2
+>>>>>>> Stashed changes
 
 
 	.	error
 
+<<<<<<< Updated upstream
 error:  state 6: shift/reduce conflict (shift MINUS, reduce by rule 1)
+=======
+error:  state 15: shift/reduce conflict (shift MINUS, reduce by rule 12)
+>>>>>>> Stashed changes
 
-state 6:
+state 15:
+
+	exp : typeid LBRACK . exp RBRACK OF exp 
+
+	ID	shift 14
+	INT	shift 13
+	LPAREN	shift 12
+	MINUS	shift 11
+	FUNCTION	shift 10
+	VAR	shift 9
+	TYPE	shift 8
+
+	exp	goto 27
+	decs	goto 6
+	dec	goto 5
+	tydec	goto 4
+	vardec	goto 3
+	fundec	goto 2
+	typeid	goto 1
+
+	.	reduce by rule 12
+
+
+state 16:
+
+	decs : dec decs .  (reduce by rule 11)
+
+
+
+	.	reduce by rule 11
+
+error:  state 17: shift/reduce conflict (shift TYPE, reduce by rule 12)
+error:  state 17: shift/reduce conflict (shift VAR, reduce by rule 12)
+error:  state 17: shift/reduce conflict (shift FUNCTION, reduce by rule 12)
+error:  state 17: shift/reduce conflict (shift MINUS, reduce by rule 12)
+
+state 17:
 
 	cond : WHILE . exp DO work 
 
+<<<<<<< Updated upstream
 	INT	shift 10
 	LPAREN	shift 9
 	MINUS	shift 8
@@ -223,12 +526,37 @@ state 6:
 	.	reduce by rule 1
 
 error:  state 7: shift/reduce conflict (shift MINUS, reduce by rule 1)
+=======
+	ID	shift 14
+	INT	shift 13
+	LPAREN	shift 12
+	MINUS	shift 11
+	FUNCTION	shift 10
+	VAR	shift 9
+	TYPE	shift 8
 
-state 7:
+	exp	goto 28
+	decs	goto 6
+	dec	goto 5
+	tydec	goto 4
+	vardec	goto 3
+	fundec	goto 2
+	typeid	goto 1
+
+	.	reduce by rule 12
+
+error:  state 18: shift/reduce conflict (shift TYPE, reduce by rule 12)
+error:  state 18: shift/reduce conflict (shift VAR, reduce by rule 12)
+error:  state 18: shift/reduce conflict (shift FUNCTION, reduce by rule 12)
+error:  state 18: shift/reduce conflict (shift MINUS, reduce by rule 12)
+>>>>>>> Stashed changes
+
+state 18:
 
 	cond : IF . exp THEN exp ELSE exp 
 	cond : IF . exp THEN exp 
 
+<<<<<<< Updated upstream
 	INT	shift 10
 	LPAREN	shift 9
 	MINUS	shift 8
@@ -244,11 +572,36 @@ state 7:
 	.	reduce by rule 1
 
 error:  state 8: shift/reduce conflict (shift MINUS, reduce by rule 1)
+=======
+	ID	shift 14
+	INT	shift 13
+	LPAREN	shift 12
+	MINUS	shift 11
+	FUNCTION	shift 10
+	VAR	shift 9
+	TYPE	shift 8
 
-state 8:
+	exp	goto 29
+	decs	goto 6
+	dec	goto 5
+	tydec	goto 4
+	vardec	goto 3
+	fundec	goto 2
+	typeid	goto 1
+
+	.	reduce by rule 12
+
+error:  state 19: shift/reduce conflict (shift TYPE, reduce by rule 12)
+error:  state 19: shift/reduce conflict (shift VAR, reduce by rule 12)
+error:  state 19: shift/reduce conflict (shift FUNCTION, reduce by rule 12)
+error:  state 19: shift/reduce conflict (shift MINUS, reduce by rule 12)
+>>>>>>> Stashed changes
+
+state 19:
 
 	exp : MINUS . exp 
 
+<<<<<<< Updated upstream
 	INT	shift 10
 	LPAREN	shift 9
 	MINUS	shift 8
@@ -264,11 +617,36 @@ state 8:
 	.	reduce by rule 1
 
 error:  state 9: shift/reduce conflict (shift MINUS, reduce by rule 1)
+=======
+	ID	shift 14
+	INT	shift 13
+	LPAREN	shift 12
+	MINUS	shift 11
+	FUNCTION	shift 10
+	VAR	shift 9
+	TYPE	shift 8
 
-state 9:
+	exp	goto 30
+	decs	goto 6
+	dec	goto 5
+	tydec	goto 4
+	vardec	goto 3
+	fundec	goto 2
+	typeid	goto 1
+
+	.	reduce by rule 12
+
+error:  state 20: shift/reduce conflict (shift TYPE, reduce by rule 12)
+error:  state 20: shift/reduce conflict (shift VAR, reduce by rule 12)
+error:  state 20: shift/reduce conflict (shift FUNCTION, reduce by rule 12)
+error:  state 20: shift/reduce conflict (shift MINUS, reduce by rule 12)
+>>>>>>> Stashed changes
+
+state 20:
 
 	exp : LPAREN . exp RPAREN 
 
+<<<<<<< Updated upstream
 	INT	shift 10
 	LPAREN	shift 9
 	MINUS	shift 8
@@ -280,11 +658,70 @@ state 9:
 	exp	goto 29
 	vardec	goto 2
 	cond	goto 1
+=======
+	ID	shift 14
+	INT	shift 13
+	LPAREN	shift 12
+	MINUS	shift 11
+	FUNCTION	shift 10
+	VAR	shift 9
+	TYPE	shift 8
+
+	exp	goto 31
+	decs	goto 6
+	dec	goto 5
+	tydec	goto 4
+	vardec	goto 3
+	fundec	goto 2
+	typeid	goto 1
+
+	.	reduce by rule 12
+
+
+state 21:
+
+	tydec : TYPE typeid . EQ ty 
+
+	EQ	shift 32
+
+>>>>>>> Stashed changes
 
 	.	reduce by rule 1
 
 
-state 10:
+state 22:
+
+	typeid : ID .  (reduce by rule 31)
+
+
+
+	.	reduce by rule 31
+
+
+state 23:
+
+	vardec : VAR ID . ASSIGN exp 
+	vardec : VAR ID . COLON typeid ASSIGN exp 
+
+	COLON	shift 34
+	ASSIGN	shift 33
+
+
+	.	error
+
+
+state 24:
+
+	fundec : FUNCTION ID . LPAREN tyfields RPAREN EQ exp 
+	fundec : FUNCTION ID . LPAREN tyfields RPAREN COLON typeid EQ exp 
+
+	LPAREN	shift 35
+
+
+	.	error
+
+
+state 25:
 
 	exp : INT .  (reduce by rule 2)
 
@@ -294,10 +731,11 @@ state 10:
 
 error:  state 11: shift/reduce conflict (shift MINUS, reduce by rule 1)
 
-state 11:
+state 26:
 
 	exp : exp op . exp 
 
+<<<<<<< Updated upstream
 	INT	shift 10
 	LPAREN	shift 9
 	MINUS	shift 8
@@ -305,6 +743,13 @@ state 11:
 	WHILE	shift 6
 	FOR	shift 5
 	VAR	shift 4
+=======
+	RPAREN	shift 36
+	PLUS	shift 20
+	MINUS	shift 19
+	TIMES	shift 18
+	DIVIDE	shift 17
+>>>>>>> Stashed changes
 
 	exp	goto 30
 	vardec	goto 2
@@ -313,7 +758,25 @@ state 11:
 	.	reduce by rule 1
 
 
-state 12:
+state 27:
+
+	exp : exp . PLUS exp 
+	exp : exp . MINUS exp 
+	exp : exp . TIMES exp 
+	exp : exp . DIVIDE exp 
+	exp : typeid LBRACK exp . RBRACK OF exp 
+
+	RBRACK	shift 37
+	PLUS	shift 20
+	MINUS	shift 19
+	TIMES	shift 18
+	DIVIDE	shift 17
+
+
+	.	error
+
+
+state 28:
 
 	op : OR .  (reduce by rule 9)
 
@@ -322,7 +785,7 @@ state 12:
 	.	reduce by rule 9
 
 
-state 13:
+state 29:
 
 	op : AND .  (reduce by rule 8)
 
@@ -331,25 +794,99 @@ state 13:
 	.	reduce by rule 8
 
 
-state 14:
+state 30:
 
 	op : GE .  (reduce by rule 10)
 
+<<<<<<< Updated upstream
+=======
+	TIMES	shift 18
+	DIVIDE	shift 17
+>>>>>>> Stashed changes
 
 
 	.	reduce by rule 10
 
 
-state 15:
+state 31:
 
 	op : GT .  (reduce by rule 11)
 
+<<<<<<< Updated upstream
+=======
+	TIMES	shift 18
+	DIVIDE	shift 17
+>>>>>>> Stashed changes
 
 
 	.	reduce by rule 11
 
 
-state 16:
+state 32:
+
+	tydec : TYPE typeid EQ . ty 
+
+	ID	shift 22
+	LBRACE	shift 41
+	ARRAY	shift 40
+
+	ty	goto 39
+	typeid	goto 38
+
+	.	error
+
+error:  state 33: shift/reduce conflict (shift TYPE, reduce by rule 12)
+error:  state 33: shift/reduce conflict (shift VAR, reduce by rule 12)
+error:  state 33: shift/reduce conflict (shift FUNCTION, reduce by rule 12)
+error:  state 33: shift/reduce conflict (shift MINUS, reduce by rule 12)
+
+state 33:
+
+	vardec : VAR ID ASSIGN . exp 
+
+	ID	shift 14
+	INT	shift 13
+	LPAREN	shift 12
+	MINUS	shift 11
+	FUNCTION	shift 10
+	VAR	shift 9
+	TYPE	shift 8
+
+	exp	goto 42
+	decs	goto 6
+	dec	goto 5
+	tydec	goto 4
+	vardec	goto 3
+	fundec	goto 2
+	typeid	goto 1
+
+	.	reduce by rule 12
+
+
+state 34:
+
+	vardec : VAR ID COLON . typeid ASSIGN exp 
+
+	ID	shift 22
+
+	typeid	goto 43
+
+	.	error
+
+
+state 35:
+
+	fundec : FUNCTION ID LPAREN . tyfields RPAREN EQ exp 
+	fundec : FUNCTION ID LPAREN . tyfields RPAREN COLON typeid EQ exp 
+
+	ID	shift 45
+
+	tyfields	goto 44
+
+	.	reduce by rule 20
+
+
+state 36:
 
 	op : LE .  (reduce by rule 12)
 
@@ -358,7 +895,446 @@ state 16:
 	.	reduce by rule 12
 
 
-state 17:
+state 37:
+
+	exp : typeid LBRACK exp RBRACK . OF exp 
+
+	OF	shift 46
+
+
+	.	error
+
+
+state 38:
+
+	ty : typeid .  (reduce by rule 17)
+
+
+
+	.	reduce by rule 17
+
+
+state 39:
+
+	tydec : TYPE typeid EQ ty .  (reduce by rule 16)
+
+
+
+	.	reduce by rule 16
+
+
+state 40:
+
+	ty : ARRAY . OF typeid 
+
+	OF	shift 47
+
+
+	.	error
+
+
+state 41:
+
+	ty : LBRACE . tyfields RBRACE 
+
+	ID	shift 45
+
+	tyfields	goto 48
+
+	.	reduce by rule 20
+
+error:  state 42: shift/reduce conflict (shift DIVIDE, reduce by rule 24)
+error:  state 42: shift/reduce conflict (shift TIMES, reduce by rule 24)
+error:  state 42: shift/reduce conflict (shift MINUS, reduce by rule 24)
+error:  state 42: shift/reduce conflict (shift PLUS, reduce by rule 24)
+
+state 42:
+
+	exp : exp . PLUS exp 
+	exp : exp . MINUS exp 
+	exp : exp . TIMES exp 
+	exp : exp . DIVIDE exp 
+	vardec : VAR ID ASSIGN exp .  (reduce by rule 24)
+
+	PLUS	shift 20
+	MINUS	shift 19
+	TIMES	shift 18
+	DIVIDE	shift 17
+
+
+	.	reduce by rule 24
+
+
+state 43:
+
+	vardec : VAR ID COLON typeid . ASSIGN exp 
+
+	ASSIGN	shift 49
+
+
+	.	error
+
+
+state 44:
+
+	fundec : FUNCTION ID LPAREN tyfields . RPAREN EQ exp 
+	fundec : FUNCTION ID LPAREN tyfields . RPAREN COLON typeid EQ exp 
+
+	RPAREN	shift 50
+
+
+	.	error
+
+
+state 45:
+
+	tyfields : ID . COLON typeid tyfieldscont 
+
+	COLON	shift 51
+
+
+	.	error
+
+error:  state 46: shift/reduce conflict (shift TYPE, reduce by rule 12)
+error:  state 46: shift/reduce conflict (shift VAR, reduce by rule 12)
+error:  state 46: shift/reduce conflict (shift FUNCTION, reduce by rule 12)
+error:  state 46: shift/reduce conflict (shift MINUS, reduce by rule 12)
+
+state 46:
+
+	exp : typeid LBRACK exp RBRACK OF . exp 
+
+	ID	shift 14
+	INT	shift 13
+	LPAREN	shift 12
+	MINUS	shift 11
+	FUNCTION	shift 10
+	VAR	shift 9
+	TYPE	shift 8
+
+	exp	goto 52
+	decs	goto 6
+	dec	goto 5
+	tydec	goto 4
+	vardec	goto 3
+	fundec	goto 2
+	typeid	goto 1
+
+	.	reduce by rule 12
+
+
+state 47:
+
+	ty : ARRAY OF . typeid 
+
+	ID	shift 22
+
+	typeid	goto 53
+
+	.	error
+
+
+state 48:
+
+	ty : LBRACE tyfields . RBRACE 
+
+	RBRACE	shift 54
+
+
+	.	error
+
+error:  state 49: shift/reduce conflict (shift TYPE, reduce by rule 12)
+error:  state 49: shift/reduce conflict (shift VAR, reduce by rule 12)
+error:  state 49: shift/reduce conflict (shift FUNCTION, reduce by rule 12)
+error:  state 49: shift/reduce conflict (shift MINUS, reduce by rule 12)
+
+state 49:
+
+	vardec : VAR ID COLON typeid ASSIGN . exp 
+
+	ID	shift 14
+	INT	shift 13
+	LPAREN	shift 12
+	MINUS	shift 11
+	FUNCTION	shift 10
+	VAR	shift 9
+	TYPE	shift 8
+
+	exp	goto 55
+	decs	goto 6
+	dec	goto 5
+	tydec	goto 4
+	vardec	goto 3
+	fundec	goto 2
+	typeid	goto 1
+
+	.	reduce by rule 12
+
+
+state 50:
+
+	fundec : FUNCTION ID LPAREN tyfields RPAREN . EQ exp 
+	fundec : FUNCTION ID LPAREN tyfields RPAREN . COLON typeid EQ exp 
+
+	COLON	shift 57
+	EQ	shift 56
+
+
+	.	error
+
+
+state 51:
+
+	tyfields : ID COLON . typeid tyfieldscont 
+
+	ID	shift 22
+
+	typeid	goto 58
+
+	.	error
+
+error:  state 52: shift/reduce conflict (shift DIVIDE, reduce by rule 10)
+error:  state 52: shift/reduce conflict (shift TIMES, reduce by rule 10)
+error:  state 52: shift/reduce conflict (shift MINUS, reduce by rule 10)
+error:  state 52: shift/reduce conflict (shift PLUS, reduce by rule 10)
+
+state 52:
+
+	exp : exp . PLUS exp 
+	exp : exp . MINUS exp 
+	exp : exp . TIMES exp 
+	exp : exp . DIVIDE exp 
+	exp : typeid LBRACK exp RBRACK OF exp .  (reduce by rule 10)
+
+	PLUS	shift 20
+	MINUS	shift 19
+	TIMES	shift 18
+	DIVIDE	shift 17
+
+
+	.	reduce by rule 10
+
+
+state 53:
+
+	ty : ARRAY OF typeid .  (reduce by rule 19)
+
+
+
+	.	reduce by rule 19
+
+
+state 54:
+
+	ty : LBRACE tyfields RBRACE .  (reduce by rule 18)
+
+
+
+	.	reduce by rule 18
+
+error:  state 55: shift/reduce conflict (shift DIVIDE, reduce by rule 25)
+error:  state 55: shift/reduce conflict (shift TIMES, reduce by rule 25)
+error:  state 55: shift/reduce conflict (shift MINUS, reduce by rule 25)
+error:  state 55: shift/reduce conflict (shift PLUS, reduce by rule 25)
+
+state 55:
+
+	exp : exp . PLUS exp 
+	exp : exp . MINUS exp 
+	exp : exp . TIMES exp 
+	exp : exp . DIVIDE exp 
+	vardec : VAR ID COLON typeid ASSIGN exp .  (reduce by rule 25)
+
+	PLUS	shift 20
+	MINUS	shift 19
+	TIMES	shift 18
+	DIVIDE	shift 17
+
+
+	.	reduce by rule 25
+
+error:  state 56: shift/reduce conflict (shift TYPE, reduce by rule 12)
+error:  state 56: shift/reduce conflict (shift VAR, reduce by rule 12)
+error:  state 56: shift/reduce conflict (shift FUNCTION, reduce by rule 12)
+error:  state 56: shift/reduce conflict (shift MINUS, reduce by rule 12)
+
+state 56:
+
+	fundec : FUNCTION ID LPAREN tyfields RPAREN EQ . exp 
+
+	ID	shift 14
+	INT	shift 13
+	LPAREN	shift 12
+	MINUS	shift 11
+	FUNCTION	shift 10
+	VAR	shift 9
+	TYPE	shift 8
+
+	exp	goto 59
+	decs	goto 6
+	dec	goto 5
+	tydec	goto 4
+	vardec	goto 3
+	fundec	goto 2
+	typeid	goto 1
+
+	.	reduce by rule 12
+
+
+state 57:
+
+	fundec : FUNCTION ID LPAREN tyfields RPAREN COLON . typeid EQ exp 
+
+	ID	shift 22
+
+	typeid	goto 60
+
+	.	error
+
+
+state 58:
+
+	tyfields : ID COLON typeid . tyfieldscont 
+
+	COMMA	shift 62
+
+	tyfieldscont	goto 61
+
+	.	reduce by rule 22
+
+
+state 59:
+
+	exp : exp . PLUS exp 
+	exp : exp . MINUS exp 
+	exp : exp . TIMES exp 
+	exp : exp . DIVIDE exp 
+	fundec : FUNCTION ID LPAREN tyfields RPAREN EQ exp .  (reduce by rule 26)
+
+	PLUS	shift 20
+	MINUS	shift 19
+	TIMES	shift 18
+	DIVIDE	shift 17
+
+
+	.	reduce by rule 26
+
+
+state 60:
+
+	fundec : FUNCTION ID LPAREN tyfields RPAREN COLON typeid . EQ exp 
+
+	EQ	shift 63
+
+
+	.	error
+
+
+state 61:
+
+	tyfields : ID COLON typeid tyfieldscont .  (reduce by rule 21)
+
+
+
+	.	reduce by rule 21
+
+
+state 62:
+
+	tyfieldscont : COMMA . ID COLON typeid tyfieldscont 
+
+	ID	shift 64
+
+
+	.	error
+
+error:  state 63: shift/reduce conflict (shift TYPE, reduce by rule 12)
+error:  state 63: shift/reduce conflict (shift VAR, reduce by rule 12)
+error:  state 63: shift/reduce conflict (shift FUNCTION, reduce by rule 12)
+error:  state 63: shift/reduce conflict (shift MINUS, reduce by rule 12)
+
+state 63:
+
+	fundec : FUNCTION ID LPAREN tyfields RPAREN COLON typeid EQ . exp 
+
+	ID	shift 14
+	INT	shift 13
+	LPAREN	shift 12
+	MINUS	shift 11
+	FUNCTION	shift 10
+	VAR	shift 9
+	TYPE	shift 8
+
+	exp	goto 65
+	decs	goto 6
+	dec	goto 5
+	tydec	goto 4
+	vardec	goto 3
+	fundec	goto 2
+	typeid	goto 1
+
+	.	reduce by rule 12
+
+
+state 64:
+
+	tyfieldscont : COMMA ID . COLON typeid tyfieldscont 
+
+	COLON	shift 66
+
+
+	.	error
+
+
+state 65:
+
+	exp : exp . PLUS exp 
+	exp : exp . MINUS exp 
+	exp : exp . TIMES exp 
+	exp : exp . DIVIDE exp 
+	fundec : FUNCTION ID LPAREN tyfields RPAREN COLON typeid EQ exp .  (reduce by rule 27)
+
+	PLUS	shift 20
+	MINUS	shift 19
+	TIMES	shift 18
+	DIVIDE	shift 17
+
+
+	.	reduce by rule 27
+
+
+state 66:
+
+	tyfieldscont : COMMA ID COLON . typeid tyfieldscont 
+
+	ID	shift 22
+
+	typeid	goto 67
+
+	.	error
+
+
+state 67:
+
+	tyfieldscont : COMMA ID COLON typeid . tyfieldscont 
+
+	COMMA	shift 62
+
+	tyfieldscont	goto 68
+
+	.	reduce by rule 22
+
+
+state 68:
+
+	tyfieldscont : COMMA ID COLON typeid tyfieldscont .  (reduce by rule 23)
+
+
+
+	.	reduce by rule 23
+
+
+state 69:
 
 	op : LT .  (reduce by rule 13)
 
@@ -1074,5 +2050,10 @@ state 54:
 
 	.	error
 
+<<<<<<< Updated upstream
 178 of 331 action table entries left after compaction
 63 goto table entries
+=======
+84 of 245 action table entries left after compaction
+109 goto table entries
+>>>>>>> Stashed changes

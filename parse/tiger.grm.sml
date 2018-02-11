@@ -16,6 +16,7 @@ local open LrTable in
 val table=let val actionRows =
 "\
 \\001\000\001\000\000\000\000\000\
+<<<<<<< Updated upstream
 \\001\000\002\000\026\000\000\000\
 \\001\000\002\000\027\000\000\000\
 \\001\000\002\000\041\000\000\000\
@@ -109,21 +110,176 @@ val actionRowNumbers =
 val gotoT =
 "\
 \\001\000\003\000\002\000\054\000\009\000\002\000\014\000\001\000\000\000\
+=======
+\\001\000\001\000\074\000\009\000\074\000\010\000\103\000\011\000\074\000\
+\\015\000\074\000\016\000\074\000\017\000\074\000\018\000\074\000\
+\\042\000\074\000\043\000\074\000\044\000\074\000\000\000\
+\\001\000\002\000\024\000\000\000\
+\\001\000\002\000\024\000\012\000\043\000\028\000\042\000\000\000\
+\\001\000\002\000\025\000\000\000\
+\\001\000\002\000\026\000\000\000\
+\\001\000\002\000\066\000\000\000\
+\\001\000\006\000\036\000\027\000\035\000\000\000\
+\\001\000\006\000\053\000\000\000\
+\\001\000\006\000\059\000\019\000\058\000\000\000\
+\\001\000\006\000\068\000\000\000\
+\\001\000\008\000\037\000\000\000\
+\\001\000\009\000\038\000\015\000\022\000\016\000\021\000\017\000\020\000\
+\\018\000\019\000\000\000\
+\\001\000\009\000\052\000\000\000\
+\\001\000\010\000\017\000\000\000\
+\\001\000\011\000\039\000\015\000\022\000\016\000\021\000\017\000\020\000\
+\\018\000\019\000\000\000\
+\\001\000\013\000\056\000\000\000\
+\\001\000\019\000\034\000\000\000\
+\\001\000\019\000\065\000\000\000\
+\\001\000\027\000\051\000\000\000\
+\\001\000\039\000\048\000\000\000\
+\\001\000\039\000\049\000\000\000\
+\\072\000\015\000\022\000\016\000\021\000\017\000\020\000\018\000\019\000\000\000\
+\\073\000\000\000\
+\\075\000\017\000\020\000\018\000\019\000\000\000\
+\\076\000\017\000\020\000\018\000\019\000\000\000\
+\\077\000\000\000\
+\\078\000\000\000\
+\\079\000\000\000\
+\\080\000\000\000\
+\\081\000\000\000\
+\\082\000\015\000\022\000\016\000\021\000\017\000\020\000\018\000\019\000\000\000\
+\\083\000\000\000\
+\\084\000\002\000\016\000\003\000\015\000\008\000\014\000\016\000\013\000\
+\\042\000\012\000\043\000\011\000\044\000\010\000\000\000\
+\\084\000\042\000\012\000\043\000\011\000\044\000\010\000\000\000\
+\\085\000\000\000\
+\\086\000\000\000\
+\\087\000\000\000\
+\\088\000\000\000\
+\\089\000\000\000\
+\\090\000\000\000\
+\\091\000\000\000\
+\\092\000\002\000\047\000\000\000\
+\\093\000\000\000\
+\\094\000\005\000\064\000\000\000\
+\\095\000\000\000\
+\\096\000\015\000\022\000\016\000\021\000\017\000\020\000\018\000\019\000\000\000\
+\\097\000\015\000\022\000\016\000\021\000\017\000\020\000\018\000\019\000\000\000\
+\\098\000\015\000\022\000\016\000\021\000\017\000\020\000\018\000\019\000\000\000\
+\\099\000\015\000\022\000\016\000\021\000\017\000\020\000\018\000\019\000\000\000\
+\\103\000\000\000\
+\"
+val actionRowNumbers =
+"\033\000\014\000\037\000\036\000\
+\\035\000\034\000\030\000\022\000\
+\\002\000\004\000\005\000\033\000\
+\\033\000\023\000\001\000\033\000\
+\\032\000\033\000\033\000\033\000\
+\\033\000\017\000\050\000\007\000\
+\\011\000\029\000\012\000\015\000\
+\\027\000\026\000\025\000\024\000\
+\\003\000\033\000\002\000\042\000\
+\\028\000\020\000\039\000\038\000\
+\\021\000\042\000\046\000\019\000\
+\\013\000\008\000\033\000\002\000\
+\\016\000\033\000\009\000\002\000\
+\\031\000\041\000\040\000\047\000\
+\\033\000\002\000\044\000\048\000\
+\\018\000\043\000\006\000\033\000\
+\\010\000\049\000\002\000\044\000\
+\\045\000\000\000"
+val gotoT =
+"\
+\\001\000\007\000\002\000\069\000\003\000\006\000\004\000\005\000\
+\\005\000\004\000\009\000\003\000\010\000\002\000\012\000\001\000\000\000\
+>>>>>>> Stashed changes
 \\000\000\
 \\000\000\
 \\013\000\011\000\000\000\
 \\000\000\
 \\000\000\
+<<<<<<< Updated upstream
 \\001\000\026\000\009\000\002\000\014\000\001\000\000\000\
 \\001\000\027\000\009\000\002\000\014\000\001\000\000\000\
 \\001\000\028\000\009\000\002\000\014\000\001\000\000\000\
 \\001\000\029\000\009\000\002\000\014\000\001\000\000\000\
+=======
+\\003\000\016\000\004\000\005\000\005\000\004\000\009\000\003\000\
+\\010\000\002\000\000\000\
+>>>>>>> Stashed changes
 \\000\000\
 \\001\000\030\000\009\000\002\000\014\000\001\000\000\000\
 \\000\000\
+\\012\000\021\000\000\000\
+\\000\000\
+\\000\000\
+\\001\000\025\000\003\000\006\000\004\000\005\000\005\000\004\000\
+\\009\000\003\000\010\000\002\000\012\000\001\000\000\000\
+\\001\000\026\000\003\000\006\000\004\000\005\000\005\000\004\000\
+\\009\000\003\000\010\000\002\000\012\000\001\000\000\000\
+\\000\000\
+\\000\000\
+\\001\000\027\000\003\000\006\000\004\000\005\000\005\000\004\000\
+\\009\000\003\000\010\000\002\000\012\000\001\000\000\000\
+\\000\000\
+\\001\000\028\000\003\000\006\000\004\000\005\000\005\000\004\000\
+\\009\000\003\000\010\000\002\000\012\000\001\000\000\000\
+\\001\000\029\000\003\000\006\000\004\000\005\000\005\000\004\000\
+\\009\000\003\000\010\000\002\000\012\000\001\000\000\000\
+\\001\000\030\000\003\000\006\000\004\000\005\000\005\000\004\000\
+\\009\000\003\000\010\000\002\000\012\000\001\000\000\000\
+\\001\000\031\000\003\000\006\000\004\000\005\000\005\000\004\000\
+\\009\000\003\000\010\000\002\000\012\000\001\000\000\000\
 \\000\000\
 \\000\000\
 \\000\000\
+\\000\000\
+\\000\000\
+\\000\000\
+\\000\000\
+\\000\000\
+\\000\000\
+\\000\000\
+\\000\000\
+\\006\000\039\000\012\000\038\000\000\000\
+\\001\000\042\000\003\000\006\000\004\000\005\000\005\000\004\000\
+\\009\000\003\000\010\000\002\000\012\000\001\000\000\000\
+\\012\000\043\000\000\000\
+\\007\000\044\000\000\000\
+\\000\000\
+\\000\000\
+\\000\000\
+\\000\000\
+\\000\000\
+\\007\000\048\000\000\000\
+\\000\000\
+\\000\000\
+\\000\000\
+\\000\000\
+\\001\000\052\000\003\000\006\000\004\000\005\000\005\000\004\000\
+\\009\000\003\000\010\000\002\000\012\000\001\000\000\000\
+\\012\000\053\000\000\000\
+\\000\000\
+\\001\000\055\000\003\000\006\000\004\000\005\000\005\000\004\000\
+\\009\000\003\000\010\000\002\000\012\000\001\000\000\000\
+\\000\000\
+\\012\000\058\000\000\000\
+\\000\000\
+\\000\000\
+\\000\000\
+\\000\000\
+\\001\000\059\000\003\000\006\000\004\000\005\000\005\000\004\000\
+\\009\000\003\000\010\000\002\000\012\000\001\000\000\000\
+\\012\000\060\000\000\000\
+\\008\000\061\000\000\000\
+\\000\000\
+\\000\000\
+\\000\000\
+\\000\000\
+\\001\000\065\000\003\000\006\000\004\000\005\000\005\000\004\000\
+\\009\000\003\000\010\000\002\000\012\000\001\000\000\000\
+\\000\000\
+\\000\000\
+\\012\000\067\000\000\000\
+\\008\000\068\000\000\000\
 \\000\000\
 \\000\000\
 \\000\000\
@@ -164,8 +320,13 @@ val gotoT =
 \\000\000\
 \\000\000\
 \"
+<<<<<<< Updated upstream
 val numstates = 55
 val numrules = 46
+=======
+val numstates = 70
+val numrules = 32
+>>>>>>> Stashed changes
 val s = ref "" and index = ref 0
 val string_to_int = fn () => 
 let val i = !index
@@ -485,35 +646,78 @@ MlyValue.ntVOID (fn _ => ( let val  exp1 = exp1 ()
 end; ()))
  in ( LrTable.NT 14, ( result, exp1left, exp2right), rest671)
 end
+<<<<<<< Updated upstream
 |  ( 26, ( ( _, ( _, _, RBRACE1right)) :: ( _, ( MlyValue.ntVOID dec1,
  _, _)) :: ( _, ( _, LBRACE1left, _)) :: rest671)) => let val  result
  = MlyValue.ntVOID (fn _ => ( let val  dec1 = dec1 ()
+=======
+|  ( 9, ( ( _, ( MlyValue.ntVOID decs1, decs1left, decs1right)) :: 
+rest671)) => let val  result = MlyValue.ntVOID (fn _ => ( let val  
+decs1 = decs1 ()
  in ()
 end; ()))
- in ( LrTable.NT 2, ( result, LBRACE1left, RBRACE1right), rest671)
+ in ( LrTable.NT 0, ( result, decs1left, decs1right), rest671)
 end
+|  ( 10, ( ( _, ( MlyValue.ntVOID exp2, _, exp2right)) :: _ :: _ :: (
+ _, ( MlyValue.ntVOID exp1, _, _)) :: _ :: ( _, ( MlyValue.ntVOID 
+typeid1, typeid1left, _)) :: rest671)) => let val  result = 
+MlyValue.ntVOID (fn _ => ( let val  typeid1 = typeid1 ()
+ val  exp1 = exp1 ()
+ val  exp2 = exp2 ()
+ in ()
+end; ()))
+ in ( LrTable.NT 0, ( result, typeid1left, exp2right), rest671)
+end
+|  ( 11, ( ( _, ( MlyValue.ntVOID decs1, _, decs1right)) :: ( _, ( 
+MlyValue.ntVOID dec1, dec1left, _)) :: rest671)) => let val  result = 
+MlyValue.ntVOID (fn _ => ( let val  dec1 = dec1 ()
+ val  decs1 = decs1 ()
+>>>>>>> Stashed changes
+ in ()
+end; ()))
+ in ( LrTable.NT 2, ( result, dec1left, decs1right), rest671)
+end
+|  ( 12, ( rest671)) => let val  result = MlyValue.ntVOID (fn _ => ())
+ in ( LrTable.NT 2, ( result, defaultPos, defaultPos), rest671)
+end
+<<<<<<< Updated upstream
 |  ( 27, ( ( _, ( MlyValue.ntVOID tydec1, tydec1left, tydec1right)) ::
+=======
+|  ( 13, ( ( _, ( MlyValue.ntVOID tydec1, tydec1left, tydec1right)) ::
+>>>>>>> Stashed changes
  rest671)) => let val  result = MlyValue.ntVOID (fn _ => ( let val  
 tydec1 = tydec1 ()
  in ()
 end; ()))
  in ( LrTable.NT 3, ( result, tydec1left, tydec1right), rest671)
 end
+<<<<<<< Updated upstream
 |  ( 28, ( ( _, ( MlyValue.ntVOID vardec1, vardec1left, vardec1right))
+=======
+|  ( 14, ( ( _, ( MlyValue.ntVOID vardec1, vardec1left, vardec1right))
+>>>>>>> Stashed changes
  :: rest671)) => let val  result = MlyValue.ntVOID (fn _ => ( let val 
  vardec1 = vardec1 ()
  in ()
 end; ()))
  in ( LrTable.NT 3, ( result, vardec1left, vardec1right), rest671)
 end
+<<<<<<< Updated upstream
 |  ( 29, ( ( _, ( MlyValue.ntVOID fundec1, fundec1left, fundec1right))
+=======
+|  ( 15, ( ( _, ( MlyValue.ntVOID fundec1, fundec1left, fundec1right))
+>>>>>>> Stashed changes
  :: rest671)) => let val  result = MlyValue.ntVOID (fn _ => ( let val 
  fundec1 = fundec1 ()
  in ()
 end; ()))
  in ( LrTable.NT 3, ( result, fundec1left, fundec1right), rest671)
 end
+<<<<<<< Updated upstream
 |  ( 30, ( ( _, ( MlyValue.ntVOID ty1, _, ty1right)) :: _ :: ( _, ( 
+=======
+|  ( 16, ( ( _, ( MlyValue.ntVOID ty1, _, ty1right)) :: _ :: ( _, ( 
+>>>>>>> Stashed changes
 MlyValue.ntVOID typeid1, _, _)) :: ( _, ( _, TYPE1left, _)) :: rest671
 )) => let val  result = MlyValue.ntVOID (fn _ => ( let val  typeid1 = 
 typeid1 ()
@@ -522,14 +726,22 @@ typeid1 ()
 end; ()))
  in ( LrTable.NT 4, ( result, TYPE1left, ty1right), rest671)
 end
+<<<<<<< Updated upstream
 |  ( 31, ( ( _, ( MlyValue.ntVOID typeid1, typeid1left, typeid1right))
+=======
+|  ( 17, ( ( _, ( MlyValue.ntVOID typeid1, typeid1left, typeid1right))
+>>>>>>> Stashed changes
  :: rest671)) => let val  result = MlyValue.ntVOID (fn _ => ( let val 
  typeid1 = typeid1 ()
  in ()
 end; ()))
  in ( LrTable.NT 5, ( result, typeid1left, typeid1right), rest671)
 end
+<<<<<<< Updated upstream
 |  ( 32, ( ( _, ( _, _, RBRACE1right)) :: ( _, ( MlyValue.ntVOID 
+=======
+|  ( 18, ( ( _, ( _, _, RBRACE1right)) :: ( _, ( MlyValue.ntVOID 
+>>>>>>> Stashed changes
 tyfields1, _, _)) :: ( _, ( _, LBRACE1left, _)) :: rest671)) => let
  val  result = MlyValue.ntVOID (fn _ => ( let val  tyfields1 = 
 tyfields1 ()
@@ -537,17 +749,28 @@ tyfields1 ()
 end; ()))
  in ( LrTable.NT 5, ( result, LBRACE1left, RBRACE1right), rest671)
 end
+<<<<<<< Updated upstream
 |  ( 33, ( ( _, ( MlyValue.ntVOID typeid1, _, typeid1right)) :: _ :: (
+=======
+|  ( 19, ( ( _, ( MlyValue.ntVOID typeid1, _, typeid1right)) :: _ :: (
+>>>>>>> Stashed changes
  _, ( _, ARRAY1left, _)) :: rest671)) => let val  result = 
 MlyValue.ntVOID (fn _ => ( let val  typeid1 = typeid1 ()
  in ()
 end; ()))
  in ( LrTable.NT 5, ( result, ARRAY1left, typeid1right), rest671)
 end
+<<<<<<< Updated upstream
 |  ( 34, ( rest671)) => let val  result = MlyValue.ntVOID (fn _ => ())
  in ( LrTable.NT 6, ( result, defaultPos, defaultPos), rest671)
 end
 |  ( 35, ( ( _, ( MlyValue.ntVOID tyfieldscont1, _, tyfieldscont1right
+=======
+|  ( 20, ( rest671)) => let val  result = MlyValue.ntVOID (fn _ => ())
+ in ( LrTable.NT 6, ( result, defaultPos, defaultPos), rest671)
+end
+|  ( 21, ( ( _, ( MlyValue.ntVOID tyfieldscont1, _, tyfieldscont1right
+>>>>>>> Stashed changes
 )) :: ( _, ( MlyValue.ntVOID typeid1, _, _)) :: _ :: ( _, ( 
 MlyValue.ID ID1, ID1left, _)) :: rest671)) => let val  result = 
 MlyValue.ntVOID (fn _ => ( let val  ID1 = ID1 ()
@@ -558,10 +781,17 @@ end; ()))
  in ( LrTable.NT 6, ( result, ID1left, tyfieldscont1right), rest671)
 
 end
+<<<<<<< Updated upstream
 |  ( 36, ( rest671)) => let val  result = MlyValue.ntVOID (fn _ => ())
  in ( LrTable.NT 7, ( result, defaultPos, defaultPos), rest671)
 end
 |  ( 37, ( ( _, ( MlyValue.ntVOID tyfieldscont1, _, tyfieldscont1right
+=======
+|  ( 22, ( rest671)) => let val  result = MlyValue.ntVOID (fn _ => ())
+ in ( LrTable.NT 7, ( result, defaultPos, defaultPos), rest671)
+end
+|  ( 23, ( ( _, ( MlyValue.ntVOID tyfieldscont1, _, tyfieldscont1right
+>>>>>>> Stashed changes
 )) :: ( _, ( MlyValue.ntVOID typeid1, _, _)) :: _ :: ( _, ( 
 MlyValue.ID ID1, _, _)) :: ( _, ( _, COMMA1left, _)) :: rest671)) =>
  let val  result = MlyValue.ntVOID (fn _ => ( let val  ID1 = ID1 ()
@@ -572,7 +802,11 @@ end; ()))
  in ( LrTable.NT 7, ( result, COMMA1left, tyfieldscont1right), rest671
 )
 end
+<<<<<<< Updated upstream
 |  ( 38, ( ( _, ( MlyValue.ntVOID exp1, _, exp1right)) :: _ :: ( _, ( 
+=======
+|  ( 24, ( ( _, ( MlyValue.ntVOID exp1, _, exp1right)) :: _ :: ( _, ( 
+>>>>>>> Stashed changes
 MlyValue.ID ID1, _, _)) :: ( _, ( _, VAR1left, _)) :: rest671)) => let
  val  result = MlyValue.ntVOID (fn _ => ( let val  ID1 = ID1 ()
  val  exp1 = exp1 ()
@@ -580,7 +814,11 @@ MlyValue.ID ID1, _, _)) :: ( _, ( _, VAR1left, _)) :: rest671)) => let
 end; ()))
  in ( LrTable.NT 8, ( result, VAR1left, exp1right), rest671)
 end
+<<<<<<< Updated upstream
 |  ( 39, ( ( _, ( MlyValue.ntVOID exp1, _, exp1right)) :: _ :: ( _, ( 
+=======
+|  ( 25, ( ( _, ( MlyValue.ntVOID exp1, _, exp1right)) :: _ :: ( _, ( 
+>>>>>>> Stashed changes
 MlyValue.ntVOID typeid1, _, _)) :: _ :: ( _, ( MlyValue.ID ID1, _, _))
  :: ( _, ( _, VAR1left, _)) :: rest671)) => let val  result = 
 MlyValue.ntVOID (fn _ => ( let val  ID1 = ID1 ()
@@ -590,7 +828,11 @@ MlyValue.ntVOID (fn _ => ( let val  ID1 = ID1 ()
 end; ()))
  in ( LrTable.NT 8, ( result, VAR1left, exp1right), rest671)
 end
+<<<<<<< Updated upstream
 |  ( 40, ( ( _, ( MlyValue.ntVOID exp1, _, exp1right)) :: _ :: _ :: (
+=======
+|  ( 26, ( ( _, ( MlyValue.ntVOID exp1, _, exp1right)) :: _ :: _ :: (
+>>>>>>> Stashed changes
  _, ( MlyValue.ntVOID tyfields1, _, _)) :: _ :: ( _, ( MlyValue.ID ID1
 , _, _)) :: ( _, ( _, FUNCTION1left, _)) :: rest671)) => let val  
 result = MlyValue.ntVOID (fn _ => ( let val  ID1 = ID1 ()
@@ -600,7 +842,11 @@ result = MlyValue.ntVOID (fn _ => ( let val  ID1 = ID1 ()
 end; ()))
  in ( LrTable.NT 9, ( result, FUNCTION1left, exp1right), rest671)
 end
+<<<<<<< Updated upstream
 |  ( 41, ( ( _, ( MlyValue.ntVOID exp1, _, exp1right)) :: _ :: ( _, ( 
+=======
+|  ( 27, ( ( _, ( MlyValue.ntVOID exp1, _, exp1right)) :: _ :: ( _, ( 
+>>>>>>> Stashed changes
 MlyValue.ntVOID typeid1, _, _)) :: _ :: _ :: ( _, ( MlyValue.ntVOID 
 tyfields1, _, _)) :: _ :: ( _, ( MlyValue.ID ID1, _, _)) :: ( _, ( _, 
 FUNCTION1left, _)) :: rest671)) => let val  result = MlyValue.ntVOID
@@ -612,13 +858,21 @@ FUNCTION1left, _)) :: rest671)) => let val  result = MlyValue.ntVOID
 end; ()))
  in ( LrTable.NT 9, ( result, FUNCTION1left, exp1right), rest671)
 end
+<<<<<<< Updated upstream
 |  ( 42, ( ( _, ( MlyValue.ID ID1, ID1left, ID1right)) :: rest671)) =>
+=======
+|  ( 28, ( ( _, ( MlyValue.ID ID1, ID1left, ID1right)) :: rest671)) =>
+>>>>>>> Stashed changes
  let val  result = MlyValue.ntVOID (fn _ => ( let val  ID1 = ID1 ()
  in ()
 end; ()))
  in ( LrTable.NT 10, ( result, ID1left, ID1right), rest671)
 end
+<<<<<<< Updated upstream
 |  ( 43, ( ( _, ( MlyValue.ID ID1, _, ID1right)) :: _ :: ( _, ( 
+=======
+|  ( 29, ( ( _, ( MlyValue.ID ID1, _, ID1right)) :: _ :: ( _, ( 
+>>>>>>> Stashed changes
 MlyValue.ntVOID lvalue1, lvalue1left, _)) :: rest671)) => let val  
 result = MlyValue.ntVOID (fn _ => ( let val  lvalue1 = lvalue1 ()
  val  ID1 = ID1 ()
@@ -626,7 +880,11 @@ result = MlyValue.ntVOID (fn _ => ( let val  lvalue1 = lvalue1 ()
 end; ()))
  in ( LrTable.NT 10, ( result, lvalue1left, ID1right), rest671)
 end
+<<<<<<< Updated upstream
 |  ( 44, ( ( _, ( _, _, RBRACK1right)) :: ( _, ( MlyValue.ntVOID exp1,
+=======
+|  ( 30, ( ( _, ( _, _, RBRACK1right)) :: ( _, ( MlyValue.ntVOID exp1,
+>>>>>>> Stashed changes
  _, _)) :: _ :: ( _, ( MlyValue.ntVOID lvalue1, lvalue1left, _)) :: 
 rest671)) => let val  result = MlyValue.ntVOID (fn _ => ( let val  
 lvalue1 = lvalue1 ()
@@ -636,7 +894,11 @@ end; ()))
  in ( LrTable.NT 10, ( result, lvalue1left, RBRACK1right), rest671)
 
 end
+<<<<<<< Updated upstream
 |  ( 45, ( ( _, ( MlyValue.ID ID1, ID1left, ID1right)) :: rest671)) =>
+=======
+|  ( 31, ( ( _, ( MlyValue.ID ID1, ID1left, ID1right)) :: rest671)) =>
+>>>>>>> Stashed changes
  let val  result = MlyValue.ntVOID (fn _ => ( let val  ID1 = ID1 ()
  in ()
 end; ()))

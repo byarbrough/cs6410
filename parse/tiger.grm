@@ -52,6 +52,8 @@ exp:  ()
     | exp op exp ()
     | LPAREN exp RPAREN ()
     | MINUS exp %prec UMINUS ()
+    | decs ()
+    | typeid LBRACK exp RBRACK OF exp ()
     
 op:   AND ()
     | OR ()
@@ -76,7 +78,8 @@ work: exp ()
 
 
 (* Defintions *)
-decs : LBRACE dec RBRACE ()
+decs : dec decs ()
+     | () 
 dec : tydec ()
     | vardec ()
     | fundec ()
