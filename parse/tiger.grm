@@ -11,7 +11,7 @@
   | BREAK | NIL
   | FUNCTION | VAR | TYPE | UMINUS
 
-%nonterm  exp | program | decs | dec | tydec | ty | tyfields | tyfieldscont | vardec | fundec | lvalue | typeid | op | cond | work
+%nonterm  exp | program | decs | dec | tydec | ty | tyfields | tyfieldscont | vardec | fundec | lvalue | typeid | op | cond | work | array | seqexpcont | seqexp | lets | literal | funcall | argseq | argseqcont | assignment | record | recarg
 
 %pos int
 %verbose
@@ -19,6 +19,7 @@
 %eop EOF
 %noshift EOF
 
+%nonassoc ASSIGN
 %nonassoc AND OR
 %nonassoc GE GT LE LT NEQ EQ
 %left PLUS MINUS
@@ -46,14 +47,29 @@ program	: exp				()
 
 	
 exp:  ()
-    | INT ()
-    | vardec ()
-    | cond ()
+    | literal ()
+    | LPAREN seqexp RPAREN ()
     | exp op exp ()
-    | LPAREN exp RPAREN ()
     | MINUS exp %prec UMINUS ()
     | decs ()
-    | typeid LBRACK exp RBRACK OF exp ()
+    | array ()
+    | vardec ()
+    | cond ()
+    | lets ()
+    | lvalue ()
+    | funcall ()
+    | assignment ()
+    | record ()
+
+literal: NIL ()
+    | INT ()
+    | STRING ()
+
+seqexp: ()
+    | exp seqexpcont ()
+
+seqexpcont: ()
+    | SEMICOLON exp seqexpcont ()
     
 op:   AND ()
     | OR ()
@@ -76,6 +92,24 @@ cond: IF exp THEN exp ELSE exp ()
 work: exp ()
     | exp BREAK exp ()
 
+array: typeid LBRACK exp RBRACK OF exp ()
+
+lets: LET decs IN seqexp END ()
+
+funcall: ID LPAREN argseq RPAREN ()
+
+argseq: ()
+    | exp argseqcont ()
+
+argseqcont: ()
+    | COMMA exp argseqcont ()
+
+assignment: lvalue ASSIGN exp ()
+
+record: typeid LBRACE ID EQ exp recarg RBRACE ()
+
+recarg: ()
+    | COMMA ID EQ exp recarg ()
 
 (* Defintions *)
 decs : dec decs ()
