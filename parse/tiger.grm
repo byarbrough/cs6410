@@ -11,7 +11,7 @@
   | BREAK | NIL
   | FUNCTION | VAR | TYPE | UMINUS
 
-%nonterm  exp | program | decs | dec | tydec | ty | tyfields | tyfieldscont | vardec | fundec | lvalue | typeid | op | cond | work | array | seqexpcont | seqexp | lets | literal | funcall | argseq | argseqcont | assignment | record | recarg
+%nonterm  exp | program | decs | dec | tydec | ty | tyfields | tyfieldscont | vardec | fundec | lvalue | typeid | op | cond  | array | seqexpcont | seqexp | lets | literal | funcall | argseq | argseqcont | assignment | record | recarg
 
 %pos int
 %verbose
@@ -43,34 +43,29 @@
  *  to replace the two dummy productions below with an actual grammar. 
  *)
 
-program	: exp				()
 
-	
-exp:  ()
-    | literal ()
+
+
+
+program	: exp				()
+exp: literal ()
     | LPAREN seqexp RPAREN ()
     | exp op exp ()
     | MINUS exp %prec UMINUS ()
-    | decs ()
     | array ()
-    | vardec ()
     | cond ()
     | lets ()
     | lvalue ()
     | funcall ()
     | assignment ()
     | record ()
-
 literal: NIL ()
     | INT ()
     | STRING ()
-
 seqexp: ()
-    | exp seqexpcont ()
-
+      | exp seqexpcont ()
 seqexpcont: ()
     | SEMICOLON exp seqexpcont ()
-    
 op:   AND ()
     | OR ()
     | GE ()
@@ -83,65 +78,42 @@ op:   AND ()
     | MINUS ()
     | TIMES ()
     | DIVIDE ()
-
 cond: IF exp THEN exp ELSE exp ()
     | IF exp THEN exp ()
-    | WHILE exp DO work ()
-    | FOR ID ASSIGN exp TO exp DO work ()
-
-work: exp ()
-    | exp BREAK exp ()
-
+    | WHILE exp DO exp ()
+    | FOR ID ASSIGN exp TO exp DO exp ()
 array: typeid LBRACK exp RBRACK OF exp ()
-
 lets: LET decs IN seqexp END ()
-
 funcall: ID LPAREN argseq RPAREN ()
-
 argseq: ()
     | exp argseqcont ()
-
 argseqcont: ()
     | COMMA exp argseqcont ()
-
 assignment: lvalue ASSIGN exp ()
-
 record: typeid LBRACE ID EQ exp recarg RBRACE ()
-
 recarg: ()
-    | COMMA ID EQ exp recarg ()
-
-(* Defintions *)
+    | COMMA ID EQ exp recarg ()(* Defintions *)
 decs : dec decs ()
      | () 
 dec : tydec ()
     | vardec ()
-    | fundec ()
-	  
+    | fundec () 
 tydec : TYPE typeid EQ ty ()
-
 ty : typeid ()
    | LBRACE tyfields RBRACE ()
    | ARRAY OF typeid ()
-
 tyfields : ()
-         | ID COLON typeid tyfieldscont ()
-            
+         | ID COLON typeid tyfieldscont ()           
 tyfieldscont : () 
              | COMMA ID COLON typeid tyfieldscont ()
-
 vardec : VAR ID ASSIGN exp ()
        | VAR ID COLON typeid ASSIGN exp ()
-
 fundec : FUNCTION ID LPAREN tyfields RPAREN EQ exp ()
        | FUNCTION ID LPAREN tyfields RPAREN COLON typeid EQ exp ()
-
 lvalue : ID ()
        | lvalue DOT ID ()
        | lvalue LBRACK exp RBRACK ()
-
 typeid : ID ()
-
 (* End of Definitions *)
 
 
