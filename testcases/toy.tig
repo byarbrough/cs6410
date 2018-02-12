@@ -1,7 +1,1 @@
-let
-var row := intArray.eat [ N ]
-var col := intArray.eat [ N ]
-var diag1 := intArray [N+N-1] of ()
-var diag2 := intArray [N+N-1]
-in () 
-end
+nil | nil | nil
