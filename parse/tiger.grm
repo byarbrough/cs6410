@@ -9,9 +9,9 @@
   | AND | OR | ASSIGN
   | ARRAY | IF | THEN | ELSE | WHILE | FOR | TO | DO | LET | IN | END | OF 
   | BREAK | NIL
-  | FUNCTION | VAR | TYPE | UMINUS
+  | FUNCTION | VAR | TYPE | UMINUS | DECPREC
 
-%nonterm  exp | program | decs | dec | tydec | ty | tyfields | tyfieldscont | vardec | fundec | lvalue | typeid | op | cond  | array | seqexpcont | seqexp | lets | literal | funcall | argseq | argseqcont | assignment | record | recarg
+%nonterm  exp | program | decs | dec | tydec | ty | tyfields | tyfieldscont | vardec | fundec | lvalue | opexp | cond  | array | seqexpcont | seqexp | lets | literal | funcall | argseq | argseqcont | assignment | record | recarg | lvalueCont
 
 %pos int
 %verbose
@@ -19,8 +19,11 @@
 %eop EOF
 %noshift EOF
 
+%nonassoc DECPREC
 %nonassoc ASSIGN
-%nonassoc AND OR
+%right      ELSE
+%left OR
+%left AND 
 %nonassoc GE GT LE LT NEQ EQ
 %left PLUS MINUS
 %left TIMES DIVIDE
@@ -45,75 +48,74 @@
 
 
 
-
-
 program	: exp				()
 exp: literal ()
-    | LPAREN seqexp RPAREN ()
-    | exp op exp ()
-    | MINUS exp %prec UMINUS ()
-    | array ()
-    | cond ()
-    | lets ()
-    | lvalue ()
-    | funcall ()
-    | assignment ()
-    | record ()
+   | LPAREN seqexp RPAREN ()
+   | opexp ()
+   | MINUS exp %prec UMINUS ()
+   | array ()
+   | cond ()
+   | lets ()
+   | lvalue ()
+   | funcall ()
+   | assignment ()
+   | record ()
 literal: NIL ()
-    | INT ()
-    | STRING ()
-seqexp: ()
-      | exp seqexpcont ()
+       | INT ()
+       | STRING ()
+       | BREAK ()
+seqexp:  ()
+      |  exp seqexpcont ()
 seqexpcont: ()
     | SEMICOLON exp seqexpcont ()
-op:   AND ()
-    | OR ()
-    | GE ()
-    | GT ()
-    | LE ()
-    | LT ()
-    | NEQ ()
-    | EQ ()
-    | PLUS ()
-    | MINUS ()
-    | TIMES ()
-    | DIVIDE ()
+opexp: exp AND exp ()
+     | exp OR exp ()
+     | exp GE exp ()
+     | exp GT exp ()
+     | exp LE exp ()
+     | exp LT exp ()
+     | exp NEQ exp ()
+     | exp EQ exp ()
+     | exp PLUS exp ()
+     | exp MINUS exp ()
+     | exp TIMES exp ()
+     | exp DIVIDE exp ()
 cond: IF exp THEN exp ELSE exp ()
     | IF exp THEN exp ()
     | WHILE exp DO exp ()
     | FOR ID ASSIGN exp TO exp DO exp ()
-array: typeid LBRACK exp RBRACK OF exp ()
+array: ID LBRACK exp RBRACK OF exp ()
 lets: LET decs IN seqexp END ()
 funcall: ID LPAREN argseq RPAREN ()
 argseq: ()
-    | exp argseqcont ()
+      | exp argseqcont ()
 argseqcont: ()
-    | COMMA exp argseqcont ()
+          | COMMA exp argseqcont ()
 assignment: lvalue ASSIGN exp ()
-record: typeid LBRACE ID EQ exp recarg RBRACE ()
+record: ID LBRACE ID EQ exp recarg RBRACE ()
 recarg: ()
-    | COMMA ID EQ exp recarg ()(* Defintions *)
+      | COMMA ID EQ exp recarg ()(* Defintions *)
 decs : dec decs ()
      | () 
-dec : tydec ()
+dec : tydec %prec DECPREC ()
     | vardec ()
-    | fundec () 
-tydec : TYPE typeid EQ ty ()
-ty : typeid ()
+    | fundec %prec DECPREC () 
+tydec : TYPE ID EQ ty ()
+ty : ID ()
    | LBRACE tyfields RBRACE ()
-   | ARRAY OF typeid ()
+   | ARRAY OF ID ()
 tyfields : ()
-         | ID COLON typeid tyfieldscont ()           
+         | ID COLON ID tyfieldscont ()           
 tyfieldscont : () 
-             | COMMA ID COLON typeid tyfieldscont ()
+             | COMMA ID COLON ID tyfieldscont ()
 vardec : VAR ID ASSIGN exp ()
-       | VAR ID COLON typeid ASSIGN exp ()
+       | VAR ID COLON ID ASSIGN exp ()
 fundec : FUNCTION ID LPAREN tyfields RPAREN EQ exp ()
-       | FUNCTION ID LPAREN tyfields RPAREN COLON typeid EQ exp ()
-lvalue : ID ()
-       | lvalue DOT ID ()
-       | lvalue LBRACK exp RBRACK ()
-typeid : ID ()
+       | FUNCTION ID LPAREN tyfields RPAREN COLON ID EQ exp ()
+lvalue : ID lvalueCont ()
+lvalueCont : ()
+           | DOT ID lvalueCont ()
+           | LBRACK exp RBRACK lvalueCont ()
 (* End of Definitions *)
 
 
