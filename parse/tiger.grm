@@ -36,7 +36,6 @@ open Symbol
 		| assignment of Absyn.AssignExp
 		| record of Absyn.RecordExp
 		| recarg of (symbol * exp * pos) list
-		| lvalueCont of ????? (NOT SURE)
 
 %pos int
 %verbose
@@ -167,11 +166,10 @@ fundec : FUNCTION ID LPAREN tyfields RPAREN EQ exp (Absyn.FunctionDec(
 				  result= SOME(symbol ID2, ID2left), 
 				  body= exp, pos=FUNCTIONleft }))
 
-lvalue : ID lvalueCont ()
-
-lvalueCont : ()
-           | DOT ID lvalueCont ()
-           | LBRACK exp RBRACK lvalueCont ()
+lvalue : ID ()
+       | ID LBRACK exp RBRACK ()
+       | lvalue DOT ID ()
+       | lvalue LBRACK exp RBRACK ()
 
 (* End of Definitions *)
 
