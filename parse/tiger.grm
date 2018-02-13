@@ -21,7 +21,7 @@ open Symbol
 		| tyfields of Absyn.field list 
 		| tyfieldscont of Absyn.field list 
 		| vardec of Absyn.dec
-		| fundec of Absyn.dec
+		| fundec of Absyn.fundec
 		| lvalue of Absyn.var
 		| opexp of Absyn.exp
 		| cond  of Absyn.exp
@@ -157,7 +157,7 @@ decs : dec decs (dec :: decs)
 
 dec : tydec (tydec)
     | vardec (vardec)
-    | fundec (fundec) 
+    | fundec (Absyn.FunctionDec([fundec]))
 
 tydec : TYPE ID EQ ty (Absyn.TypeDec({name= symbol ID, ty=ty, pos=TYPEleft} :: []))
 
@@ -185,10 +185,13 @@ vardec : VAR ID ASSIGN exp (Absyn.VarDec(
           typ = SOME (symbol ID2, ID2left),
 				  init=exp, pos= VARleft }))
 
-fundec : FUNCTION ID LPAREN tyfields RPAREN EQ exp (Absyn.FunctionDec(
-				[]))
-       | FUNCTION ID LPAREN tyfields RPAREN COLON ID EQ exp (Absyn.FunctionDec(
-				[]))
+fundec : FUNCTION ID LPAREN tyfields RPAREN EQ exp (
+				{ name= symbol ID, params= tyfields, 
+				  result= NONE, body= exp, pos=FUNCTIONleft })
+       | FUNCTION ID LPAREN tyfields RPAREN COLON ID EQ exp (
+				{ name= symbol ID1, params= tyfields, 
+				  result= SOME(symbol ID2, ID2left), 
+				  body= exp, pos=FUNCTIONleft })
 
 lvalue : ID (Absyn.SimpleVar(symbol ID, IDleft))
        | ID LBRACK exp RBRACK (Absyn.SubscriptVar( Absyn.SimpleVar(symbol ID, IDleft), exp, IDleft))

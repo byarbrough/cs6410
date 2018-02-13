@@ -558,7 +558,7 @@ datatype svalue = VOID | ntVOID of unit ->  unit
  | seqexpcont of unit ->  ( ( Absyn.exp * pos )  list)
  | array of unit ->  (Absyn.exp) | cond of unit ->  (Absyn.exp)
  | opexp of unit ->  (Absyn.exp) | lvalue of unit ->  (Absyn.var)
- | fundec of unit ->  (Absyn.dec) | vardec of unit ->  (Absyn.dec)
+ | fundec of unit ->  (Absyn.fundec) | vardec of unit ->  (Absyn.dec)
  | tyfieldscont of unit ->  (Absyn.field list)
  | tyfields of unit ->  (Absyn.field list) | ty of unit ->  (Absyn.ty)
  | tydec of unit ->  (Absyn.dec) | dec of unit ->  (Absyn.dec)
@@ -1122,7 +1122,7 @@ end
 |  ( 51, ( ( _, ( MlyValue.fundec fundec1, fundec1left, fundec1right))
  :: rest671)) => let val  result = MlyValue.dec (fn _ => let val  (
 fundec as fundec1) = fundec1 ()
- in (fundec)
+ in (Absyn.FunctionDec([fundec]))
 end)
  in ( LrTable.NT 3, ( result, fundec1left, fundec1right), rest671)
 end
@@ -1228,25 +1228,33 @@ end)
 end
 |  ( 62, ( ( _, ( MlyValue.exp exp1, _, exp1right)) :: _ :: _ :: ( _, 
 ( MlyValue.tyfields tyfields1, _, _)) :: _ :: ( _, ( MlyValue.ID ID1,
- _, _)) :: ( _, ( _, FUNCTION1left, _)) :: rest671)) => let val  
-result = MlyValue.fundec (fn _ => let val  ID1 = ID1 ()
- val  tyfields1 = tyfields1 ()
- val  exp1 = exp1 ()
- in (Absyn.FunctionDec(
-				[]))
+ _, _)) :: ( _, ( _, (FUNCTIONleft as FUNCTION1left), _)) :: rest671))
+ => let val  result = MlyValue.fundec (fn _ => let val  (ID as ID1) = 
+ID1 ()
+ val  (tyfields as tyfields1) = tyfields1 ()
+ val  (exp as exp1) = exp1 ()
+ in (
+
+				{ name= symbol ID, params= tyfields, 
+				  result= NONE, body= exp, pos=FUNCTIONleft }
+)
 end)
  in ( LrTable.NT 9, ( result, FUNCTION1left, exp1right), rest671)
 end
 |  ( 63, ( ( _, ( MlyValue.exp exp1, _, exp1right)) :: _ :: ( _, ( 
-MlyValue.ID ID2, _, _)) :: _ :: _ :: ( _, ( MlyValue.tyfields 
-tyfields1, _, _)) :: _ :: ( _, ( MlyValue.ID ID1, _, _)) :: ( _, ( _, 
-FUNCTION1left, _)) :: rest671)) => let val  result = MlyValue.fundec
- (fn _ => let val  ID1 = ID1 ()
- val  tyfields1 = tyfields1 ()
+MlyValue.ID ID2, ID2left, _)) :: _ :: _ :: ( _, ( MlyValue.tyfields 
+tyfields1, _, _)) :: _ :: ( _, ( MlyValue.ID ID1, _, _)) :: ( _, ( _,
+ (FUNCTIONleft as FUNCTION1left), _)) :: rest671)) => let val  result
+ = MlyValue.fundec (fn _ => let val  ID1 = ID1 ()
+ val  (tyfields as tyfields1) = tyfields1 ()
  val  ID2 = ID2 ()
- val  exp1 = exp1 ()
- in (Absyn.FunctionDec(
-				[]))
+ val  (exp as exp1) = exp1 ()
+ in (
+
+				{ name= symbol ID1, params= tyfields, 
+				  result= SOME(symbol ID2, ID2left), 
+				  body= exp, pos=FUNCTIONleft }
+)
 end)
  in ( LrTable.NT 9, ( result, FUNCTION1left, exp1right), rest671)
 end
