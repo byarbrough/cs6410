@@ -15,6 +15,7 @@ if a then { if b then s1 else s2 }.
 
 Binding ELSE more tightly than THEN accomplishes this.
 
+The ASSIGN, THEN, DO, and OF prcedence rules make it so that Assignments are given least priority in the case of exps that have ambigious parsing (like the OpExps). The precedence makes it so that the largest expression is used when in the body of a loop, with a IF statement, or with assignment. 
 
 The most signifigant challenge we faced was with the the conflict between the two rules 
 
@@ -24,4 +25,4 @@ and
 
 array: ID LBRACK exp RBRACK OF exp.
 
-In order to fix it, we added a second rule to lvalue, identical to the first, but with different instructions to the abstract syntax tree. This allowes the parser to wait until more information is available before deciding what to do.
+In order to fix it, we added a rule to lvalue, identical to the first. The language that the rule accepts is a subset another lvalue rule ( lvalue LBRACK exp RBRACK ), but it allows the parser to wait until more information is available before deciding if should shift (for the array) or reduce (for an lvalue). Without this rule it has to choose to shift (array) or reduce (lvalue) when it parses the ID. 

@@ -43,7 +43,8 @@ open Symbol
 %eop EOF
 %noshift EOF
 
-%nonassoc ASSIGN THEN DO OF
+%nonassoc ASSIGN 
+%nonassoc THEN DO OF
 %right      ELSE
 %left OR
 %left AND 
