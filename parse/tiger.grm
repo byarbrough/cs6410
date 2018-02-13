@@ -84,7 +84,7 @@ literal: NIL (Absyn.NilExp)
        | INT (Absyn.IntExp(INT))
        | STRING (Absyn.StringExp(STRING, STRINGleft))
        | BREAK (Absyn.BreakExp(BREAKleft))
- 
+
 seqexp:  (Absyn.SeqExp([]))
       |  exp seqexpcont (Absyn.SeqExp((exp, expleft):: seqexpcont))
 
@@ -151,6 +151,11 @@ record: ID LBRACE ID EQ exp recarg RBRACE (Absyn.RecordExp(
 recarg: ([])
       | COMMA ID EQ exp recarg ((symbol ID, exp, IDleft) :: recarg)
 
+lvalue : ID (Absyn.SimpleVar(symbol ID, IDleft))
+       | ID LBRACK exp RBRACK (Absyn.SubscriptVar( Absyn.SimpleVar(symbol ID, IDleft), exp, IDleft))
+       | lvalue DOT ID (Absyn.FieldVar(lvalue, symbol ID, lvalueleft))
+       | lvalue LBRACK exp RBRACK (Absyn.SubscriptVar(lvalue, exp, lvalueleft))
+
 (* Defintions *)
 
 decs : dec decs (dec :: decs)
@@ -193,11 +198,6 @@ fundec : FUNCTION ID LPAREN tyfields RPAREN EQ exp (
 				{ name= symbol ID1, params= tyfields, 
 				  result= SOME(symbol ID2, ID2left), 
 				  body= exp, pos=FUNCTIONleft })
-
-lvalue : ID (Absyn.SimpleVar(symbol ID, IDleft))
-       | ID LBRACK exp RBRACK (Absyn.SubscriptVar( Absyn.SimpleVar(symbol ID, IDleft), exp, IDleft))
-       | lvalue DOT ID (Absyn.FieldVar(lvalue, symbol ID, lvalueleft))
-       | lvalue LBRACK exp RBRACK (Absyn.SubscriptVar(lvalue, exp, lvalueleft))
 
 (* End of Definitions *)
 
