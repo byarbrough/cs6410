@@ -1,3 +1,4 @@
+open Symbol
 %%
 %term
     EOF 
@@ -11,7 +12,31 @@
   | BREAK | NIL
   | FUNCTION | VAR | TYPE | UMINUS
 
-%nonterm  exp | program | decs | dec | tydec | ty | tyfields | tyfieldscont | vardec | fundec | lvalue | opexp | cond  | array | seqexpcont | seqexp | lets | literal | funcall | argseq | argseqcont | assignment | record | recarg | lvalueCont
+%nonterm  exp 
+		| program 
+		| decs 
+		| dec 
+		| tydec of Absyn.dec 
+		| ty of Absyn.ty 
+		| tyfields of Absyn.field list 
+		| tyfieldscont of Absyn.field list 
+		| vardec 
+		| fundec 
+		| lvalue 
+		| opexp 
+		| cond  
+		| array 
+		| seqexpcont 
+		| seqexp 
+		| lets 
+		| literal of Absyn.exp 
+		| funcall 
+		| argseq 
+		| argseqcont 
+		| assignment 
+		| record 
+		| recarg 
+		| lvalueCont
 
 %pos int
 %verbose
@@ -40,13 +65,8 @@
 
 %%
 
-(* This is a skeleton grammar file, meant to illustrate what kind of
- * declarations are necessary above the %% mark.  Students are expected
- *  to replace the two dummy productions below with an actual grammar. 
- *)
-
-
 program	: exp				()
+
 exp: literal ()
    | LPAREN seqexp RPAREN ()
    | opexp ()
@@ -58,14 +78,18 @@ exp: literal ()
    | funcall ()
    | assignment ()
    | record ()
-literal: NIL ()
-       | INT ()
-       | STRING ()
-       | BREAK ()
+
+literal: NIL (Absyn.NilExp)
+       | INT (Absyn.IntExp(INT))
+       | STRING (Absyn.StringExp(STRING, STRINGleft))
+       | BREAK (Absyn.BreakExp(BREAKleft))
+
 seqexp:  ()
       |  exp seqexpcont ()
+
 seqexpcont: ()
     | SEMICOLON exp seqexpcont ()
+
 opexp: exp AND exp ()
      | exp OR exp ()
      | exp GE exp ()
@@ -78,42 +102,67 @@ opexp: exp AND exp ()
      | exp MINUS exp ()
      | exp TIMES exp ()
      | exp DIVIDE exp ()
+
 cond: IF exp THEN exp ELSE exp ()
     | IF exp THEN exp ()
     | WHILE exp DO exp ()
     | FOR ID ASSIGN exp TO exp DO exp ()
+
 array: ID LBRACK exp RBRACK OF exp ()
+
 lets: LET decs IN seqexp END ()
+
 funcall: ID LPAREN argseq RPAREN ()
+
 argseq: ()
       | exp argseqcont ()
+
 argseqcont: ()
           | COMMA exp argseqcont ()
+
 assignment: lvalue ASSIGN exp ()
+
 record: ID LBRACE ID EQ exp recarg RBRACE ()
+
 recarg: ()
       | COMMA ID EQ exp recarg ()(* Defintions *)
+
 decs : dec decs ()
      | () 
-dec : tydec ()
-    | vardec ()
-    | fundec () 
-tydec : TYPE ID EQ ty ()
-ty : ID ()
-   | LBRACE tyfields RBRACE ()
-   | ARRAY OF ID ()
-tyfields : ()
-         | ID COLON ID tyfieldscont ()           
-tyfieldscont : () 
-             | COMMA ID COLON ID tyfieldscont ()
+
+dec : tydec (tydec)
+    | vardec (vardec)
+    | fundec (fundec) 
+
+tydec : TYPE ID EQ ty (Absyn.TypeDec({name= symbol ID, ty=ty, pos=TYPEleft} :: []))
+
+ty : ID (Absyn.NameTy(symbol ID, IDleft))
+   | LBRACE tyfields RBRACE (Absyn.RecordTy( tyfields))
+   | ARRAY OF ID (Absyn.ArrayTy( symbol ID, IDleft))
+
+tyfields : ([])
+         | ID COLON ID tyfieldscont (
+         	{ name= symbol ID1, escape= ref false,
+         	  typ= symbol ID2, pos= ID1left } :: tyfieldscont )           
+
+tyfieldscont : ([]) 
+             | COMMA ID COLON ID tyfieldscont (
+             	{ name= symbol ID1, escape= ref false,
+         		 typ= symbol ID2, pos= ID1left } 
+     		 	:: tyfieldscont)
+
 vardec : VAR ID ASSIGN exp ()
        | VAR ID COLON ID ASSIGN exp ()
+
 fundec : FUNCTION ID LPAREN tyfields RPAREN EQ exp ()
        | FUNCTION ID LPAREN tyfields RPAREN COLON ID EQ exp ()
+
 lvalue : ID lvalueCont ()
+
 lvalueCont : ()
            | DOT ID lvalueCont ()
            | LBRACK exp RBRACK lvalueCont ()
+
 (* End of Definitions *)
 
 
