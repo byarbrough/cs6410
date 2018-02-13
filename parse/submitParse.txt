@@ -2,7 +2,7 @@ Thomas Kowalski - BS student in CCIS
 Brian Yarbrough - MS student in EECE
 
 Many of the shift/reduce conflicts were hanled by precedence rules.
-Precedence for the operators was explicitily outlined by Apel, such TIMES binding more tightly than PLUS. He also lists precedence for Boolean operations. Simply listing these in and giving them associativity eliminated many of the conflicts.
+Precedence for the operators are explicitily outlined by Apel, such as TIMES binding more tightly than PLUS. He also lists precedence for Boolean operations. Simply adding these rules and giving them associativity eliminated many of the conflicts.
 We had to think a little bit more carefully about the shift/reduce conflict with IF THEN and IF THEN ELSE.
 This was also handled by precedence: right associative ELSE binds more tightly than ASSIGN, THEN, DO, or OF but less tightly than all the other operators.
 This is the correct approach because in the case of
@@ -25,4 +25,4 @@ and
 
 array: ID LBRACK exp RBRACK OF exp.
 
-In order to fix it, we added a rule to lvalue, identical to the first. The language that the rule accepts is a subset another lvalue rule ( lvalue LBRACK exp RBRACK ), but it allows the parser to wait until more information is available before deciding if should shift (for the array) or reduce (for an lvalue). Without this rule it has to choose to shift (array) or reduce (lvalue) when it parses the ID. 
+In order to fix it, we added a rule to lvalue, identical to the first. The language that the rule accepts is a subset another lvalue rule ( lvalue LBRACK exp RBRACK ), but it allows the parser to wait until more information is available before deciding if it should shift (for the array) or reduce (for an lvalue). Without this rule it has to choose to shift (array) or reduce (lvalue) when it parses the ID, which is not enough information. 
