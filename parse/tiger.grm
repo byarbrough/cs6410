@@ -12,31 +12,31 @@ open Symbol
   | BREAK | NIL
   | FUNCTION | VAR | TYPE | UMINUS
 
-%nonterm  exp 
-		| program 
-		| decs 
-		| dec 
+%nonterm  exp of Absyn.exp
+		| program of Absyn.exp
+		| decs of Absyn.dec list
+		| dec of Absyn.dec 
 		| tydec of Absyn.dec 
 		| ty of Absyn.ty 
 		| tyfields of Absyn.field list 
 		| tyfieldscont of Absyn.field list 
-		| vardec 
-		| fundec 
-		| lvalue 
-		| opexp 
-		| cond  
-		| array 
-		| seqexpcont 
-		| seqexp 
-		| lets 
+		| vardec of Absyn.dec
+		| fundec of Absyn.dec
+		| lvalue of Absyn.var
+		| opexp of Absyn.exp
+		| cond  of Absyn.exp
+		| array of Absyn.ArrayExp
+		| seqexpcont of Absyn.SeqExp
+		| seqexp of Absyn.SeqExp
+		| lets of Absyn.LetExp
 		| literal of Absyn.exp 
-		| funcall 
-		| argseq 
-		| argseqcont 
-		| assignment 
-		| record 
-		| recarg 
-		| lvalueCont
+		| funcall of Absyn.CallExp
+		| argseq of Absyn.exp list
+		| argseqcont of Absyn.exp list
+		| assignment of Absyn.AssignExp
+		| record of Absyn.RecordExp
+		| recarg of (symbol * exp * pos) list
+		| lvalueCont of ????? (NOT SURE)
 
 %pos int
 %verbose
@@ -83,7 +83,7 @@ literal: NIL (Absyn.NilExp)
        | INT (Absyn.IntExp(INT))
        | STRING (Absyn.StringExp(STRING, STRINGleft))
        | BREAK (Absyn.BreakExp(BREAKleft))
-
+ 
 seqexp:  ()
       |  exp seqexpcont ()
 
@@ -143,7 +143,8 @@ ty : ID (Absyn.NameTy(symbol ID, IDleft))
 tyfields : ([])
          | ID COLON ID tyfieldscont (
          	{ name= symbol ID1, escape= ref false,
-         	  typ= symbol ID2, pos= ID1left } :: tyfieldscont )           
+         	  typ= symbol ID2, pos= ID1left } 
+         	:: tyfieldscont )           
 
 tyfieldscont : ([]) 
              | COMMA ID COLON ID tyfieldscont (
@@ -151,11 +152,20 @@ tyfieldscont : ([])
          		 typ= symbol ID2, pos= ID1left } 
      		 	:: tyfieldscont)
 
-vardec : VAR ID ASSIGN exp ()
-       | VAR ID COLON ID ASSIGN exp ()
+vardec : VAR ID ASSIGN exp (Absyn.VarDec(
+				{ name= symbol ID, typ = NONE,
+				  init=exp, pos= VARleft }))
+       | VAR ID COLON ID ASSIGN exp (Absyn.VarDec(
+				{ name= symbol ID1, typ = SOME (symbol ID2, ID2left),
+				  init=exp, pos= VARleft }))
 
-fundec : FUNCTION ID LPAREN tyfields RPAREN EQ exp ()
-       | FUNCTION ID LPAREN tyfields RPAREN COLON ID EQ exp ()
+fundec : FUNCTION ID LPAREN tyfields RPAREN EQ exp (Absyn.FunctionDec(
+				{ name= symbol ID, param= tyfields, 
+				  result= NONE, body= exp, pos=FUNCTIONleft }))
+       | FUNCTION ID LPAREN tyfields RPAREN COLON ID EQ exp (Absyn.FunctionDec(
+				{ name= symbol ID1, param= tyfields, 
+				  result= SOME(symbol ID2, ID2left), 
+				  body= exp, pos=FUNCTIONleft }))
 
 lvalue : ID lvalueCont ()
 
