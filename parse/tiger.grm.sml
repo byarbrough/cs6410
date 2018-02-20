@@ -186,74 +186,74 @@ val table=let val actionRows =
 \\022\000\031\000\023\000\030\000\024\000\029\000\025\000\028\000\
 \\026\000\027\000\000\000\
 \\197\000\000\000\
-\\198\000\000\000\
-\\199\000\042\000\046\000\043\000\045\000\044\000\044\000\000\000\
+\\198\000\008\000\055\000\010\000\054\000\012\000\053\000\000\000\
+\\199\000\039\000\114\000\000\000\
 \\200\000\000\000\
 \\201\000\000\000\
 \\202\000\000\000\
-\\203\000\000\000\
+\\203\000\042\000\046\000\043\000\045\000\044\000\044\000\000\000\
 \\204\000\000\000\
 \\205\000\000\000\
 \\206\000\000\000\
-\\207\000\002\000\109\000\000\000\
+\\207\000\000\000\
 \\208\000\000\000\
-\\209\000\005\000\139\000\000\000\
+\\209\000\000\000\
 \\210\000\000\000\
-\\211\000\015\000\038\000\016\000\037\000\017\000\036\000\018\000\035\000\
+\\211\000\002\000\109\000\000\000\
+\\212\000\000\000\
+\\213\000\005\000\139\000\000\000\
+\\214\000\000\000\
+\\215\000\015\000\038\000\016\000\037\000\017\000\036\000\018\000\035\000\
 \\019\000\034\000\020\000\033\000\021\000\032\000\022\000\031\000\
 \\023\000\030\000\024\000\029\000\025\000\028\000\026\000\027\000\000\000\
-\\212\000\015\000\038\000\016\000\037\000\017\000\036\000\018\000\035\000\
+\\216\000\015\000\038\000\016\000\037\000\017\000\036\000\018\000\035\000\
 \\019\000\034\000\020\000\033\000\021\000\032\000\022\000\031\000\
 \\023\000\030\000\024\000\029\000\025\000\028\000\026\000\027\000\000\000\
-\\213\000\015\000\038\000\016\000\037\000\017\000\036\000\018\000\035\000\
+\\217\000\015\000\038\000\016\000\037\000\017\000\036\000\018\000\035\000\
 \\019\000\034\000\020\000\033\000\021\000\032\000\022\000\031\000\
 \\023\000\030\000\024\000\029\000\025\000\028\000\026\000\027\000\000\000\
-\\214\000\015\000\038\000\016\000\037\000\017\000\036\000\018\000\035\000\
+\\218\000\015\000\038\000\016\000\037\000\017\000\036\000\018\000\035\000\
 \\019\000\034\000\020\000\033\000\021\000\032\000\022\000\031\000\
 \\023\000\030\000\024\000\029\000\025\000\028\000\026\000\027\000\000\000\
-\\215\000\008\000\055\000\010\000\054\000\012\000\053\000\000\000\
-\\216\000\039\000\114\000\000\000\
-\\217\000\000\000\
-\\218\000\000\000\
 \"
 val actionRowNumbers =
 "\007\000\058\000\057\000\056\000\
 \\048\000\054\000\052\000\053\000\
 \\050\000\055\000\047\000\059\000\
-\\062\000\089\000\008\000\007\000\
+\\062\000\093\000\008\000\007\000\
 \\007\000\007\000\063\000\061\000\
-\\060\000\105\000\007\000\009\000\
+\\060\000\088\000\007\000\009\000\
 \\007\000\007\000\007\000\007\000\
 \\007\000\007\000\007\000\007\000\
 \\007\000\007\000\007\000\007\000\
-\\007\000\092\000\091\000\090\000\
-\\089\000\044\000\010\000\011\000\
+\\007\000\096\000\095\000\094\000\
+\\093\000\044\000\010\000\011\000\
 \\012\000\042\000\036\000\034\000\
 \\051\000\027\000\065\000\013\000\
-\\007\000\080\000\084\000\107\000\
+\\007\000\080\000\084\000\090\000\
 \\030\000\068\000\067\000\001\000\
 \\002\000\003\000\004\000\005\000\
 \\006\000\072\000\071\000\070\000\
-\\069\000\088\000\063\000\038\000\
+\\069\000\092\000\063\000\038\000\
 \\022\000\026\000\007\000\007\000\
 \\007\000\049\000\064\000\007\000\
 \\039\000\031\000\028\000\082\000\
-\\108\000\045\000\014\000\007\000\
-\\015\000\097\000\035\000\075\000\
-\\074\000\065\000\007\000\106\000\
+\\091\000\045\000\014\000\007\000\
+\\015\000\101\000\035\000\075\000\
+\\074\000\065\000\007\000\089\000\
 \\079\000\081\000\007\000\078\000\
-\\093\000\046\000\097\000\094\000\
-\\101\000\043\000\029\000\023\000\
+\\097\000\046\000\101\000\098\000\
+\\105\000\043\000\029\000\023\000\
 \\007\000\007\000\066\000\086\000\
 \\007\000\082\000\016\000\032\000\
 \\007\000\024\000\017\000\037\000\
 \\073\000\033\000\018\000\077\000\
-\\083\000\096\000\095\000\102\000\
-\\007\000\019\000\099\000\007\000\
-\\085\000\040\000\103\000\041\000\
-\\098\000\020\000\076\000\007\000\
-\\007\000\025\000\086\000\104\000\
-\\021\000\087\000\099\000\100\000\
+\\083\000\100\000\099\000\106\000\
+\\007\000\019\000\103\000\007\000\
+\\085\000\040\000\107\000\041\000\
+\\102\000\020\000\076\000\007\000\
+\\007\000\025\000\086\000\108\000\
+\\021\000\087\000\103\000\104\000\
 \\000\000"
 val gotoT =
 "\
@@ -1094,7 +1094,44 @@ MlyValue.recarg (fn _ => let val  (ID as ID1) = ID1 ()
 end)
  in ( LrTable.NT 23, ( result, COMMA1left, recarg1right), rest671)
 end
-|  ( 47, ( ( _, ( MlyValue.decs decs1, _, decs1right)) :: ( _, ( 
+|  ( 47, ( ( _, ( MlyValue.ID ID1, (IDleft as ID1left), ID1right)) :: 
+rest671)) => let val  result = MlyValue.lvalue (fn _ => let val  (ID
+ as ID1) = ID1 ()
+ in (Absyn.SimpleVar(symbol ID, IDleft))
+end)
+ in ( LrTable.NT 10, ( result, ID1left, ID1right), rest671)
+end
+|  ( 48, ( ( _, ( _, _, RBRACK1right)) :: ( _, ( MlyValue.exp exp1, _,
+ _)) :: _ :: ( _, ( MlyValue.ID ID1, (IDleft as ID1left), _)) :: 
+rest671)) => let val  result = MlyValue.lvalue (fn _ => let val  (ID
+ as ID1) = ID1 ()
+ val  (exp as exp1) = exp1 ()
+ in (
+Absyn.SubscriptVar( Absyn.SimpleVar(symbol ID, IDleft), exp, IDleft))
+
+end)
+ in ( LrTable.NT 10, ( result, ID1left, RBRACK1right), rest671)
+end
+|  ( 49, ( ( _, ( MlyValue.ID ID1, _, ID1right)) :: _ :: ( _, ( 
+MlyValue.lvalue lvalue1, (lvalueleft as lvalue1left), _)) :: rest671))
+ => let val  result = MlyValue.lvalue (fn _ => let val  (lvalue as 
+lvalue1) = lvalue1 ()
+ val  (ID as ID1) = ID1 ()
+ in (Absyn.FieldVar(lvalue, symbol ID, lvalueleft))
+end)
+ in ( LrTable.NT 10, ( result, lvalue1left, ID1right), rest671)
+end
+|  ( 50, ( ( _, ( _, _, RBRACK1right)) :: ( _, ( MlyValue.exp exp1, _,
+ _)) :: _ :: ( _, ( MlyValue.lvalue lvalue1, (lvalueleft as 
+lvalue1left), _)) :: rest671)) => let val  result = MlyValue.lvalue
+ (fn _ => let val  (lvalue as lvalue1) = lvalue1 ()
+ val  (exp as exp1) = exp1 ()
+ in (Absyn.SubscriptVar(lvalue, exp, lvalueleft))
+end)
+ in ( LrTable.NT 10, ( result, lvalue1left, RBRACK1right), rest671)
+
+end
+|  ( 51, ( ( _, ( MlyValue.decs decs1, _, decs1right)) :: ( _, ( 
 MlyValue.dec dec1, dec1left, _)) :: rest671)) => let val  result = 
 MlyValue.decs (fn _ => let val  (dec as dec1) = dec1 ()
  val  (decs as decs1) = decs1 ()
@@ -1102,31 +1139,31 @@ MlyValue.decs (fn _ => let val  (dec as dec1) = dec1 ()
 end)
  in ( LrTable.NT 2, ( result, dec1left, decs1right), rest671)
 end
-|  ( 48, ( rest671)) => let val  result = MlyValue.decs (fn _ => ([]))
+|  ( 52, ( rest671)) => let val  result = MlyValue.decs (fn _ => ([]))
  in ( LrTable.NT 2, ( result, defaultPos, defaultPos), rest671)
 end
-|  ( 49, ( ( _, ( MlyValue.tydec tydec1, tydec1left, tydec1right)) :: 
+|  ( 53, ( ( _, ( MlyValue.tydec tydec1, tydec1left, tydec1right)) :: 
 rest671)) => let val  result = MlyValue.dec (fn _ => let val  (tydec
  as tydec1) = tydec1 ()
  in (tydec)
 end)
  in ( LrTable.NT 3, ( result, tydec1left, tydec1right), rest671)
 end
-|  ( 50, ( ( _, ( MlyValue.vardec vardec1, vardec1left, vardec1right))
+|  ( 54, ( ( _, ( MlyValue.vardec vardec1, vardec1left, vardec1right))
  :: rest671)) => let val  result = MlyValue.dec (fn _ => let val  (
 vardec as vardec1) = vardec1 ()
  in (vardec)
 end)
  in ( LrTable.NT 3, ( result, vardec1left, vardec1right), rest671)
 end
-|  ( 51, ( ( _, ( MlyValue.fundec fundec1, fundec1left, fundec1right))
+|  ( 55, ( ( _, ( MlyValue.fundec fundec1, fundec1left, fundec1right))
  :: rest671)) => let val  result = MlyValue.dec (fn _ => let val  (
 fundec as fundec1) = fundec1 ()
  in (Absyn.FunctionDec([fundec]))
 end)
  in ( LrTable.NT 3, ( result, fundec1left, fundec1right), rest671)
 end
-|  ( 52, ( ( _, ( MlyValue.ty ty1, _, ty1right)) :: _ :: ( _, ( 
+|  ( 56, ( ( _, ( MlyValue.ty ty1, _, ty1right)) :: _ :: ( _, ( 
 MlyValue.ID ID1, _, _)) :: ( _, ( _, (TYPEleft as TYPE1left), _)) :: 
 rest671)) => let val  result = MlyValue.tydec (fn _ => let val  (ID
  as ID1) = ID1 ()
@@ -1135,14 +1172,14 @@ rest671)) => let val  result = MlyValue.tydec (fn _ => let val  (ID
 end)
  in ( LrTable.NT 4, ( result, TYPE1left, ty1right), rest671)
 end
-|  ( 53, ( ( _, ( MlyValue.ID ID1, (IDleft as ID1left), ID1right)) :: 
+|  ( 57, ( ( _, ( MlyValue.ID ID1, (IDleft as ID1left), ID1right)) :: 
 rest671)) => let val  result = MlyValue.ty (fn _ => let val  (ID as 
 ID1) = ID1 ()
  in (Absyn.NameTy(symbol ID, IDleft))
 end)
  in ( LrTable.NT 5, ( result, ID1left, ID1right), rest671)
 end
-|  ( 54, ( ( _, ( _, _, RBRACE1right)) :: ( _, ( MlyValue.tyfields 
+|  ( 58, ( ( _, ( _, _, RBRACE1right)) :: ( _, ( MlyValue.tyfields 
 tyfields1, _, _)) :: ( _, ( _, LBRACE1left, _)) :: rest671)) => let
  val  result = MlyValue.ty (fn _ => let val  (tyfields as tyfields1) =
  tyfields1 ()
@@ -1150,18 +1187,18 @@ tyfields1, _, _)) :: ( _, ( _, LBRACE1left, _)) :: rest671)) => let
 end)
  in ( LrTable.NT 5, ( result, LBRACE1left, RBRACE1right), rest671)
 end
-|  ( 55, ( ( _, ( MlyValue.ID ID1, IDleft, ID1right)) :: _ :: ( _, ( _
+|  ( 59, ( ( _, ( MlyValue.ID ID1, IDleft, ID1right)) :: _ :: ( _, ( _
 , ARRAY1left, _)) :: rest671)) => let val  result = MlyValue.ty (fn _
  => let val  (ID as ID1) = ID1 ()
  in (Absyn.ArrayTy( symbol ID, IDleft))
 end)
  in ( LrTable.NT 5, ( result, ARRAY1left, ID1right), rest671)
 end
-|  ( 56, ( rest671)) => let val  result = MlyValue.tyfields (fn _ => (
+|  ( 60, ( rest671)) => let val  result = MlyValue.tyfields (fn _ => (
 []))
  in ( LrTable.NT 6, ( result, defaultPos, defaultPos), rest671)
 end
-|  ( 57, ( ( _, ( MlyValue.tyfieldscont tyfieldscont1, _, 
+|  ( 61, ( ( _, ( MlyValue.tyfieldscont tyfieldscont1, _, 
 tyfieldscont1right)) :: ( _, ( MlyValue.ID ID2, _, _)) :: _ :: ( _, ( 
 MlyValue.ID ID1, ID1left, _)) :: rest671)) => let val  result = 
 MlyValue.tyfields (fn _ => let val  ID1 = ID1 ()
@@ -1177,11 +1214,11 @@ end)
  in ( LrTable.NT 6, ( result, ID1left, tyfieldscont1right), rest671)
 
 end
-|  ( 58, ( rest671)) => let val  result = MlyValue.tyfieldscont (fn _
+|  ( 62, ( rest671)) => let val  result = MlyValue.tyfieldscont (fn _
  => ([]))
  in ( LrTable.NT 7, ( result, defaultPos, defaultPos), rest671)
 end
-|  ( 59, ( ( _, ( MlyValue.tyfieldscont tyfieldscont1, _, 
+|  ( 63, ( ( _, ( MlyValue.tyfieldscont tyfieldscont1, _, 
 tyfieldscont1right)) :: ( _, ( MlyValue.ID ID2, _, _)) :: _ :: ( _, ( 
 MlyValue.ID ID1, ID1left, _)) :: ( _, ( _, COMMA1left, _)) :: rest671)
 ) => let val  result = MlyValue.tyfieldscont (fn _ => let val  ID1 = 
@@ -1198,7 +1235,7 @@ end)
  in ( LrTable.NT 7, ( result, COMMA1left, tyfieldscont1right), rest671
 )
 end
-|  ( 60, ( ( _, ( MlyValue.exp exp1, _, exp1right)) :: _ :: ( _, ( 
+|  ( 64, ( ( _, ( MlyValue.exp exp1, _, exp1right)) :: _ :: ( _, ( 
 MlyValue.ID ID1, _, _)) :: ( _, ( _, (VARleft as VAR1left), _)) :: 
 rest671)) => let val  result = MlyValue.vardec (fn _ => let val  (ID
  as ID1) = ID1 ()
@@ -1211,7 +1248,7 @@ Absyn.VarDec(
 end)
  in ( LrTable.NT 8, ( result, VAR1left, exp1right), rest671)
 end
-|  ( 61, ( ( _, ( MlyValue.exp exp1, _, exp1right)) :: _ :: ( _, ( 
+|  ( 65, ( ( _, ( MlyValue.exp exp1, _, exp1right)) :: _ :: ( _, ( 
 MlyValue.ID ID2, ID2left, _)) :: _ :: ( _, ( MlyValue.ID ID1, _, _))
  :: ( _, ( _, (VARleft as VAR1left), _)) :: rest671)) => let val  
 result = MlyValue.vardec (fn _ => let val  ID1 = ID1 ()
@@ -1226,7 +1263,7 @@ Absyn.VarDec(
 end)
  in ( LrTable.NT 8, ( result, VAR1left, exp1right), rest671)
 end
-|  ( 62, ( ( _, ( MlyValue.exp exp1, _, exp1right)) :: _ :: _ :: ( _, 
+|  ( 66, ( ( _, ( MlyValue.exp exp1, _, exp1right)) :: _ :: _ :: ( _, 
 ( MlyValue.tyfields tyfields1, _, _)) :: _ :: ( _, ( MlyValue.ID ID1,
  _, _)) :: ( _, ( _, (FUNCTIONleft as FUNCTION1left), _)) :: rest671))
  => let val  result = MlyValue.fundec (fn _ => let val  (ID as ID1) = 
@@ -1241,7 +1278,7 @@ ID1 ()
 end)
  in ( LrTable.NT 9, ( result, FUNCTION1left, exp1right), rest671)
 end
-|  ( 63, ( ( _, ( MlyValue.exp exp1, _, exp1right)) :: _ :: ( _, ( 
+|  ( 67, ( ( _, ( MlyValue.exp exp1, _, exp1right)) :: _ :: ( _, ( 
 MlyValue.ID ID2, ID2left, _)) :: _ :: _ :: ( _, ( MlyValue.tyfields 
 tyfields1, _, _)) :: _ :: ( _, ( MlyValue.ID ID1, _, _)) :: ( _, ( _,
  (FUNCTIONleft as FUNCTION1left), _)) :: rest671)) => let val  result
@@ -1257,43 +1294,6 @@ tyfields1, _, _)) :: _ :: ( _, ( MlyValue.ID ID1, _, _)) :: ( _, ( _,
 )
 end)
  in ( LrTable.NT 9, ( result, FUNCTION1left, exp1right), rest671)
-end
-|  ( 64, ( ( _, ( MlyValue.ID ID1, (IDleft as ID1left), ID1right)) :: 
-rest671)) => let val  result = MlyValue.lvalue (fn _ => let val  (ID
- as ID1) = ID1 ()
- in (Absyn.SimpleVar(symbol ID, IDleft))
-end)
- in ( LrTable.NT 10, ( result, ID1left, ID1right), rest671)
-end
-|  ( 65, ( ( _, ( _, _, RBRACK1right)) :: ( _, ( MlyValue.exp exp1, _,
- _)) :: _ :: ( _, ( MlyValue.ID ID1, (IDleft as ID1left), _)) :: 
-rest671)) => let val  result = MlyValue.lvalue (fn _ => let val  (ID
- as ID1) = ID1 ()
- val  (exp as exp1) = exp1 ()
- in (
-Absyn.SubscriptVar( Absyn.SimpleVar(symbol ID, IDleft), exp, IDleft))
-
-end)
- in ( LrTable.NT 10, ( result, ID1left, RBRACK1right), rest671)
-end
-|  ( 66, ( ( _, ( MlyValue.ID ID1, _, ID1right)) :: _ :: ( _, ( 
-MlyValue.lvalue lvalue1, (lvalueleft as lvalue1left), _)) :: rest671))
- => let val  result = MlyValue.lvalue (fn _ => let val  (lvalue as 
-lvalue1) = lvalue1 ()
- val  (ID as ID1) = ID1 ()
- in (Absyn.FieldVar(lvalue, symbol ID, lvalueleft))
-end)
- in ( LrTable.NT 10, ( result, lvalue1left, ID1right), rest671)
-end
-|  ( 67, ( ( _, ( _, _, RBRACK1right)) :: ( _, ( MlyValue.exp exp1, _,
- _)) :: _ :: ( _, ( MlyValue.lvalue lvalue1, (lvalueleft as 
-lvalue1left), _)) :: rest671)) => let val  result = MlyValue.lvalue
- (fn _ => let val  (lvalue as lvalue1) = lvalue1 ()
- val  (exp as exp1) = exp1 ()
- in (Absyn.SubscriptVar(lvalue, exp, lvalueleft))
-end)
- in ( LrTable.NT 10, ( result, lvalue1left, RBRACK1right), rest671)
-
 end
 | _ => raise (mlyAction i392)
 end

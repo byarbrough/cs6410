@@ -1,6 +1,6 @@
 1 shift/reduce conflict
 
-error:  state 21: shift/reduce conflict (shift LBRACK, reduce by rule 64)
+error:  state 21: shift/reduce conflict (shift LBRACK, reduce by rule 47)
 
 state 0:
 
@@ -185,7 +185,7 @@ state 13:
 	vardec	goto 38
 	fundec	goto 37
 
-	.	reduce by rule 48
+	.	reduce by rule 52
 
 
 state 14:
@@ -337,11 +337,11 @@ state 20:
 
 	.	reduce by rule 13
 
-error:  state 21: shift/reduce conflict (shift LBRACK, reduce by rule 64)
+error:  state 21: shift/reduce conflict (shift LBRACK, reduce by rule 47)
 
 state 21:
 
-	lvalue : ID .  (reduce by rule 64)
+	lvalue : ID .  (reduce by rule 47)
 	lvalue : ID . LBRACK exp RBRACK 
 	array : ID . LBRACK exp RBRACK OF exp 
 	funcall : ID . LPAREN argseq RPAREN 
@@ -352,7 +352,7 @@ state 21:
 	LBRACE	shift 51
 
 
-	.	reduce by rule 64
+	.	reduce by rule 47
 
 
 state 22:
@@ -787,29 +787,29 @@ state 36:
 
 state 37:
 
-	dec : fundec .  (reduce by rule 51)
+	dec : fundec .  (reduce by rule 55)
 
 
 
-	.	reduce by rule 51
+	.	reduce by rule 55
 
 
 state 38:
 
-	dec : vardec .  (reduce by rule 50)
+	dec : vardec .  (reduce by rule 54)
 
 
 
-	.	reduce by rule 50
+	.	reduce by rule 54
 
 
 state 39:
 
-	dec : tydec .  (reduce by rule 49)
+	dec : tydec .  (reduce by rule 53)
 
 
 
-	.	reduce by rule 49
+	.	reduce by rule 53
 
 
 state 40:
@@ -826,7 +826,7 @@ state 40:
 	vardec	goto 38
 	fundec	goto 37
 
-	.	reduce by rule 48
+	.	reduce by rule 52
 
 
 state 41:
@@ -1123,11 +1123,11 @@ state 54:
 
 state 55:
 
-	lvalue : lvalue DOT ID .  (reduce by rule 66)
+	lvalue : lvalue DOT ID .  (reduce by rule 49)
 
 
 
-	.	reduce by rule 66
+	.	reduce by rule 49
 
 
 state 56:
@@ -1569,11 +1569,11 @@ state 68:
 
 state 69:
 
-	decs : dec decs .  (reduce by rule 47)
+	decs : dec decs .  (reduce by rule 51)
 
 
 
-	.	reduce by rule 47
+	.	reduce by rule 51
 
 
 state 70:
@@ -1871,11 +1871,11 @@ state 83:
 
 state 84:
 
-	lvalue : lvalue LBRACK exp RBRACK .  (reduce by rule 67)
+	lvalue : lvalue LBRACK exp RBRACK .  (reduce by rule 50)
 
 
 
-	.	reduce by rule 67
+	.	reduce by rule 50
 
 
 state 85:
@@ -1950,7 +1950,7 @@ state 89:
 
 	tyfields	goto 106
 
-	.	reduce by rule 56
+	.	reduce by rule 60
 
 
 state 90:
@@ -2122,13 +2122,13 @@ state 94:
 
 state 95:
 
-	lvalue : ID LBRACK exp RBRACK .  (reduce by rule 65)
+	lvalue : ID LBRACK exp RBRACK .  (reduce by rule 48)
 	array : ID LBRACK exp RBRACK . OF exp 
 
 	OF	shift 112
 
 
-	.	reduce by rule 65
+	.	reduce by rule 48
 
 
 state 96:
@@ -2190,11 +2190,11 @@ state 99:
 
 state 100:
 
-	tydec : TYPE ID EQ ty .  (reduce by rule 52)
+	tydec : TYPE ID EQ ty .  (reduce by rule 56)
 
 
 
-	.	reduce by rule 52
+	.	reduce by rule 56
 
 
 state 101:
@@ -2215,21 +2215,21 @@ state 102:
 
 	tyfields	goto 115
 
-	.	reduce by rule 56
+	.	reduce by rule 60
 
 
 state 103:
 
-	ty : ID .  (reduce by rule 53)
+	ty : ID .  (reduce by rule 57)
 
 
 
-	.	reduce by rule 53
+	.	reduce by rule 57
 
 
 state 104:
 
-	vardec : VAR ID ASSIGN exp .  (reduce by rule 60)
+	vardec : VAR ID ASSIGN exp .  (reduce by rule 64)
 	opexp : exp . AND exp 
 	opexp : exp . OR exp 
 	opexp : exp . GE exp 
@@ -2257,7 +2257,7 @@ state 104:
 	OR	shift 25
 
 
-	.	reduce by rule 60
+	.	reduce by rule 64
 
 
 state 105:
@@ -2663,25 +2663,25 @@ state 124:
 
 state 125:
 
-	ty : ARRAY OF ID .  (reduce by rule 55)
+	ty : ARRAY OF ID .  (reduce by rule 59)
 
 
 
-	.	reduce by rule 55
+	.	reduce by rule 59
 
 
 state 126:
 
-	ty : LBRACE tyfields RBRACE .  (reduce by rule 54)
+	ty : LBRACE tyfields RBRACE .  (reduce by rule 58)
 
 
 
-	.	reduce by rule 54
+	.	reduce by rule 58
 
 
 state 127:
 
-	vardec : VAR ID COLON ID ASSIGN exp .  (reduce by rule 61)
+	vardec : VAR ID COLON ID ASSIGN exp .  (reduce by rule 65)
 	opexp : exp . AND exp 
 	opexp : exp . OR exp 
 	opexp : exp . GE exp 
@@ -2709,7 +2709,7 @@ state 127:
 	OR	shift 25
 
 
-	.	reduce by rule 61
+	.	reduce by rule 65
 
 
 state 128:
@@ -2760,7 +2760,7 @@ state 130:
 
 	tyfieldscont	goto 136
 
-	.	reduce by rule 58
+	.	reduce by rule 62
 
 
 state 131:
@@ -2814,7 +2814,7 @@ state 133:
 
 state 134:
 
-	fundec : FUNCTION ID LPAREN tyfields RPAREN EQ exp .  (reduce by rule 62)
+	fundec : FUNCTION ID LPAREN tyfields RPAREN EQ exp .  (reduce by rule 66)
 	opexp : exp . AND exp 
 	opexp : exp . OR exp 
 	opexp : exp . GE exp 
@@ -2842,7 +2842,7 @@ state 134:
 	OR	shift 25
 
 
-	.	reduce by rule 62
+	.	reduce by rule 66
 
 
 state 135:
@@ -2857,11 +2857,11 @@ state 135:
 
 state 136:
 
-	tyfields : ID COLON ID tyfieldscont .  (reduce by rule 57)
+	tyfields : ID COLON ID tyfieldscont .  (reduce by rule 61)
 
 
 
-	.	reduce by rule 57
+	.	reduce by rule 61
 
 
 state 137:
@@ -3014,7 +3014,7 @@ state 142:
 
 state 143:
 
-	fundec : FUNCTION ID LPAREN tyfields RPAREN COLON ID EQ exp .  (reduce by rule 63)
+	fundec : FUNCTION ID LPAREN tyfields RPAREN COLON ID EQ exp .  (reduce by rule 67)
 	opexp : exp . AND exp 
 	opexp : exp . OR exp 
 	opexp : exp . GE exp 
@@ -3042,7 +3042,7 @@ state 143:
 	OR	shift 25
 
 
-	.	reduce by rule 63
+	.	reduce by rule 67
 
 
 state 144:
@@ -3072,16 +3072,16 @@ state 146:
 
 	tyfieldscont	goto 147
 
-	.	reduce by rule 58
+	.	reduce by rule 62
 
 
 state 147:
 
-	tyfieldscont : COMMA ID COLON ID tyfieldscont .  (reduce by rule 59)
+	tyfieldscont : COMMA ID COLON ID tyfieldscont .  (reduce by rule 63)
 
 
 
-	.	reduce by rule 59
+	.	reduce by rule 63
 
 
 state 148:
