@@ -12,6 +12,8 @@ Group is
 env.sml
 semant.sml
 translate.sml
+types.sml
+main.sml
 $/ml-yacc-lib.cm
 $/smlnj-lib.cm
 $/basis.cm

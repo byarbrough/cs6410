@@ -13,6 +13,7 @@ struct
     fun transTy (tenv, ty) = ()
     fun transDec(venv, tenc, dec) = ()
     fun transExp(venv, tenv, exp) = ()
+	fun transVar(venv, tenv, var) = ()
 
-	fun transProg(absyn) = transExp(E.baseVEnv, E.baseTEnv, absyn)
+	fun transProg(absyn) = transExp(E.base_venv, E.base_tenv, absyn)
 end
