@@ -3,7 +3,7 @@ sig
 	type access
 	type ty
 	datatype enventry = 
-	  VarEntry of {ty : ty}
+	  VarEntry of {access: access, ty : ty}
 	| FunEntry of {formals: ty list, result: ty}
 	val base_tenv : ty Symbol.table
 	val base_venv : enventry Symbol.table
@@ -13,9 +13,9 @@ struct
 	structure S = Symbol
 	structure T = Types 
 	type ty = T.ty
-	type access = unit 
+	type access = unit ref 
 	datatype enventry = 
-	  VarEntry of {ty : T.ty}
+	  VarEntry of {access: access, ty : ty}
 	| FunEntry of {formals: T.ty list, result: T.ty}
 
 

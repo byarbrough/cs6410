@@ -22,6 +22,13 @@ struct
     fun checkStr ({exp, ty= T.STRING}) = true
       | checkStr ({exp, ty}) = false			    
     
+    fun actual_ty (T.NAME(id, tyref)) = 
+    	(case !tyref 
+    		of SOME(ty) => actual_ty(ty)
+    		| NONE => raise TypeErrorException(0)) (*todo figure out if this is possible*)
+	  | actual_ty (ty) = ty	 
+
+
     fun transTy (tenv) = 
     let  fun 
     	trty (A.NameTy(id, pos)) = ()
@@ -127,7 +134,11 @@ struct
    
    and trvar (A.SimpleVar(id, pos)) = 
    	(case S.look(venv,id)
-   		of SOME(E.E.VarEntry{access,t{exp=(), ty=T.NIL}
+   		of SOME(E.VarEntry{access,ty}) => 
+   		{exp=(), ty=actual_ty ty}
+   		| NONE => ( ErrorMsg.error pos ("undefined variable " ^ S.name id);
+   			{exp = (), ty=T.INT}))
+
 	 | trvar (A.FieldVar(var, field, pos)) =  {exp=(), ty=T.NIL}
 	 | trvar (A.SubscriptVar(var, exp, pos)) =  {exp=(), ty=T.NIL}			
     in 
