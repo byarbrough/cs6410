@@ -10,30 +10,41 @@ struct
     structure T = Types
     exception TypeErrorException of int
     
-    fun checkInt ({exp, ty= T.INT}, pos) = ()
-      | checkInt ({exp, ty}, pos) = (TypeErrorException(pos); ())
+    fun checkTypeWrapper(true, pos) = ()
+    	| checkTypeWrapper(false, pos) = 
+			raise TypeErrorException(pos)
 
-    fun checkStr ({exp, ty= T.STRING}, pos) = ()
-      | checkStr ({exp, ty}, pos) = (TypeErrorException(pos); ())				    
+    fun checkInt ({exp, ty= T.INT}) = true
+      | checkInt ({exp, ty}) = false
+
+    fun checkStr ({exp, ty= T.STRING}) = true
+      | checkStr ({exp, ty}) = false			    
     
     fun transTy (tenv, ty) = ()
     fun transDec(venv, tenc, dec) = ()
     fun transExp(venv, tenv) =
-    let fun trexp (A.OpExp{left, oper= A.PlusOp, right, pos}) =
-                  (checkInt(trexp left, pos);
-                  checkInt(trexp right, pos);
+    let fun trexp (A.NilExp) = {exp=(),ty=T.NIL}
+	  | trexp (A.IntExp(num)) = {exp=(),ty=T.INT}
+	  | trexp (A.StringExp(str)) = {exp=(),ty=T.STRING}
+      |	trexp (A.OpExp{left, oper= A.PlusOp, right, pos}) =
+                  (checkTypeWrapper(
+                  	checkInt(trexp left) andalso 
+                  	checkInt(trexp right), pos);
                   {exp=(),ty= T.INT})
 	  | trexp (A.OpExp{left, oper= A.MinusOp, right, pos}) =
-                  (checkInt(trexp left, pos);
-                  checkInt(trexp right, pos);
+                  (checkTypeWrapper(
+                  	checkInt(trexp left) andalso 
+                  	checkInt(trexp right), pos);
                   {exp=(),ty= T.INT})
 	  | trexp (A.OpExp{left, oper= A.TimesOp, right, pos}) =
-                  (checkInt(trexp left, pos);
-                  checkInt(trexp right, pos);
+                  (checkTypeWrapper(
+                  	checkInt(trexp left) andalso 
+                  	checkInt(trexp right), pos);
                   {exp=(),ty= T.INT})
 	  | trexp (A.OpExp{left, oper= A.DivideOp, right, pos}) =
-                  (checkInt(trexp left, pos);
-                  checkInt(trexp right, pos);
+                  (checkTypeWrapper(
+                  	checkInt(trexp left) andalso 
+                 	checkInt(trexp right), pos);
                   {exp=(),ty= T.INT})
 	 (* | trexp (A.OpExp{left, oper= A.EqOp, right, pos}) =
                   (checkInt(trexp left, pos);
@@ -44,32 +55,30 @@ struct
                   checkInt(trexp right, pos);
                   {exp=(),ty= T.INT}) *)
 	  | trexp (A.OpExp{left, oper= A.LtOp, right, pos}) =
-                  (checkInt(trexp left, pos);
-                  checkInt(trexp right, pos);
+                  (checkTypeWrapper(
+                  	checkInt(trexp left) andalso 
+                    checkInt(trexp right), pos);
                   {exp=(),ty= T.INT})
 	  | trexp (A.OpExp{left, oper= A.LeOp, right, pos}) =
-                  (checkInt(trexp left, pos);
-                  checkInt(trexp right, pos);
+                  (checkTypeWrapper(
+                  	checkInt(trexp left) andalso 
+                    checkInt(trexp right), pos);
                   {exp=(),ty= T.INT})
 	  | trexp (A.OpExp{left, oper= A.GtOp, right, pos}) =
-                  (checkInt(trexp left, pos);
-                  checkInt(trexp right, pos);
+                  (checkTypeWrapper(
+                  	checkInt(trexp left) andalso 
+                    checkInt(trexp right), pos);
                   {exp=(),ty= T.INT})
 	  | trexp (A.OpExp{left, oper= A.GeOp, right, pos}) =
-                  (checkInt(trexp left, pos);
-                  checkInt(trexp right, pos);
+                  (checkTypeWrapper(
+                  	(checkInt(trexp left) orelse 
+              		 checkStr(trexp left)) andalso
+                    (checkInt(trexp right) orelse
+                	 checkStr(trexp right)), pos);
                   {exp=(),ty= T.INT})
 
-	  | trexp (A.OpExp{left, oper= A.EqOp, right, pos}) =
-                  (checkStr(trexp left, pos);
-                  checkStr(trexp right, pos);
-                  {exp=(),ty= T.STRING})
-	  | trexp (A.OpExp{left, oper= A.NeqOp, right, pos}) =
-                  (checkStr(trexp left, pos);
-                  checkStr(trexp right, pos);
-                  {exp=(),ty= T.STRING})
 		      
-    	  | trexp (A.RecordExp{fields, typ, pos}) = {exp=(),ty= T.INT}
+	  | trexp (A.RecordExp{fields, typ, pos}) = {exp=(),ty= T.INT}
 							
     in 
     	trexp
