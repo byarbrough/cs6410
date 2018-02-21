@@ -71,10 +71,10 @@ struct
                   {exp=(),ty= T.INT})
 	  | trexp (A.OpExp{left, oper= A.GeOp, right, pos}) =
                   (checkTypeWrapper(
-                  	(checkInt(trexp left) orelse 
-              		 checkStr(trexp left)) andalso
-                    (checkInt(trexp right) orelse
-                	 checkStr(trexp right)), pos);
+                  	(checkStr(trexp left) andalso 
+              		 checkStr(trexp right)) orelse
+                    (checkInt(trexp left) andalso
+                	 checkInt(trexp right)), pos);
                   {exp=(),ty= T.INT})
 
 		      
