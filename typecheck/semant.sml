@@ -8,6 +8,7 @@ struct
     structure E = Env
     structure Tr = Translate
     structure T = Types
+    structure S = Symbol
     exception TypeErrorException of int
     
     fun checkTypeWrapper(true, pos) = ()
@@ -123,9 +124,12 @@ struct
 	  | trexp (A.BreakExp(pos)) = {exp=(), ty= T.UNIT}
 	  | trexp (A.LetExp{decs, body, pos}) = {exp=(), ty= T.UNIT}
 	  | trexp (A.ArrayExp{typ, size, init, pos}) = {exp=(), ty= T.UNIT}
-   and trvar (A.SimpleVar(id, pos)) = {exp=(), ty=T.NIL}
-	  | trvar (A.FieldVar(var, field, pos)) =  {exp=(), ty=T.NIL}
-	  | trvar (A.SubscriptVar(var, exp, pos)) =  {exp=(), ty=T.NIL}			
+   
+   and trvar (A.SimpleVar(id, pos)) = 
+   	(case S.look(venv,id)
+   		of SOME(E.E.VarEntry{access,t{exp=(), ty=T.NIL}
+	 | trvar (A.FieldVar(var, field, pos)) =  {exp=(), ty=T.NIL}
+	 | trvar (A.SubscriptVar(var, exp, pos)) =  {exp=(), ty=T.NIL}			
     in 
     	trexp
     end
