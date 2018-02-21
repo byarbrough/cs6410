@@ -36,6 +36,21 @@ struct
             | NONE => raise TypeErrorException(0)) (*todo figure out if this is possible*)
       | actual_ty (ty) = ty  
 
+     fun checkSame (ty1, ty2) =
+          let fun
+            chkSm (T.RECORD(fields1, unique1), T.RECORD(fields2, unique2)) =
+                unique1 = unique2 
+              | chkSm (T.NIL, T.NIL) = true
+              | chkSm (T.INT, T.INT) = true
+              | chkSm (T.STRING, T.STRING) = true
+              | chkSm (T.ARRAY(ty1, unique1), T.ARRAY(ty2, unique2)) =
+                    unique1 = unique2
+              | chkSm (T.UNIT, T.UNIT) = true
+              | chkSm (T.NAME(id1, tyref1), T.NAME(id2, tyref2)) = true
+              | chkSm ( ty1, ty2) = false
+          in
+              chkSm(actual_ty(ty1), actual_ty(ty2))
+          end
     fun transExp(venv, tenv, exp) =
         let fun 
             trexp (A.VarExp(var)) = trvar(var)
@@ -164,18 +179,22 @@ struct
       | trdec (A.VarDec{name, escape, typ, init, pos}) = 
         let val {exp, ty} = transExp(venv, tenv, init)
         in (case typ 
-            of SOME(opTyp) => (checkTypeWrapper(checkSame(typ, opTyp), pos);
+            of SOME(id, pos) => 
+                (case S.look(tenv, id)
+                 of NONE =>   (("type name found for variable " ^ S.name id);
+                    raise TypeErrorException(pos))
+                 |  SOME(id, ety) => (checkTypeWrapper(checkSame(ty, ety), pos));
                 {tenv=tenv, 
-                 venv=S.enter(venv, name, E.VarEntry{access= ref (), ty=opTyp})})
+                 venv=S.enter(venv, name, E.VarEntry{access= ref (), ty=ty})})
             |  NONE => {tenv=tenv, 
             venv=S.enter(venv, name, E.VarEntry{access= ref (), ty=ty})})
         end
       | trdec (A.TypeDec(nil)) = {venv=venv, tenv=tenv}
       | trdec (A.TypeDec({name, ty, pos} :: rest)) = 
       {venv=venv, 
-       tenv=#tenv transDec(venv, 
-                     S.enter(tenv, name, transTy(tenv, ty)), 
-                     A.TypeDec(rest))
+       tenv= #tenv (transDec(venv, 
+                     S.enter(tenv, name, (name, transTy(tenv, ty))), 
+                     A.TypeDec(rest)))
       }
     in 
         (trdec dec)
