@@ -11,7 +11,10 @@ struct
     exception TypeErrorException of int
     
     fun checkInt ({exp, ty= T.INT}, pos) = ()
-   	  | checkInt ({exp, ty}, pos) = (TypeErrorException(pos); ())
+      | checkInt ({exp, ty}, pos) = (TypeErrorException(pos); ())
+
+    fun checkStr ({exp, ty= T.STRING}, pos) = ()
+      | checkStr ({exp, ty}, pos) = (TypeErrorException(pos); ())				    
     
     fun transTy (tenv, ty) = ()
     fun transDec(venv, tenc, dec) = ()
@@ -32,14 +35,14 @@ struct
                   (checkInt(trexp left, pos);
                   checkInt(trexp right, pos);
                   {exp=(),ty= T.INT})
-	  | trexp (A.OpExp{left, oper= A.EqOp, right, pos}) =
+	 (* | trexp (A.OpExp{left, oper= A.EqOp, right, pos}) =
                   (checkInt(trexp left, pos);
                   checkInt(trexp right, pos);
                   {exp=(),ty= T.INT})
 	  | trexp (A.OpExp{left, oper= A.NeqOp, right, pos}) =
                   (checkInt(trexp left, pos);
                   checkInt(trexp right, pos);
-                  {exp=(),ty= T.INT})
+                  {exp=(),ty= T.INT}) *)
 	  | trexp (A.OpExp{left, oper= A.LtOp, right, pos}) =
                   (checkInt(trexp left, pos);
                   checkInt(trexp right, pos);
@@ -57,17 +60,17 @@ struct
                   checkInt(trexp right, pos);
                   {exp=(),ty= T.INT})
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	  | trexp (A.OpExp{left, oper= A.EqOp, right, pos}) =
+                  (checkStr(trexp left, pos);
+                  checkStr(trexp right, pos);
+                  {exp=(),ty= T.STRING})
+	  | trexp (A.OpExp{left, oper= A.NeqOp, right, pos}) =
+                  (checkStr(trexp left, pos);
+                  checkStr(trexp right, pos);
+                  {exp=(),ty= T.STRING})
 		      
     	  | trexp (A.RecordExp{fields, typ, pos}) = {exp=(),ty= T.INT}
+							
     in 
     	trexp
     end
