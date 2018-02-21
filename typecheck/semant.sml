@@ -11,8 +11,9 @@ struct
     exception TypeErrorException of int
     
     fun checkTypeWrapper(true, pos) = ()
-    	| checkTypeWrapper(false, pos) = 
-			raise TypeErrorException(pos)
+    	| checkTypeWrapper(false, pos) =
+    	( ErrorMsg.error pos ("Types missmatched at line " ^ Int.toString(pos));
+			raise TypeErrorException(pos))
 
     fun checkInt ({exp, ty= T.INT}) = true
       | checkInt ({exp, ty}) = false
@@ -20,12 +21,33 @@ struct
     fun checkStr ({exp, ty= T.STRING}) = true
       | checkStr ({exp, ty}) = false			    
     
-    fun transTy (tenv, ty) = ()
-    fun transDec(venv, tenc, dec) = ()
+    fun transTy (tenv) = 
+    let  fun 
+    	trty (A.NameTy(id, pos)) = ()
+      | trty (A.RecordTy(fields)) = ()
+      | trty (A.ArrayTy(id, pos)) = ()
+ 	in 
+  		trty
+	end
+
+    fun transDec(venv, tenc) = 
+	let fun
+		trdec (A.FunctionDec(fundecs)) = ()
+	  | trdec (A.VarDec{name, escape, typ, init, pos}) = ()
+	  | trdec (A.TypeDec(nil)) = ()	
+	  | trdec (A.TypeDec({name, ty, pos} :: rest)) = ()
+	in 
+		trdec
+	end 	
     fun transExp(venv, tenv) =
-    let fun trexp (A.NilExp) = {exp=(),ty=T.NIL}
+    let fun 
+    	trexp (A.VarExp(var)) = trvar(var)
+	  | trexp (A.NilExp) = {exp=(),ty=T.NIL}
 	  | trexp (A.IntExp(num)) = {exp=(),ty=T.INT}
 	  | trexp (A.StringExp(str)) = {exp=(),ty=T.STRING}
+
+	  | trexp (A.CallExp{func, args, pos}) = {exp=(),ty=T.NIL}
+      
       |	trexp (A.OpExp{left, oper= A.PlusOp, right, pos}) =
                   (checkTypeWrapper(
                   	checkInt(trexp left) andalso 
@@ -91,11 +113,22 @@ struct
                   {exp=(),ty= T.INT}) 
 
 	  | trexp (A.RecordExp{fields, typ, pos}) = {exp=(),ty= T.INT}
-							
+
+	  | trexp (A.SeqExp(nil)) = {exp=(), ty= T.UNIT}
+	  | trexp (A.SeqExp((exp, pos) :: tail)) = (trexp(A.SeqExp(tail)); trexp(exp))
+	  | trexp (A.AssignExp{var, exp, pos}) = {exp=(), ty= T.UNIT}
+	  | trexp (A.IfExp{test, then', else', pos}) = {exp=(), ty= T.UNIT}
+	  | trexp (A.WhileExp{test, body, pos}) = {exp=(), ty= T.UNIT}
+	  | trexp (A.ForExp{var, escape, lo, hi, body, pos}) = {exp=(), ty= T.UNIT}
+	  | trexp (A.BreakExp(pos)) = {exp=(), ty= T.UNIT}
+	  | trexp (A.LetExp{decs, body, pos}) = {exp=(), ty= T.UNIT}
+	  | trexp (A.ArrayExp{typ, size, init, pos}) = {exp=(), ty= T.UNIT}
+   and trvar (A.SimpleVar(id, pos)) = {exp=(), ty=T.NIL}
+	  | trvar (A.FieldVar(var, field, pos)) =  {exp=(), ty=T.NIL}
+	  | trvar (A.SubscriptVar(var, exp, pos)) =  {exp=(), ty=T.NIL}			
     in 
     	trexp
     end
-	fun transVar(venv, tenv, var) = ()
 
 	fun transProg(absyn) = ((transExp(E.base_venv, E.base_tenv) absyn); ())
 end
