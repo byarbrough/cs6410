@@ -20,7 +20,53 @@ struct
                   (checkInt(trexp left, pos);
                   checkInt(trexp right, pos);
                   {exp=(),ty= T.INT})
+	  | trexp (A.OpExp{left, oper= A.MinusOp, right, pos}) =
+                  (checkInt(trexp left, pos);
+                  checkInt(trexp right, pos);
+                  {exp=(),ty= T.INT})
+	  | trexp (A.OpExp{left, oper= A.TimesOp, right, pos}) =
+                  (checkInt(trexp left, pos);
+                  checkInt(trexp right, pos);
+                  {exp=(),ty= T.INT})
+	  | trexp (A.OpExp{left, oper= A.DivideOp, right, pos}) =
+                  (checkInt(trexp left, pos);
+                  checkInt(trexp right, pos);
+                  {exp=(),ty= T.INT})
+	  | trexp (A.OpExp{left, oper= A.EqOp, right, pos}) =
+                  (checkInt(trexp left, pos);
+                  checkInt(trexp right, pos);
+                  {exp=(),ty= T.INT})
+	  | trexp (A.OpExp{left, oper= A.NeqOp, right, pos}) =
+                  (checkInt(trexp left, pos);
+                  checkInt(trexp right, pos);
+                  {exp=(),ty= T.INT})
+	  | trexp (A.OpExp{left, oper= A.LtOp, right, pos}) =
+                  (checkInt(trexp left, pos);
+                  checkInt(trexp right, pos);
+                  {exp=(),ty= T.INT})
+	  | trexp (A.OpExp{left, oper= A.LeOp, right, pos}) =
+                  (checkInt(trexp left, pos);
+                  checkInt(trexp right, pos);
+                  {exp=(),ty= T.INT})
+	  | trexp (A.OpExp{left, oper= A.GtOp, right, pos}) =
+                  (checkInt(trexp left, pos);
+                  checkInt(trexp right, pos);
+                  {exp=(),ty= T.INT})
+	  | trexp (A.OpExp{left, oper= A.GeOp, right, pos}) =
+                  (checkInt(trexp left, pos);
+                  checkInt(trexp right, pos);
+                  {exp=(),ty= T.INT})
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+		      
     	  | trexp (A.RecordExp{fields, typ, pos}) = {exp=(),ty= T.INT}
     in 
     	trexp
