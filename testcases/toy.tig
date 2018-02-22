@@ -1,6 +1,6 @@
 let 
-type list = {first:int, rest list}
-type b = {first: int, rest: a}
-type a = {first: int, rest: b}
-in () 
-end
+
+ type a = b
+ type b = a
+ in ()
+ end

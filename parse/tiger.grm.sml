@@ -785,7 +785,7 @@ end
 ) => let val  result = MlyValue.seqexp (fn _ => let val  (exp as exp1)
  = exp1 ()
  val  (seqexpcont as seqexpcont1) = seqexpcont1 ()
- in (Absyn.SeqExp((exp, expleft):: seqexpcont))
+ in (Absyn.SeqExp(rev((exp, expleft):: seqexpcont)))
 end)
  in ( LrTable.NT 15, ( result, exp1left, seqexpcont1right), rest671)
 

@@ -1,9 +1,10 @@
 (*
 TODO: 
 Make sure Nil assignment is correct
-Make sure dec/seq/all list stuff is the correct way
-Make it so funs that are next to each other are together
-
+Make sure dec/seq (seq are good)/all list stuff is the correct way
+breaks stuff
+illegal type cycles
+fix mutually recursive functions, they are almost there
 *)
 
 signature SEMANT = 
@@ -33,13 +34,13 @@ struct
             raise TypeErrorException(pos))
 
     fun checkInt ({exp, ty= T.INT}) = true
-      | checkInt ({exp, ty}) = false
+      | checkInt ({exp, ty}) = (print("expected int got: " ^ T.toString(ty)); false)
 
     fun checkStr ({exp, ty= T.STRING}) = true
-      | checkStr ({exp, ty}) = false     
+      | checkStr ({exp, ty}) = (print("expected string got: " ^ T.toString(ty)); false)     
 
     fun checkUnit ({exp, ty= T.UNIT}) = true     
-      | checkUnit ({exp, ty}) = false  
+      | checkUnit ({exp, ty}) = (print("expected unit got: " ^ T.toString(ty)); false)  
 
     
     fun actual_ty (T.NAME(id, tyref)) = 
@@ -51,7 +52,9 @@ struct
      fun checkSame (ty1, ty2) =
           let fun
             chkSm (T.RECORD(fields1, unique1), T.RECORD(fields2, unique2)) =
-                unique1 = unique2 
+                unique1 = unique2
+              | chkSm (T.RECORD(fields, unique), T.NIL) = true
+              | chkSm (T.NIL, T.RECORD(fields, unique)) = true 
               | chkSm (T.NIL, T.NIL) = true
               | chkSm (T.INT, T.INT) = true
               | chkSm (T.STRING, T.STRING) = true
@@ -164,12 +167,14 @@ struct
                 checkFields(fields, tyfields)  
               | checkFields(fields, tyfields) = false   
             val rty = (case  S.look(tenv, typ)
-                    of SOME(T.RECORD(tyfields, unique)) => 
-                    (checkTypeWrapper(checkFields(fields, tyfields), pos);
-                     T.RECORD(tyfields, unique))
 
-                    | SOME(t) => (ErrorMsg.error pos (S.name typ ^ " is not a record type");
-                                raise TypeErrorException(pos))
+                     of SOME(t) => (case actual_ty(t) 
+                        of T.RECORD(tyfields, unique) => 
+                            (checkTypeWrapper(checkFields(fields, tyfields), pos);
+                            T.RECORD(tyfields, unique))
+                        | t => (ErrorMsg.error pos (S.name typ ^ " of type " 
+                                    ^ T.toString(t) ^  " is not a record type");
+                                raise TypeErrorException(pos)))
                     |  NONE => (ErrorMsg.error pos ("type name not found for variable " ^ S.name typ);
                                 raise TypeErrorException(pos)))
           in 
@@ -298,31 +303,48 @@ struct
     (* returns a record {venv, tenv} for the new enviornment*)
     and transDec(venv, tenv, dec) = 
     let fun
-        trdec (A.FunctionDec(nil)) = {venv=venv, tenv=tenv}
-      | trdec (A.FunctionDec({name, params, result, body, pos} :: fundecs)) = 
-      let val result_ty = 
-        (case result
-            of NONE => T.UNIT 
-            |  SOME(rt, tyPos) => 
-                (case S.look(tenv, rt)
-                                of SOME(result_ty) => result_ty
-                                |  NONE => (ErrorMsg.error pos ("type name not found for variable " ^ S.name rt);
-                            raise TypeErrorException(pos))))
-          fun transparam{name, typ, pos, escape} = 
+     trdec (A.FunctionDec(fundecs)) = 
+        (*{name, params, result, body, pos}*)
+
+      let 
+        fun transparam{name, typ, pos, escape} = 
                         case  S.look(tenv, typ)
                         of SOME t => {name=name, ty=t}
                         |  NONE => (ErrorMsg.error pos ("type name not found for variable " ^ S.name typ);
                     raise TypeErrorException(pos))
-          val params' = map transparam params
-          val venv' = S.enter(venv, name, 
-            E.FunEntry{formals=map #ty params', result = result_ty})
-          fun  enterparam ({name, ty}, venv) = S.enter(venv, name, 
-            E.VarEntry{access=ref (), ty=ty})
-          val venv'' = foldl enterparam venv' params' 
-          val bodyty = transExp(venv'', tenv, body);
-      in 
-        checkTypeWrapper(checkSame(#ty bodyty, result_ty), pos); 
-        transDec(venv', tenv, A.FunctionDec(fundecs))
+        fun addNewF({name, params, result, body, pos}, env) = 
+            let 
+                val params' = map transparam params
+            in
+            S.enter(env, name, E.FunEntry{formals=map #ty params', result = T.NAME(name, ref NONE)})
+            end
+        val venv' = foldl addNewF venv fundecs
+        val _ = (app (fn ({name, params, result, body, pos}) => 
+            let 
+                val result_ty = 
+                    case result
+                        of NONE => T.UNIT 
+                        |  SOME(rt, tyPos) => 
+                            case S.look(tenv, rt)
+                                of SOME(result_ty) => result_ty
+                                |  NONE => (ErrorMsg.error pos ("type name not found for variable " ^ S.name rt);
+                            raise TypeErrorException(pos))
+                
+                val params' = map transparam params
+                fun  enterparam ({name, ty}, venv) = S.enter(venv, name, 
+                    E.VarEntry{access=ref (), ty=ty})
+                val venv'' = foldl enterparam venv' params' 
+                val bodyty = transExp(venv'', tenv, body);
+                    
+                val (SOME (E.FunEntry{result = T.NAME(name,tyr), ...})) = S.look(venv',name)
+                in 
+                    tyr := SOME (#ty bodyty);
+                    checkTypeWrapper(checkSame(#ty bodyty, result_ty), pos)
+                end) fundecs;
+            {venv=venv', tenv= tenv})
+          
+      in  
+        {venv= venv', tenv=tenv}
       end
           
 
@@ -341,13 +363,23 @@ struct
             |  NONE => {tenv=tenv, 
             venv=S.enter(venv, name, E.VarEntry{access= ref (), ty=ty})})
         end
-      | trdec (A.TypeDec(nil)) = {venv=venv, tenv=tenv}
-      | trdec (A.TypeDec({name, ty, pos} :: rest)) = 
-      {venv=venv, 
-       tenv= #tenv (transDec(venv, 
-                     S.enter(tenv, name, transTy(tenv, ty)), 
-                     A.TypeDec(rest)))
-      }
+
+      | trdec (A.TypeDec(typeDecs)) = 
+
+        let
+            fun addNewT({name, ty, pos}, env) = 
+                S.enter(env, name, T.NAME(name, ref (S.look(env, name))))
+            val tenv' = foldl addNewT tenv typeDecs
+        in 
+            (app (fn ({name, ty, pos}) => 
+                let 
+                    val newty = transTy(tenv', ty) 
+                    val (SOME (T.NAME(name,tyr))) = S.look(tenv',name)
+                in tyr := SOME newty
+                end) 
+             typeDecs;
+            {venv=venv, tenv= tenv'})
+        end
     in 
         (trdec dec)
     end     

@@ -86,7 +86,7 @@ literal: NIL (Absyn.NilExp)
        | BREAK (Absyn.BreakExp(BREAKleft))
 
 seqexp:  (Absyn.SeqExp([]))
-      |  exp seqexpcont (Absyn.SeqExp((exp, expleft):: seqexpcont))
+      |  exp seqexpcont (Absyn.SeqExp(rev((exp, expleft):: seqexpcont)))
 
 seqexpcont: ([])
     | SEMICOLON exp seqexpcont ((exp, expleft):: seqexpcont)
