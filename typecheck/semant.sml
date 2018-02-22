@@ -190,15 +190,44 @@ struct
     (* returns a record {venv, tenv} for the new enviornment*)
     fun transDec(venv, tenv, dec) = 
     let fun
-        trdec (A.FunctionDec(fundecs)) = {venv =venv, tenv=tenv}
+        trdec (A.FunctionDec(nil)) = {venv=venv, tenv=tenv}
+      | trdec (A.FunctionDec({name, params, result, body, pos} :: fundecs)) = 
+      let val result_ty = 
+        (case result
+            of NONE => T.UNIT 
+            |  SOME(rt, tyPos) => 
+                (case S.look(tenv, rt)
+                                of SOME(result_ty) => result_ty
+                                |  NONE => (ErrorMsg.error pos ("type name found for variable " ^ S.name rt);
+                            raise TypeErrorException(pos))))
+          fun transparam{name, typ, pos, escape} = 
+                        case  S.look(tenv, typ)
+                        of SOME t => {name=name, ty=t}
+                        |  NONE => (ErrorMsg.error pos ("type name found for variable " ^ S.name typ);
+                    raise TypeErrorException(pos))
+          val params' = map transparam params
+          val venv' = S.enter(venv, name, 
+            E.FunEntry{formals=map #ty params', result = result_ty})
+          fun  enterparam ({name, ty}, venv) = S.enter(venv, name, 
+            E.VarEntry{access=ref (), ty=ty})
+          val venv'' = foldl enterparam venv' params' 
+          val bodyty = transExp(venv'', tenv, body);
+      in 
+        checkTypeWrapper(checkSame(#ty bodyty, result_ty), pos); 
+        transDec(venv', tenv, A.FunctionDec(fundecs))
+      end
+          
+
+
+
       | trdec (A.VarDec{name, escape, typ, init, pos}) = 
         let val {exp, ty} = transExp(venv, tenv, init)
         in (case typ 
             of SOME(id, pos) => 
                 (case S.look(tenv, id)
-                 of NONE =>   (("type name found for variable " ^ S.name id);
+                 of NONE =>   (ErrorMsg.error pos ("type name found for variable " ^ S.name id);
                     raise TypeErrorException(pos))
-                 |  SOME(id, ety) => (checkTypeWrapper(checkSame(ty, ety), pos));
+                 |  SOME(ety) => (checkTypeWrapper(checkSame(ty, ety), pos));
                 {tenv=tenv, 
                  venv=S.enter(venv, name, E.VarEntry{access= ref (), ty=ty})})
             |  NONE => {tenv=tenv, 
@@ -208,7 +237,7 @@ struct
       | trdec (A.TypeDec({name, ty, pos} :: rest)) = 
       {venv=venv, 
        tenv= #tenv (transDec(venv, 
-                     S.enter(tenv, name, (name, transTy(tenv, ty))), 
+                     S.enter(tenv, name, transTy(tenv, ty)), 
                      A.TypeDec(rest)))
       }
     in 
