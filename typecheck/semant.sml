@@ -156,7 +156,7 @@ struct
                 of SOME(E.VarEntry{access,ty}) => 
                 {exp=(), ty=actual_ty ty}
                 | SOME(E.FunEntry{formals, result}) => ( ErrorMsg.error pos 
-                    ("function name found for variable " ^ S.name id);
+                    ("function name not found for variable " ^ S.name id);
                     raise TypeErrorException(pos))
 
                 | NONE => ( ErrorMsg.error pos ("undefined variable " ^ S.name id);
@@ -172,7 +172,7 @@ struct
                 of T.ARRAY(ty, unique) => (checkTypeWrapper(checkInt(trexp exp), pos);
                                            {exp=(), ty=ty})
                 | ty => ( ErrorMsg.error pos ("expected variable not an array");
-                    raise TypeErrorException(pos)))
+                          raise TypeErrorException(pos)))
         in 
             (trexp exp)
         end
@@ -180,9 +180,28 @@ struct
     (* returns the new type created*)
     fun transTy (tenv, ty) = 
     let  fun 
-        trty (A.NameTy(id, pos)) = T.NIL
-      | trty (A.RecordTy(fields)) = T.NIL
-      | trty (A.ArrayTy(id, pos)) = T.NIL
+        trty (A.NameTy(id, pos)) = 
+            (case  S.look(tenv, id)
+                of SOME(t) => T.NAME(id, ref (SOME(t)))
+                |  NONE => (ErrorMsg.error pos ("type name not found for variable " ^ S.name id);
+                            raise TypeErrorException(pos)))
+      | trty (A.RecordTy(fields)) = 
+      let 
+        fun transparam{name, typ, pos, escape} = 
+            (case  S.look(tenv, typ)
+            of SOME(t) => (name, t)
+            |  NONE => (ErrorMsg.error pos ("type name not found for variable " ^ S.name typ);
+                        raise TypeErrorException(pos)))
+
+      in 
+        T.RECORD(map transparam fields, ref ())
+      end
+      | trty (A.ArrayTy(id, pos)) = 
+            (case  S.look(tenv, id)
+                of SOME(t) => T.ARRAY(t, ref ())
+                |  NONE => (ErrorMsg.error pos ("type name not found for variable " ^ S.name id);
+                            raise TypeErrorException(pos)))
+
     in 
         (trty ty)
     end
@@ -198,12 +217,12 @@ struct
             |  SOME(rt, tyPos) => 
                 (case S.look(tenv, rt)
                                 of SOME(result_ty) => result_ty
-                                |  NONE => (ErrorMsg.error pos ("type name found for variable " ^ S.name rt);
+                                |  NONE => (ErrorMsg.error pos ("type name not found for variable " ^ S.name rt);
                             raise TypeErrorException(pos))))
           fun transparam{name, typ, pos, escape} = 
                         case  S.look(tenv, typ)
                         of SOME t => {name=name, ty=t}
-                        |  NONE => (ErrorMsg.error pos ("type name found for variable " ^ S.name typ);
+                        |  NONE => (ErrorMsg.error pos ("type name not found for variable " ^ S.name typ);
                     raise TypeErrorException(pos))
           val params' = map transparam params
           val venv' = S.enter(venv, name, 
@@ -225,7 +244,7 @@ struct
         in (case typ 
             of SOME(id, pos) => 
                 (case S.look(tenv, id)
-                 of NONE =>   (ErrorMsg.error pos ("type name found for variable " ^ S.name id);
+                 of NONE =>   (ErrorMsg.error pos ("type name not found for variable " ^ S.name id);
                     raise TypeErrorException(pos))
                  |  SOME(ety) => (checkTypeWrapper(checkSame(ty, ety), pos));
                 {tenv=tenv, 
