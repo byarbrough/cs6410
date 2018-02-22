@@ -73,7 +73,22 @@ struct
           | trexp (A.IntExp(num)) = {exp=(),ty=T.INT}
           | trexp (A.StringExp(str)) = {exp=(),ty=T.STRING}
 
-          | trexp (A.CallExp{func, args, pos}) = {exp=(),ty=T.NIL}
+          | trexp (A.CallExp{func, args, pos}) = 
+            let 
+                val (formals, result) = (case S.look(venv, func) 
+                    of SOME(E.FunEntry{formals, result}) => (formals, result)
+                     | SOME(E.VarEntry{...}) => (ErrorMsg.error pos ("variable name " ^ S.name func ^ " Called as function");
+                                raise TypeErrorException(pos))
+                     | NONE => (ErrorMsg.error pos ("function name not defined for " ^ S.name func);
+                                raise TypeErrorException(pos)))
+                fun checkArgs(nil, nil) = true
+                  | checkArgs(fty :: formals, exp :: args) = 
+                        checkSame(fty, #ty (trexp exp)) andalso 
+                        checkArgs(formals, args)
+                  | checkArgs(args, types) = false
+            in 
+                (checkTypeWrapper(checkArgs(formals, args), pos); {exp=(), ty=result})
+            end
           
           | trexp (A.OpExp{left, oper= A.PlusOp, right, pos}) =
                       (checkTypeWrapper(
@@ -139,7 +154,28 @@ struct
                          checkInt(trexp right)), pos);
                       {exp=(),ty= T.INT}) 
 
-          | trexp (A.RecordExp{fields, typ, pos}) = {exp=(),ty= T.INT}
+          | trexp (A.RecordExp{fields, typ, pos}) = 
+          let 
+            fun checkField(field, nil) = false
+              | checkField((fid, exp, pos), (tfid, ty) :: tyfields) =
+                fid = tfid orelse checkField((fid, exp, pos), tyfields)
+
+            fun checkFields(nil, tyfields) = true
+              | checkFields(field :: fields, tyfields) = 
+                checkField(field, tyfields) andalso checkFields(fields, tyfields)  
+
+            val rty = (case  S.look(tenv, typ)
+                    of SOME(T.RECORD(tyfields, unique)) => 
+                    (checkTypeWrapper(checkFields(fields, tyfields), pos);
+                     T.RECORD(tyfields, unique))
+
+                    | SOME(t) => (ErrorMsg.error pos (S.name typ ^ " is not a record type");
+                                raise TypeErrorException(pos))
+                    |  NONE => (ErrorMsg.error pos ("type name not found for variable " ^ S.name typ);
+                                raise TypeErrorException(pos)))
+          in 
+           {exp=(), ty= rty}
+          end
 
           | trexp (A.SeqExp(nil)) = {exp=(), ty= T.UNIT}
           | trexp (A.SeqExp((exp, pos) :: tail)) = (trexp(A.SeqExp(tail)); trexp(exp))
