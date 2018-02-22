@@ -183,18 +183,33 @@ struct
               ((*checkTypeWrapper(
                 checkSame( lvalue type, trexp exp), pos);*)
               {exp=(), ty= T.UNIT})
-          | trexp (A.IfExp{test, then', else', pos}) = {exp=(), ty= T.UNIT}            
+          | trexp (A.IfExp{test, then', else'= SOME(exp), pos}) = 
+                let 
+                    val {ty = tty, ...} = trexp then'
+                    val {ty = ety, ...} = trexp exp
+                in
+                    (checkTypeWrapper(checkInt(trexp test) andalso 
+                     checkSame(tty, ety), pos);
+                    {exp=(), ty=tty})
+                end          
+          | trexp (A.IfExp{test, then', else'= NONE, pos}) = (checkTypeWrapper( 
+                checkInt(trexp test) andalso checkUnit(trexp then'), pos); 
+                {exp=(), ty= T.UNIT})              
           | trexp (A.WhileExp{test, body, pos}) = 
               (checkTypeWrapper(
                 (checkInt(trexp test) andalso 
                 checkUnit(trexp body)), pos);
               {exp=(), ty= T.UNIT})
           | trexp (A.ForExp{var, escape, lo, hi, body, pos}) = (* Maybe need to typecheck car and escape too? *)
+            let 
+                val venv' = S.enter(venv, var, E.VarEntry{access=ref (), ty=T.INT})
+            in 
               (checkTypeWrapper(
-                (checkInt(trexp lo) andalso 
-                checkInt(trexp hi) andalso
-                checkUnit(trexp body)), pos);
+                (checkInt(transExp(venv', tenv, lo)) andalso 
+                checkInt(transExp(venv', tenv, hi)) andalso
+                checkUnit(transExp(venv', tenv, body))), pos);
               {exp=(), ty= T.UNIT})
+            end
           | trexp (A.BreakExp(pos)) = {exp=(), ty= T.UNIT}
           | trexp (A.LetExp{decs, body, pos}) =
             let 
