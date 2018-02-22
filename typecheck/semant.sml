@@ -213,6 +213,7 @@ struct
           | trexp (A.BreakExp(pos)) = {exp=(), ty= T.UNIT}
           | trexp (A.LetExp{decs, body, pos}) =
             let 
+                fun combineDecs = () (* todo: combine sequental type or func decs  to allow for recursion*)
                 fun addDecs(dec, {venv=venv', tenv=tenv'}) = transDec(venv', tenv', dec)
                 val {venv=venv', tenv=tenv'} = foldl addDecs {venv=venv, tenv=tenv} decs
             in 
