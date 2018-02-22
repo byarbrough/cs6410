@@ -1,3 +1,11 @@
+(*
+TODO: 
+Make sure Nil assignment is correct
+Make sure dec/seq/all list stuff is the correct way
+Make it so funs that are next to each other are together
+
+*)
+
 signature SEMANT = 
 sig
     val transProg : Absyn.exp -> unit
@@ -31,7 +39,8 @@ struct
       | checkStr ({exp, ty}) = false     
 
     fun checkUnit ({exp, ty= T.UNIT}) = true     
-      | checkUnit ({exp, ty}) = false      
+      | checkUnit ({exp, ty}) = false  
+
     
     fun actual_ty (T.NAME(id, tyref)) = 
         (case !tyref 
@@ -54,6 +63,9 @@ struct
           in
               chkSm(actual_ty(ty1), actual_ty(ty2))
           end
+
+    fun checkArrayElement(T.ARRAY(aty, unique), {exp, ty}) = checkSame(aty, ty)
+      | checkArrayElement(aty, {exp, ty}) = false
     fun transExp(venv, tenv, exp) =
         let fun 
             trexp (A.VarExp(var)) = trvar(var)
@@ -148,8 +160,28 @@ struct
                 checkUnit(trexp body)), pos);
               {exp=(), ty= T.UNIT})
           | trexp (A.BreakExp(pos)) = {exp=(), ty= T.UNIT}
-          | trexp (A.LetExp{decs, body, pos}) = {exp=(), ty= T.UNIT}
-          | trexp (A.ArrayExp{typ, size, init, pos}) = {exp=(), ty= T.UNIT}
+          | trexp (A.LetExp{decs, body, pos}) =
+            let 
+                fun addDecs(dec, {venv=venv', tenv=tenv'}) = transDec(venv', tenv', dec)
+                val {venv=venv', tenv=tenv'} = foldl addDecs {venv=venv, tenv=tenv} decs
+            in 
+                transExp(venv', tenv', body)
+            end
+          | trexp (A.ArrayExp{typ, size, init, pos}) =
+            let 
+                val aty = (case  S.look(tenv, typ)
+                    of SOME(t) => t
+                    |  NONE => (ErrorMsg.error pos ("type name not found for variable " ^ S.name typ);
+                                raise TypeErrorException(pos)))
+                val sty = trexp(size)
+                val ity = trexp(init)
+            in
+            (checkTypeWrapper(
+                checkArrayElement(aty, ity) andalso
+                checkInt(sty), pos); 
+
+            {exp=(), ty= aty})
+        end
        
        and trvar (A.SimpleVar(id, pos)) = 
             (case S.look(venv,id)
@@ -178,7 +210,7 @@ struct
         end
 
     (* returns the new type created*)
-    fun transTy (tenv, ty) = 
+    and transTy (tenv, ty) = 
     let  fun 
         trty (A.NameTy(id, pos)) = 
             (case  S.look(tenv, id)
@@ -207,7 +239,7 @@ struct
     end
 
     (* returns a record {venv, tenv} for the new enviornment*)
-    fun transDec(venv, tenv, dec) = 
+    and transDec(venv, tenv, dec) = 
     let fun
         trdec (A.FunctionDec(nil)) = {venv=venv, tenv=tenv}
       | trdec (A.FunctionDec({name, params, result, body, pos} :: fundecs)) = 
