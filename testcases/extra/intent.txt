@@ -1,0 +1,147 @@
+==> t1.tig <==
+/* an array type and an array variable */
+
+==> t2.tig <==
+/* arr1 is valid since expression 0 is int = myint */
+
+==> t3.tig <==
+/* a record type and a record variable */
+
+==> t4.tig <==
+/* define a recursive function */
+
+==> t5.tig <==
+/* define valid recursive types */
+
+==> t6.tig <==
+/* define valid mutually recursive procedures */
+
+==> t7.tig <==
+/* define valid mutually recursive functions */
+
+==> t8.tig <==
+/* correct if */
+
+==> t9.tig <==
+/* error : body of while not unit */
+
+==> t10.tig <==
+/* error : body of while not unit */
+
+==> t11.tig <==
+/* error hi expr is not int, and index variable erroneously assigned to.  */
+
+==> t12.tig <==
+/* valid for and let */
+
+==> t13.tig <==
+/* error: comparison of incompatible types */
+
+==> t14.tig <==
+/* error : compare rec with array */
+
+==> t15.tig <==
+/* error : if-then returns non unit */
+
+==> t16.tig <==
+/* error: mutually recursive types thet do not pass through record or array */
+
+==> t17.tig <==
+/* error: definition of recursive types is interrupted */
+
+==> t18.tig <==
+/* error : definition of recursive functions is interrupted */
+
+==> t19.tig <==
+/* error : second function uses variables local to the first one, undeclared variable */
+
+==> t20.tig <==
+/* error: undeclared variable i */
+
+==> t21.tig <==
+/* error : procedure returns value  and procedure is used in arexpr */
+
+==> t22.tig <==
+/* error : field not in record type */
+
+==> t23.tig <==
+/* error : type mismatch */
+
+==> t24.tig <==
+/* error : variable not array */
+
+==> t25.tig <==
+/* error : variable not record */
+
+==> t26.tig <==
+/* error : integer required */
+
+==> t27.tig <==
+/* locals hide globals */
+
+==> t28.tig <==
+/* error : different record types */
+
+==> t29.tig <==
+/* error : different array types */
+
+==> t30.tig <==
+/* synonyms are fine */
+
+==> t31.tig <==
+/* error : type constraint and init value differ */
+
+==> t32.tig <==
+/* error : initializing exp and array type differ */
+
+==> t33.tig <==
+/* error : unknown type */
+
+==> t34.tig <==
+/* error : formals and actuals have different types */
+
+==> t35.tig <==
+/* error : formals are more then actuals */
+
+==> t36.tig <==
+/* error : formals are fewer then actuals */
+
+==> t37.tig <==
+/* redeclaration of variable; this is legal, there are two different
+
+==> t38.tig <==
+/* This is illegal, since there are two types with the same name
+
+==> t39.tig <==
+/* This is illegal, since there are two functions with the same name
+
+==> t40.tig <==
+/* error : procedure returns value */
+
+==> t41.tig <==
+/* local types hide global */
+
+==> t42.tig <==
+/* correct declarations */
+
+==> t43.tig <==
+/* initialize with unit and causing type mismatch in addition */
+
+==> t44.tig <==
+/* valid nil initialization and assignment */
+
+==> t45.tig <==
+/* error: initializing nil expressions not constrained by record type */
+
+==> t46.tig <==
+/* valid rec comparisons */
+
+==> t47.tig <==
+/* This is legal.  The second type "a" simply hides the first one.
+
+==> t48.tig <==
+/* This is legal.  The second function "g" simply hides the first one.
+
+==> t49.tig <==
+/* error: syntax error, nil should not be preceded by type-id.  */
+
