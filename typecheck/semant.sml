@@ -2,9 +2,8 @@
 TODO: 
 Make sure Nil assignment is correct
 Make sure dec/seq (seq are good)/all list stuff is the correct way
-breaks stuff
+breaks type checking
 illegal type cycles
-fix mutually recursive functions, they are almost there
 *)
 
 signature SEMANT = 
@@ -19,7 +18,7 @@ struct
     structure T = Types
     structure S = Symbol
     exception TypeErrorException of int
-    
+    val looplevel = ref 0
     fun checkField(field, nil, pos) = ( ErrorMsg.error pos 
         ("Field variable " ^ S.name field ^ " not found");
             raise TypeErrorException(pos))
@@ -199,22 +198,28 @@ struct
           | trexp (A.IfExp{test, then', else'= NONE, pos}) = (checkTypeWrapper( 
                 checkInt(trexp test) andalso checkUnit(trexp then'), pos); 
                 {exp=(), ty= T.UNIT})              
-          | trexp (A.WhileExp{test, body, pos}) = 
-              (checkTypeWrapper(
+          | trexp (A.WhileExp{test, body, pos}) = (looplevel := !looplevel + 1;
+              checkTypeWrapper(
                 (checkInt(trexp test) andalso 
                 checkUnit(trexp body)), pos);
+              looplevel := !looplevel - 1;
+
               {exp=(), ty= T.UNIT})
           | trexp (A.ForExp{var, escape, lo, hi, body, pos}) = (* Maybe need to typecheck car and escape too? *)
             let 
                 val venv' = S.enter(venv, var, E.VarEntry{access=ref (), ty=T.INT})
             in 
-              (checkTypeWrapper(
-                (checkInt(transExp(venv', tenv, lo)) andalso 
-                checkInt(transExp(venv', tenv, hi)) andalso
-                checkUnit(transExp(venv', tenv, body))), pos);
+              (looplevel := !looplevel + 1;
+                checkTypeWrapper(checkInt(transExp(venv', tenv, lo)) andalso 
+                 checkInt(transExp(venv', tenv, hi)) andalso
+                 checkUnit(transExp(venv', tenv, body)), pos);
+              looplevel := !looplevel - 1;
               {exp=(), ty= T.UNIT})
             end
-          | trexp (A.BreakExp(pos)) = {exp=(), ty= T.UNIT}
+          | trexp (A.BreakExp(pos)) = (case !looplevel of
+            0 => (ErrorMsg.error pos ("break found outside of loop");
+                                raise TypeErrorException(pos))
+            | num => {exp=(), ty= T.UNIT})
           | trexp (A.LetExp{decs, body, pos}) =
             let 
                 fun combineDecs(nil) = nil
@@ -315,8 +320,16 @@ struct
         fun addNewF({name, params, result, body, pos}, env) = 
             let 
                 val params' = map transparam params
+                val result_ty = 
+                    case result
+                        of NONE => T.UNIT 
+                        |  SOME(rt, tyPos) => 
+                            case S.look(tenv, rt)
+                                of SOME(result_ty) => result_ty
+                                |  NONE => (ErrorMsg.error pos ("type name not found for variable " ^ S.name rt);
+                            raise TypeErrorException(pos))
             in
-            S.enter(env, name, E.FunEntry{formals=map #ty params', result = T.NAME(name, ref NONE)})
+            S.enter(env, name, E.FunEntry{formals=map #ty params', result = result_ty})
             end
         val venv' = foldl addNewF venv fundecs
         val _ = (app (fn ({name, params, result, body, pos}) => 
@@ -328,17 +341,13 @@ struct
                             case S.look(tenv, rt)
                                 of SOME(result_ty) => result_ty
                                 |  NONE => (ErrorMsg.error pos ("type name not found for variable " ^ S.name rt);
-                            raise TypeErrorException(pos))
-                
+                            raise TypeErrorException(pos))               
                 val params' = map transparam params
                 fun  enterparam ({name, ty}, venv) = S.enter(venv, name, 
                     E.VarEntry{access=ref (), ty=ty})
                 val venv'' = foldl enterparam venv' params' 
                 val bodyty = transExp(venv'', tenv, body);
-                    
-                val (SOME (E.FunEntry{result = T.NAME(name,tyr), ...})) = S.look(venv',name)
                 in 
-                    tyr := SOME (#ty bodyty);
                     checkTypeWrapper(checkSame(#ty bodyty, result_ty), pos)
                 end) fundecs;
             {venv=venv', tenv= tenv})
