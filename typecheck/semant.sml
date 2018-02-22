@@ -394,6 +394,30 @@ struct
             fun addNewT({name, ty, pos}, env) = 
                 S.enter(env, name, T.NAME(name, ref (S.look(env, name))))
             val tenv' = foldl addNewT tenv typeDecs
+            
+            fun inList(tref, nil) = false
+              | inList(tref, first :: rest) = 
+                tref = first orelse inList(tref, rest)
+            
+            fun isCycle(trefs, (T.NAME(id, tyr), pos)) =
+                (case inList(tyr, trefs) of 
+                  true => (ErrorMsg.error pos ("type cycle found for type " ^ S.name id);
+                    raise TypeErrorException(pos))
+                | false => case !tyr of 
+                            NONE => (ErrorMsg.error pos (
+                              "compiler error unset type for " ^ S.name id);
+                              raise TypeErrorException(pos))
+                          | SOME(t) => isCycle(tyr :: trefs, (t, pos)))
+
+              | isCycle(trefs, (ty, pos)) = ()
+
+            fun checkTyCycles(env) =
+              app (fn ({name, ty, pos}) => 
+                (case S.look(env, name) of
+                  SOME(t) => (print("checking type: " ^ S.name name ^ "\n");
+                   isCycle(nil, (t, pos)))
+                  | NONE =>   (ErrorMsg.error pos ("type name not found in env " ^ S.name name);
+                    raise TypeErrorException(pos)))) typeDecs
         in 
             (app (fn ({name, ty, pos}) => 
                 let 
@@ -402,6 +426,7 @@ struct
                 in tyr := SOME newty
                 end) 
              typeDecs;
+             checkTyCycles(tenv');
             {venv=venv, tenv= tenv'})
         end
     in 
