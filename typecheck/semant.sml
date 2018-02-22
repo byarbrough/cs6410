@@ -1,6 +1,5 @@
 (*
 TODO: 
-Make sure dec/seq (seq are good)/all list stuff is the correct way
 breaks type checking
 *)
 
