@@ -1,7 +1,5 @@
 (*
 TODO: 
-Make sure Nil assignment is correct
-Make sure dec/seq (seq are good)/all list stuff is the correct way
 breaks type checking
 *)
 
@@ -383,8 +381,12 @@ struct
                  |  SOME(ety) => (checkTypeWrapper(checkSame(ty, ety), pos));
                 {tenv=tenv, 
                  venv=S.enter(venv, name, E.VarEntry{access= ref (), ty=ty})})
-            |  NONE => {tenv=tenv, 
-            venv=S.enter(venv, name, E.VarEntry{access= ref (), ty=ty})})
+            |  NONE => (case (actual_ty(ty)) of
+                        T.NIL => (ErrorMsg.error pos (
+                              "Nil variable decleration must have type for var " ^ S.name name);
+                              raise TypeErrorException(pos))
+                      | ty  =>  {tenv=tenv, 
+            venv=S.enter(venv, name, E.VarEntry{access= ref (), ty=ty})}))
         end
 
       | trdec (A.TypeDec(typeDecs)) = 
