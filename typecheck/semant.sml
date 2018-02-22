@@ -28,7 +28,10 @@ struct
       | checkInt ({exp, ty}) = false
 
     fun checkStr ({exp, ty= T.STRING}) = true
-      | checkStr ({exp, ty}) = false                
+      | checkStr ({exp, ty}) = false     
+
+    fun checkUnit ({exp, ty= T.UNIT}) = true     
+      | checkUnit ({exp, ty}) = false      
     
     fun actual_ty (T.NAME(id, tyref)) = 
         (case !tyref 
@@ -128,10 +131,22 @@ struct
 
           | trexp (A.SeqExp(nil)) = {exp=(), ty= T.UNIT}
           | trexp (A.SeqExp((exp, pos) :: tail)) = (trexp(A.SeqExp(tail)); trexp(exp))
-          | trexp (A.AssignExp{var, exp, pos}) = {exp=(), ty= T.UNIT}
-          | trexp (A.IfExp{test, then', else', pos}) = {exp=(), ty= T.UNIT}
-          | trexp (A.WhileExp{test, body, pos}) = {exp=(), ty= T.UNIT}
-          | trexp (A.ForExp{var, escape, lo, hi, body, pos}) = {exp=(), ty= T.UNIT}
+          | trexp (A.AssignExp{var, exp, pos}) = 
+              ((*checkTypeWrapper(
+                checkSame( lvalue type, trexp exp), pos);*)
+              {exp=(), ty= T.UNIT})
+          | trexp (A.IfExp{test, then', else', pos}) = {exp=(), ty= T.UNIT}            
+          | trexp (A.WhileExp{test, body, pos}) = 
+              (checkTypeWrapper(
+                (checkInt(trexp test) andalso 
+                checkUnit(trexp body)), pos);
+              {exp=(), ty= T.UNIT})
+          | trexp (A.ForExp{var, escape, lo, hi, body, pos}) = (* Maybe need to typecheck car and escape too? *)
+              (checkTypeWrapper(
+                (checkInt(trexp lo) andalso 
+                checkInt(trexp hi) andalso
+                checkUnit(trexp body)), pos);
+              {exp=(), ty= T.UNIT})
           | trexp (A.BreakExp(pos)) = {exp=(), ty= T.UNIT}
           | trexp (A.LetExp{decs, body, pos}) = {exp=(), ty= T.UNIT}
           | trexp (A.ArrayExp{typ, size, init, pos}) = {exp=(), ty= T.UNIT}
