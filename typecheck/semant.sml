@@ -3,7 +3,6 @@ TODO:
 Make sure Nil assignment is correct
 Make sure dec/seq (seq are good)/all list stuff is the correct way
 breaks type checking
-illegal type cycles
 *)
 
 signature SEMANT = 
