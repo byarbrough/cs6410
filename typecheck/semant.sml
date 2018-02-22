@@ -59,13 +59,13 @@ struct
                     unique1 = unique2
               | chkSm (T.UNIT, T.UNIT) = true
               | chkSm (T.NAME(id1, tyref1), T.NAME(id2, tyref2)) = true
-              | chkSm ( ty1, ty2) = false
+              | chkSm ( ty1, ty2) = (print(T.toString(ty1) ^ "\n" ^ T.toString(ty2)); false)
           in
               chkSm(actual_ty(ty1), actual_ty(ty2))
           end
 
-    fun checkArrayElement(T.ARRAY(aty, unique), {exp, ty}) = checkSame(aty, ty)
-      | checkArrayElement(aty, {exp, ty}) = false
+    fun checkArrayElement(T.ARRAY(aty, unique), ty) = checkSame(aty, ty)
+      | checkArrayElement(aty, ty) = false
     fun transExp(venv, tenv, exp) =
         let fun 
             trexp (A.VarExp(var)) = trvar(var)
@@ -156,14 +156,13 @@ struct
 
           | trexp (A.RecordExp{fields, typ, pos}) = 
           let 
-            fun checkField(field, nil) = false
-              | checkField((fid, exp, pos), (tfid, ty) :: tyfields) =
-                fid = tfid orelse checkField((fid, exp, pos), tyfields)
+            fun checkFields(nil, nil) = true
+              | checkFields((fid, exp, pos) :: fields, (tfid, ty) :: tyfields) = 
+                fid = tfid andalso 
 
-            fun checkFields(nil, tyfields) = true
-              | checkFields(field :: fields, tyfields) = 
-                checkField(field, tyfields) andalso checkFields(fields, tyfields)  
-
+                checkSame(#ty (trexp exp), ty) andalso 
+                checkFields(fields, tyfields)  
+              | checkFields(fields, tyfields) = false   
             val rty = (case  S.look(tenv, typ)
                     of SOME(T.RECORD(tyfields, unique)) => 
                     (checkTypeWrapper(checkFields(fields, tyfields), pos);
@@ -213,9 +212,15 @@ struct
           | trexp (A.BreakExp(pos)) = {exp=(), ty= T.UNIT}
           | trexp (A.LetExp{decs, body, pos}) =
             let 
-                fun combineDecs = () (* todo: combine sequental type or func decs  to allow for recursion*)
+                fun combineDecs(nil) = nil
+                  | combineDecs(dec :: nil) = (dec :: nil)
+                  | combineDecs(A.FunctionDec(l1) :: A.FunctionDec(l2) :: rest) 
+                    = combineDecs(A.FunctionDec(l1 @ l2) :: rest)
+                  | combineDecs(A.TypeDec(l1) :: A.TypeDec(l2) :: rest) 
+                    = combineDecs(A.TypeDec(l1 @ l2) :: rest)
+                  | combineDecs(first :: rest) = first :: combineDecs(rest)
                 fun addDecs(dec, {venv=venv', tenv=tenv'}) = transDec(venv', tenv', dec)
-                val {venv=venv', tenv=tenv'} = foldl addDecs {venv=venv, tenv=tenv} decs
+                val {venv=venv', tenv=tenv'} = foldl addDecs {venv=venv, tenv=tenv} (combineDecs(decs))
             in 
                 transExp(venv', tenv', body)
             end
@@ -229,7 +234,7 @@ struct
                 val ity = trexp(init)
             in
             (checkTypeWrapper(
-                checkArrayElement(aty, ity) andalso
+                checkArrayElement(actual_ty(aty), actual_ty((#ty ity))) andalso
                 checkInt(sty), pos); 
 
             {exp=(), ty= aty})
