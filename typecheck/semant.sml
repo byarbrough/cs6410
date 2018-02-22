@@ -31,23 +31,22 @@ struct
             raise TypeErrorException(pos))
 
     fun checkInt ({exp, ty= T.INT}) = true
-      | checkInt ({exp, ty}) = (print("expected int got: " ^ T.toString(ty)); false)
+      | checkInt ({exp, ty}) = false
 
     fun checkStr ({exp, ty= T.STRING}) = true
-      | checkStr ({exp, ty}) = (print("expected string got: " ^ T.toString(ty)); false)     
+      | checkStr ({exp, ty}) = false
 
     fun checkUnit ({exp, ty= T.UNIT}) = true     
-      | checkUnit ({exp, ty}) = (print("expected unit got: " ^ T.toString(ty)); false)  
+      | checkUnit ({exp, ty}) = false
 
    fun checkArrays ({ty= T.ARRAY(ty1, unique1), exp=exp1}, 
                     {ty=T.ARRAY(ty2, unique2), exp=exp2}) = unique1 = unique2
 
-      | checkArrays ({ty=ty1, ...}, {ty=ty2, ...}) = (print("expected arrays got: " ^ T.toString(ty1)
-        ^ " and: " ^ T.toString(ty2)); false)  
+      | checkArrays ({ty=ty1, ...}, {ty=ty2, ...}) = false  
 
    fun checkRecord ({exp, ty= T.RECORD(l, unique)}) = true
       | checkRecord ({exp, ty= T.NIL})= true
-      | checkRecord ({exp, ty}) = (print("expected record got: " ^ T.toString(ty)); false)  
+      | checkRecord ({exp, ty}) = false
     
     fun actual_ty (T.NAME(id, tyref)) = 
         (case !tyref 
@@ -68,7 +67,7 @@ struct
                     unique1 = unique2
               | chkSm (T.UNIT, T.UNIT) = true
               | chkSm (T.NAME(id1, tyref1), T.NAME(id2, tyref2)) = true
-              | chkSm ( ty1, ty2) = (print(T.toString(ty1) ^ "\n" ^ T.toString(ty2)); false)
+              | chkSm ( ty1, ty2) = false
           in
               chkSm(actual_ty(ty1), actual_ty(ty2))
           end
