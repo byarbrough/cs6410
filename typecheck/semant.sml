@@ -31,24 +31,28 @@ struct
             raise TypeErrorException(pos))
 
     fun checkInt ({exp, ty= T.INT}) = true
-      | checkInt ({exp, ty}) = (print("expected int got: " ^ T.toString(ty)); false)
+      | checkInt ({exp, ty}) = (print(" expected int got: " ^ T.toString(ty)); false)
 
     fun checkStr ({exp, ty= T.STRING}) = true
-      | checkStr ({exp, ty}) = (print("expected string got: " ^ T.toString(ty)); false)     
+      | checkStr ({exp, ty}) = (print(" expected string got: " ^ T.toString(ty)); false)     
 
     fun checkUnit ({exp, ty= T.UNIT}) = true     
-      | checkUnit ({exp, ty}) = (print("expected unit got: " ^ T.toString(ty)); false)  
+      | checkUnit ({exp, ty}) = (print(" expected unit got: " ^ T.toString(ty)); false)  
 
    fun checkArrays ({ty= T.ARRAY(ty1, unique1), exp=exp1}, 
                     {ty=T.ARRAY(ty2, unique2), exp=exp2}) = unique1 = unique2
 
-      | checkArrays ({ty=ty1, ...}, {ty=ty2, ...}) = (print("expected arrays got: " ^ T.toString(ty1)
+      | checkArrays ({ty=ty1, ...}, {ty=ty2, ...}) = (print(" expected arrays got: " ^ T.toString(ty1)
         ^ " and: " ^ T.toString(ty2)); false)  
 
    fun checkRecord ({exp, ty= T.RECORD(l, unique)}) = true
       | checkRecord ({exp, ty= T.NIL})= true
-      | checkRecord ({exp, ty}) = (print("expected record got: " ^ T.toString(ty)); false)  
-    
+      | checkRecord ({exp, ty}) = (print(" expected record got: " ^ T.toString(ty)); false)  
+  
+    fun checkBreak ({exp, ty= T.BREAK}) = true
+     | checkBreak ({exp, ty = T.UNIT}) = true
+     | checkBreak ({exp, ty}) = (print(" expected unit/break got: " ^ T.toString(ty)); false)
+ 
     fun actual_ty (T.NAME(id, tyref)) = 
         (case !tyref 
             of SOME(ty) => actual_ty(ty)
@@ -72,6 +76,11 @@ struct
           in
               chkSm(actual_ty(ty1), actual_ty(ty2))
           end
+    fun checkIf(T.BREAK, ty2, pos) = ty2
+     |  checkIf(ty1, T.BREAK, pos) = ty1
+     |  checkIf(ty1, ty2, pos) = (checkTypeWrapper(checkSame(ty1, ty2), pos); ty1)
+
+
 
     fun checkArrayElement(T.ARRAY(aty, unique), ty) = checkSame(aty, ty)
       | checkArrayElement(aty, ty) = false
@@ -204,9 +213,8 @@ struct
                     val {ty = tty, ...} = trexp then'
                     val {ty = ety, ...} = trexp exp
                 in
-                    (checkTypeWrapper(checkInt(trexp test) andalso 
-                     checkSame(tty, ety), pos);
-                    {exp=(), ty=tty})
+                  (checkTypeWrapper(checkInt(trexp test), pos); 
+                    {exp=(), ty=checkIf(tty, ety, pos)})
                 end          
           | trexp (A.IfExp{test, then', else'= NONE, pos}) = (checkTypeWrapper( 
                 checkInt(trexp test) andalso checkUnit(trexp then'), pos); 
@@ -214,7 +222,7 @@ struct
           | trexp (A.WhileExp{test, body, pos}) = (looplevel := !looplevel + 1;
               checkTypeWrapper(
                 (checkInt(trexp test) andalso 
-                checkUnit(trexp body)), pos);
+                checkBreak(trexp body)), pos);
               looplevel := !looplevel - 1;
 
               {exp=(), ty= T.UNIT})
@@ -225,14 +233,14 @@ struct
               (looplevel := !looplevel + 1;
                 checkTypeWrapper(checkInt(transExp(venv', tenv, lo)) andalso 
                  checkInt(transExp(venv', tenv, hi)) andalso
-                 checkUnit(transExp(venv', tenv, body)), pos);
+                 checkBreak(transExp(venv', tenv, body)), pos);
               looplevel := !looplevel - 1;
               {exp=(), ty= T.UNIT})
             end
           | trexp (A.BreakExp(pos)) = (case !looplevel of
             0 => (ErrorMsg.error pos ("break found outside of loop");
                                 raise TypeErrorException(pos))
-            | num => {exp=(), ty= T.UNIT})
+            | num => {exp=(), ty= T.BREAK})
           | trexp (A.LetExp{decs, body, pos}) =
             let 
                 fun combineDecs(nil) = nil
