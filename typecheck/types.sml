@@ -11,7 +11,7 @@ struct
           | ARRAY of ty * unique
 	      | NAME of Symbol.symbol * ty option ref
 	      | UNIT
-  fun toString( RECORD(list, unique)) = "RECORD"
+  fun toString( RECORD(l, unique)) = "RECORD"
   	| toString(NIL) = "NIL"
   	| toString(INT) = "INT"
   	| toString(STRING) = "STRING"

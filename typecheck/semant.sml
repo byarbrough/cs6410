@@ -41,6 +41,15 @@ struct
     fun checkUnit ({exp, ty= T.UNIT}) = true     
       | checkUnit ({exp, ty}) = (print("expected unit got: " ^ T.toString(ty)); false)  
 
+   fun checkArrays ({ty= T.ARRAY(ty1, unique1), exp=exp1}, 
+                    {ty=T.ARRAY(ty2, unique2), exp=exp2}) = unique1 = unique2
+
+      | checkArrays ({ty=ty1, ...}, {ty=ty2, ...}) = (print("expected arrays got: " ^ T.toString(ty1)
+        ^ " and: " ^ T.toString(ty2)); false)  
+
+   fun checkRecord ({exp, ty= T.RECORD(l, unique)}) = true
+      | checkRecord ({exp, ty= T.NIL})= true
+      | checkRecord ({exp, ty}) = (print("expected record got: " ^ T.toString(ty)); false)  
     
     fun actual_ty (T.NAME(id, tyref)) = 
         (case !tyref 
@@ -143,6 +152,9 @@ struct
 
           | trexp (A.OpExp{left, oper= A.EqOp, right, pos}) =
                       (checkTypeWrapper(
+                        (checkRecord(trexp left) andalso
+                          checkRecord(trexp right)) orelse
+                         checkArrays(trexp left, trexp right) orelse
                         (checkStr(trexp left) andalso 
                          checkStr(trexp right)) orelse
                         (checkInt(trexp left) andalso
@@ -150,6 +162,9 @@ struct
                       {exp=(),ty= T.INT})
           | trexp (A.OpExp{left, oper= A.NeqOp, right, pos}) =
                       (checkTypeWrapper(
+                        (checkRecord(trexp left) andalso
+                          checkRecord(trexp right)) orelse
+                         checkArrays(trexp left, trexp right) orelse
                         (checkStr(trexp left) andalso 
                          checkStr(trexp right)) orelse
                         (checkInt(trexp left) andalso
