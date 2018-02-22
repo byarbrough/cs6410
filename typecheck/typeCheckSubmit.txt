@@ -1,0 +1,6 @@
+Thomas Kowalski - BS student in CCIS
+Brian Yarbrough - MS student in EECE
+
+The majority of this type checker follows the guidelines of Appel in Chapter 5.
+The weirdest part is when it comes to break statements. Checking that break statements can only happen within a loop is done by maintaining a counter that is incrememtne/decremented each time a while or for expression is entered/exited.
+In the If-Then-Else case, the then and else expressions must match types. This means that we have to match the break type to whatever type happens to be in the other expression. That is, break assumes a type.
