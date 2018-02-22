@@ -1,5 +1,6 @@
 (*
 TODO: 
+
 breaks type checking
 *)
 
@@ -195,8 +196,8 @@ struct
           | trexp (A.SeqExp(nil)) = {exp=(), ty= T.UNIT}
           | trexp (A.SeqExp((exp, pos) :: tail)) = (trexp(A.SeqExp(tail)); trexp(exp))
           | trexp (A.AssignExp{var, exp, pos}) = 
-              ((*checkTypeWrapper(
-                checkSame( lvalue type, trexp exp), pos);*)
+              (checkTypeWrapper(
+                checkSame( #ty (trvar var), #ty (trexp exp)), pos);
               {exp=(), ty= T.UNIT})
           | trexp (A.IfExp{test, then', else'= SOME(exp), pos}) = 
                 let 
