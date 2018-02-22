@@ -1,2 +1,2 @@
-CM.make "sources.cm"; Main.run("../testcases/toy.tig");
+CM.make "sources.cm"; Main.run("../testcases/queens.tig");
 
