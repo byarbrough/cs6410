@@ -1,7 +1,0 @@
-let 
-	type a  =  b
-	type b = a
- 
- 	in 
- 	"lol"
- end
