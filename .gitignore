@@ -1,5 +1,6 @@
 !.gitignore
 */.cm/
+*/res.txt
 
 # Created by https://www.gitignore.io/api/emacs
 
