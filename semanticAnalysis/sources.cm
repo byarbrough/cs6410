@@ -13,6 +13,7 @@ env.sml
 semant.sml
 translate.sml
 types.sml
+temp.sml
 main.sml
 $/ml-yacc-lib.cm
 $/smlnj-lib.cm
