@@ -22,7 +22,7 @@ structure Translate : TRANSLATE = struct
   		Level({ parent= parent,
 		  frame= F.newFrame({name= name, formals= formals}), 
 		  uni = ref ()})
-  fun formals(level) = nil
+  fun formals(level) = nil (*stubbed*)
   fun allocLocal(Top) =  ErrorMsg.impossible "allocLocal should not be given outermost level"
   	| allocLocal(Level level) = fn(b) => (Level(level), (F.allocLocal(#frame level) b))
 
