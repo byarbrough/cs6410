@@ -272,7 +272,7 @@ struct
             (case S.look(venv,id)
                 of SOME(E.VarEntry{access,ty}) => 
                 {exp=(), ty=actual_ty ty}
-                | SOME(E.FunEntry{formals, result}) => ( ErrorMsg.error pos 
+                | SOME(E.FunEntry{level, label, formals, result}) => ( ErrorMsg.error pos 
                     ("function name not found for variable " ^ S.name id);
                     raise TypeErrorException(pos))
 
