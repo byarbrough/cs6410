@@ -13,6 +13,7 @@ end
 structure Env : ENV = 
 struct
 	structure S = Symbol
+	structure Tr = Translate
 	structure T = Types 
 	type ty = T.ty
 	datatype enventry = 
@@ -31,14 +32,14 @@ struct
 	(S.enter ((S.enter ((S.enter ((S.enter ((S.enter
 	((S.enter ((S.enter ((S.enter ((S.enter ((S.enter 
 		(S.empty, 
-		S.symbol("print"), FunEntry({level = 1, label = Temp.newlabel(), formals= [T.STRING], result= T.UNIT }))),
-		S.symbol("flush"), FunEntry({level = 1, label = Temp.newlabel(), formals= [], result= T.UNIT }))),
-		S.symbol("getchar"), FunEntry({level = 1, label = Temp.newlabel(), formals= [], result= T.STRING }))),
-		S.symbol("ord"), FunEntry({level = 1, label = Temp.newlabel(), formals= [T.STRING], result= T.INT }))),
-		S.symbol("chr"), FunEntry({level = 1, label = Temp.newlabel(), formals= [T.INT], result= T.STRING }))),
-		S.symbol("size"), FunEntry({level = 1, label = Temp.newlabel(), formals= [T.STRING], result= T.INT }))),
-		S.symbol("substring"), FunEntry({level = 1, label = Temp.newlabel(), formals= [T.STRING, T.INT, T.INT], result= T.STRING }))),
-		S.symbol("concat"), FunEntry({level = 1, label = Temp.newlabel(), formals= [T.STRING, T.STRING], result= T.STRING }))),
-		S.symbol("not"), FunEntry({level = 1, label = Temp.newlabel(), formals= [T.INT], result= T.INT }))),
-		S.symbol("exit"), FunEntry({level = 1, label = Temp.newlabel(), formals= [T.INT], result= T.UNIT })))
+		S.symbol("print"), FunEntry({level = Tr.outermost, label = Temp.newlabel(), formals= [T.STRING], result= T.UNIT }))),
+		S.symbol("flush"), FunEntry({level = Tr.outermost, label = Temp.newlabel(), formals= [], result= T.UNIT }))),
+		S.symbol("getchar"), FunEntry({level = Tr.outermost, label = Temp.newlabel(), formals= [], result= T.STRING }))),
+		S.symbol("ord"), FunEntry({level = Tr.outermost, label = Temp.newlabel(), formals= [T.STRING], result= T.INT }))),
+		S.symbol("chr"), FunEntry({level = Tr.outermost, label = Temp.newlabel(), formals= [T.INT], result= T.STRING }))),
+		S.symbol("size"), FunEntry({level = Tr.outermost, label = Temp.newlabel(), formals= [T.STRING], result= T.INT }))),
+		S.symbol("substring"), FunEntry({level = Tr.outermost, label = Temp.newlabel(), formals= [T.STRING, T.INT, T.INT], result= T.STRING }))),
+		S.symbol("concat"), FunEntry({level = Tr.outermost, label = Temp.newlabel(), formals= [T.STRING, T.STRING], result= T.STRING }))),
+		S.symbol("not"), FunEntry({level = Tr.outermost, label = Temp.newlabel(), formals= [T.INT], result= T.INT }))),
+		S.symbol("exit"), FunEntry({level = Tr.outermost, label = Temp.newlabel(), formals= [T.INT], result= T.UNIT })))
 end
