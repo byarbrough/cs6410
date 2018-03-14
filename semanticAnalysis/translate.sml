@@ -13,11 +13,11 @@ end
 structure Translate : TRANSLATE = struct 
   structure F = MipsFrame
   structure T = Temp
-  datatype level = Top 
+  datatype level = TopLevel 
   			 | Level of {parent: level, frame: F.frame, uni: unit ref}
   type access = level * F.access
   
-  val outermost = Top
+  val outermost = TopLevel
   fun newLevel({parent, name, formals}) = 
   		Level({ parent= parent,
 		  frame= F.newFrame({name= name, formals= formals}), 
