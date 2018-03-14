@@ -13,13 +13,18 @@ end
 structure Translate : TRANSLATE = struct 
   structure F = MipsFrame
   structure T = Temp
-  type level = int (*Probably need to change this to somehting more useful.*)
+  datatype level = Top 
+  			 | Level of {parent: level, frame: F.frame, uni: unit ref}
   type access = level * F.access
   
-  val outermost = 0
-  fun newLevel(temp) = 1
+  val outermost = Top
+  fun newLevel({parent, name, formals}) = 
+  		Level({ parent= parent,
+		  frame= F.newFrame({name= name, formals= formals}), 
+		  uni = ref ()})
   fun formals(level) = nil
-  fun allocLocal(level) = fn(b) => (1, (F.allocLocal(F.newFrame({name= T.newlabel(), formals= nil})) true))
+  fun allocLocal(Top) =  ErrorMsg.impossible "allocLocal should not be given outermost level"
+  	| allocLocal(Level level) = fn(b) => (Level(level), (F.allocLocal(#frame level) b))
 
 end
   
