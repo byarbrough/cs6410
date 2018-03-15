@@ -18,15 +18,15 @@ struct
 	val curNumTemp = ref 0
 	type temp = int
 	(* return new temp from infinite set of temps *)	
-	fun newTemp() = curNumTemp = !curNumTemp + 1; 
-		            curNumTemp 
+	fun newTemp() = (curNumTemp := !curNumTemp + 1; 
+		            !curNumTemp)
 	fun makestring(temp) = Int.toString(temp)
 	(* labels are abstract names for static memory *)
 	type label = Symbol.symbol
 	val curNumLabel = ref 100
 	(* return a new label *)
-	fun newlabel() = curNumLabel = !curNumLabel + 1;
-					 Symbol.symbol("L" ^ Int.toString(!curNumLabel)
+	fun newlabel() = (curNumLabel := !curNumLabel + 1;
+					 Symbol.symbol("L" ^ Int.toString(!curNumLabel)))
 	fun namelabel(str) = Symbol.symbol str (* retrun new label for assembly language *)
 end
 
