@@ -16,6 +16,7 @@ types.sml
 temp.sml
 mipsframe.sml
 main.sml
+findescape.sml
 $/ml-yacc-lib.cm
 $/smlnj-lib.cm
 $/basis.cm
