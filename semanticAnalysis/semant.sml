@@ -12,7 +12,11 @@ struct
     structure E = Env
     structure Tr = Translate
     structure T = Types
+    structure Te = Temp
     structure S = Symbol
+    structure F = MipsFrame
+    (* Tracks the current level of the function *)
+    val curLevel = ref Tr.outermost
     exception TypeErrorException of int
     val looplevel = ref 0
     fun checkField(field, nil, pos) = ( ErrorMsg.error pos 
@@ -90,11 +94,17 @@ struct
 
           | trexp (A.CallExp{func, args, pos}) = 
             let 
-                val (formals, result) = (case S.look(venv, func) 
-                    of SOME(E.FunEntry{formals, result}) => (formals, result)
-                     | SOME(E.VarEntry{...}) => (ErrorMsg.error pos ("variable name " ^ S.name func ^ " Called as function");
+                val (formals, result) =
+                  (case S.look(venv, func) 
+                    of SOME(E.FunEntry{ level, label, formals, result}) =>
+                        (formals, result)
+                     | SOME(E.VarEntry{...}) =>
+                        (ErrorMsg.error pos
+                        ("variable name " ^ S.name func ^ " Called as function");
                                 raise TypeErrorException(pos))
-                     | NONE => (ErrorMsg.error pos ("function name not defined for " ^ S.name func);
+                     | NONE =>
+                        (ErrorMsg.error pos
+                        ("function name not defined for " ^ S.name func);
                                 raise TypeErrorException(pos)))
                 fun checkArgs(nil, nil) = true
                   | checkArgs(fty :: formals, exp :: args) = 
@@ -223,9 +233,12 @@ struct
               looplevel := !looplevel - 1;
 
               {exp=(), ty= T.UNIT})
-          | trexp (A.ForExp{var, escape, lo, hi, body, pos}) = (* Maybe need to typecheck car and escape too? *)
+          (* Maybe need to typecheck car and escape too? *)
+          | trexp (A.ForExp{var, escape, lo, hi, body, pos}) = 
             let 
-                val venv' = S.enter(venv, var, E.VarEntry{access=ref (), ty=T.INT})
+                val venv' = 
+                  S.enter(venv, var, E.VarEntry{access=(Tr.allocLocal(!curLevel) (!escape)),
+                         ty=T.INT})
             in 
               (looplevel := !looplevel + 1;
                 checkTypeWrapper(checkInt(transExp(venv', tenv, lo)) andalso 
@@ -248,7 +261,8 @@ struct
                     = combineDecs(A.TypeDec(l1 @ l2) :: rest)
                   | combineDecs(first :: rest) = first :: combineDecs(rest)
                 fun addDecs(dec, {venv=venv', tenv=tenv'}) = transDec(venv', tenv', dec)
-                val {venv=venv', tenv=tenv'} = foldl addDecs {venv=venv, tenv=tenv} (combineDecs(decs))
+                val {venv=venv', tenv=tenv'} = 
+                  foldl addDecs {venv=venv, tenv=tenv} (combineDecs(decs))
             in 
                 transExp(venv', tenv', body)
             end
@@ -256,7 +270,8 @@ struct
             let 
                 val aty = (case  S.look(tenv, typ)
                     of SOME(t) => t
-                    |  NONE => (ErrorMsg.error pos ("type name not found for variable " ^ S.name typ);
+                    |  NONE => 
+                      (ErrorMsg.error pos ("type name not found for variable " ^ S.name typ);
                                 raise TypeErrorException(pos)))
                 val sty = trexp(size)
                 val ity = trexp(init)
@@ -300,14 +315,16 @@ struct
         trty (A.NameTy(id, pos)) = 
             (case  S.look(tenv, id)
                 of SOME(t) => T.NAME(id, ref (SOME(t)))
-                |  NONE => (ErrorMsg.error pos ("type name not found for variable " ^ S.name id);
+                |  NONE => 
+                  (ErrorMsg.error pos ("type name not found for variable " ^ S.name id);
                             raise TypeErrorException(pos)))
       | trty (A.RecordTy(fields)) = 
       let 
         fun transparam{name, typ, pos, escape} = 
             (case  S.look(tenv, typ)
             of SOME(t) => (name, t)
-            |  NONE => (ErrorMsg.error pos ("type name not found for variable " ^ S.name typ);
+            |  NONE => 
+              (ErrorMsg.error pos ("type name not found for variable " ^ S.name typ);
                         raise TypeErrorException(pos)))
 
       in 
@@ -316,7 +333,8 @@ struct
       | trty (A.ArrayTy(id, pos)) = 
             (case  S.look(tenv, id)
                 of SOME(t) => T.ARRAY(t, ref ())
-                |  NONE => (ErrorMsg.error pos ("type name not found for variable " ^ S.name id);
+                |  NONE => 
+                  (ErrorMsg.error pos ("type name not found for variable " ^ S.name id);
                             raise TypeErrorException(pos)))
 
     in 
@@ -332,8 +350,9 @@ struct
       let 
         fun transparam{name, typ, pos, escape} = 
                         case  S.look(tenv, typ)
-                        of SOME t => {name=name, ty=t}
-                        |  NONE => (ErrorMsg.error pos ("type name not found for variable " ^ S.name typ);
+                        of SOME t => {name=name, ty=t, escape=escape}
+                        |  NONE => 
+                          (ErrorMsg.error pos ("type name not found for variable " ^ S.name typ);
                     raise TypeErrorException(pos))
         fun addNewF({name, params, result, body, pos}, env) = 
             let 
@@ -344,10 +363,13 @@ struct
                         |  SOME(rt, tyPos) => 
                             case S.look(tenv, rt)
                                 of SOME(result_ty) => result_ty
-                                |  NONE => (ErrorMsg.error pos ("type name not found for variable " ^ S.name rt);
+                                |  NONE =>
+                                  (ErrorMsg.error pos ("type name not found for variable "
+                                          ^ S.name rt);
                             raise TypeErrorException(pos))
             in
-            S.enter(env, name, E.FunEntry{formals=map #ty params', result = result_ty})
+            S.enter(env, name, E.FunEntry{
+              level=(!curLevel), label=Te.namelabel(S.name(name)), formals=map #ty params', result = result_ty})
             end
         val venv' = foldl addNewF venv fundecs
         val _ = (app (fn ({name, params, result, body, pos}) => 
@@ -358,11 +380,14 @@ struct
                         |  SOME(rt, tyPos) => 
                             case S.look(tenv, rt)
                                 of SOME(result_ty) => result_ty
-                                |  NONE => (ErrorMsg.error pos ("type name not found for variable " ^ S.name rt);
+                                |  NONE =>
+                                (ErrorMsg.error pos ("type name not found for variable "
+                                       ^ S.name rt);
                             raise TypeErrorException(pos))               
                 val params' = map transparam params
-                fun  enterparam ({name, ty}, venv) = S.enter(venv, name, 
-                    E.VarEntry{access=ref (), ty=ty})
+                (* Put all params into variable enviornment *)
+                fun  enterparam ({name, ty, escape}, venv) = S.enter(venv, name, 
+                    E.VarEntry{access=(Tr.allocLocal(!curLevel) (!escape)), ty=ty})
                 val venv'' = foldl enterparam venv' params' 
                 val bodyty = transExp(venv'', tenv, body);
                 in 
@@ -382,17 +407,21 @@ struct
         in (case typ 
             of SOME(id, pos) => 
                 (case S.look(tenv, id)
-                 of NONE =>   (ErrorMsg.error pos ("type name not found for variable " ^ S.name id);
+                 of NONE => 
+                  (ErrorMsg.error pos ("type name not found for variable " ^ S.name id);
                     raise TypeErrorException(pos))
-                 |  SOME(ety) => (checkTypeWrapper(checkSame(ty, ety), pos));
+                 |  SOME(ety) =>
+                  (checkTypeWrapper(checkSame(ty, ety), pos));
                 {tenv=tenv, 
-                 venv=S.enter(venv, name, E.VarEntry{access= ref (), ty=ty})})
+                 venv=S.enter(venv, name,
+                  E.VarEntry{access=(Tr.allocLocal(!curLevel) (!escape)), ty=ty})})
             |  NONE => (case (actual_ty(ty)) of
-                        T.NIL => (ErrorMsg.error pos (
+                        T.NIL =>
+                          (ErrorMsg.error pos (
                               "Nil variable decleration must have type for var " ^ S.name name);
                               raise TypeErrorException(pos))
                       | ty  =>  {tenv=tenv, 
-            venv=S.enter(venv, name, E.VarEntry{access= ref (), ty=ty})}))
+            venv=S.enter(venv, name, E.VarEntry{access=(Tr.allocLocal(!curLevel) (!escape)), ty=ty})}))
         end
 
       | trdec (A.TypeDec(typeDecs)) = 
@@ -411,8 +440,9 @@ struct
                   true => (ErrorMsg.error pos ("type cycle found for type " ^ S.name id);
                     raise TypeErrorException(pos))
                 | false => case !tyr of 
-                            NONE => (ErrorMsg.error pos (
-                              "compiler error unset type for " ^ S.name id);
+                            NONE =>
+                              (ErrorMsg.error pos (
+                                "compiler error unset type for " ^ S.name id);
                               raise TypeErrorException(pos))
                           | SOME(t) => isCycle(tyr :: trefs, (t, pos)))
 
@@ -422,7 +452,8 @@ struct
               app (fn ({name, ty, pos}) => 
                 (case S.look(env, name) of
                   SOME(t) => isCycle(nil, (t, pos))
-                  | NONE =>   (ErrorMsg.error pos ("type name not found in env " ^ S.name name);
+                  | NONE =>
+                    (ErrorMsg.error pos ("type name not found in env " ^ S.name name);
                     raise TypeErrorException(pos)))) typeDecs
         in 
             (app (fn ({name, ty, pos}) => 
