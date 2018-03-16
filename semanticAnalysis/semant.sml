@@ -367,9 +367,13 @@ struct
                                   (ErrorMsg.error pos ("type name not found for variable "
                                           ^ S.name rt);
                             raise TypeErrorException(pos))
+                val label=Te.namelabel(S.name(name))
+                val formals=map #ty params'
+                val escapeFormals= map ! (map #escape params')
             in
             S.enter(env, name, E.FunEntry{
-              level=(!curLevel), label=Te.namelabel(S.name(name)), formals=map #ty params', result = result_ty})
+              level=Tr.newLevel({parent=(!curLevel), name=label, formals=escapeFormals}),
+                label=label, formals=formals, result = result_ty})
             end
         val venv' = foldl addNewF venv fundecs
         val _ = (app (fn ({name, params, result, body, pos}) => 
