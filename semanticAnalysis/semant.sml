@@ -15,8 +15,6 @@ struct
     structure Te = Temp
     structure S = Symbol
     structure F = MipsFrame
-    (* Tracks the current level of the function *)
-    val curLevel = ref Tr.outermost
     exception TypeErrorException of int
     val looplevel = ref 0
     fun checkField(field, nil, pos) = ( ErrorMsg.error pos 
@@ -85,7 +83,7 @@ struct
 
     fun checkArrayElement(T.ARRAY(aty, unique), ty) = checkSame(aty, ty)
       | checkArrayElement(aty, ty) = false
-    fun transExp(venv, tenv, exp) =
+    fun transExp(venv, tenv, exp, level) =
         let fun 
             trexp (A.VarExp(var)) = trvar(var)
           | trexp (A.NilExp) = {exp=(),ty=T.NIL}
@@ -237,13 +235,13 @@ struct
           | trexp (A.ForExp{var, escape, lo, hi, body, pos}) = 
             let 
                 val venv' = 
-                  S.enter(venv, var, E.VarEntry{access=(Tr.allocLocal(!curLevel) (!escape)),
+                  S.enter(venv, var, E.VarEntry{access=(Tr.allocLocal(level) (!escape)),
                          ty=T.INT})
             in 
               (looplevel := !looplevel + 1;
-                checkTypeWrapper(checkInt(transExp(venv', tenv, lo)) andalso 
-                 checkInt(transExp(venv', tenv, hi)) andalso
-                 checkBreak(transExp(venv', tenv, body)), pos);
+                checkTypeWrapper(checkInt(transExp(venv', tenv, lo, level)) andalso 
+                 checkInt(transExp(venv', tenv, hi, level)) andalso
+                 checkBreak(transExp(venv', tenv, body, level)), pos);
               looplevel := !looplevel - 1;
               {exp=(), ty= T.UNIT})
             end
@@ -260,11 +258,11 @@ struct
                   | combineDecs(A.TypeDec(l1) :: A.TypeDec(l2) :: rest) 
                     = combineDecs(A.TypeDec(l1 @ l2) :: rest)
                   | combineDecs(first :: rest) = first :: combineDecs(rest)
-                fun addDecs(dec, {venv=venv', tenv=tenv'}) = transDec(venv', tenv', dec)
+                fun addDecs(dec, {venv=venv', tenv=tenv'}) = transDec(venv', tenv', dec, level)
                 val {venv=venv', tenv=tenv'} = 
                   foldl addDecs {venv=venv, tenv=tenv} (combineDecs(decs))
             in 
-                transExp(venv', tenv', body)
+                transExp(venv', tenv', body, level)
             end
           | trexp (A.ArrayExp{typ, size, init, pos}) =
             let 
@@ -342,7 +340,7 @@ struct
     end
 
     (* returns a record {venv, tenv} for the new enviornment*)
-    and transDec(venv, tenv, dec) = 
+    and transDec(venv, tenv, dec, level) = 
     let fun
      trdec (A.FunctionDec(fundecs)) = 
         (*{name, params, result, body, pos}*)
@@ -372,7 +370,7 @@ struct
                 val escapeFormals= map ! (map #escape params')
             in
             S.enter(env, name, E.FunEntry{
-              level=Tr.newLevel({parent=(!curLevel), name=label, formals=escapeFormals}),
+              level=Tr.newLevel({parent=(level), name=label, formals=escapeFormals}),
                 label=label, formals=formals, result = result_ty})
             end
         val venv' = foldl addNewF venv fundecs
@@ -391,9 +389,9 @@ struct
                 val params' = map transparam params
                 (* Put all params into variable enviornment *)
                 fun  enterparam ({name, ty, escape}, venv) = S.enter(venv, name, 
-                    E.VarEntry{access=(Tr.allocLocal(!curLevel) (!escape)), ty=ty})
+                    E.VarEntry{access=(Tr.allocLocal(level) (!escape)), ty=ty})
                 val venv'' = foldl enterparam venv' params' 
-                val bodyty = transExp(venv'', tenv, body);
+                val bodyty = transExp(venv'', tenv, body, level);
                 in 
                     checkTypeWrapper(checkSame(#ty bodyty, result_ty), pos)
                 end) fundecs;
@@ -407,7 +405,7 @@ struct
 
 
       | trdec (A.VarDec{name, escape, typ, init, pos}) = 
-        let val {exp, ty} = transExp(venv, tenv, init)
+        let val {exp, ty} = transExp(venv, tenv, init, level)
         in (case typ 
             of SOME(id, pos) => 
                 (case S.look(tenv, id)
@@ -418,14 +416,14 @@ struct
                   (checkTypeWrapper(checkSame(ty, ety), pos));
                 {tenv=tenv, 
                  venv=S.enter(venv, name,
-                  E.VarEntry{access=(Tr.allocLocal(!curLevel) (!escape)), ty=ty})})
+                  E.VarEntry{access=(Tr.allocLocal(level) (!escape)), ty=ty})})
             |  NONE => (case (actual_ty(ty)) of
                         T.NIL =>
                           (ErrorMsg.error pos (
                               "Nil variable decleration must have type for var " ^ S.name name);
                               raise TypeErrorException(pos))
                       | ty  =>  {tenv=tenv, 
-            venv=S.enter(venv, name, E.VarEntry{access=(Tr.allocLocal(!curLevel) (!escape)), ty=ty})}))
+            venv=S.enter(venv, name, E.VarEntry{access=(Tr.allocLocal(level) (!escape)), ty=ty})}))
         end
 
       | trdec (A.TypeDec(typeDecs)) = 
@@ -475,5 +473,5 @@ struct
     end     
     
 
-    fun transProg(absyn) = (transExp(E.base_venv, E.base_tenv, absyn); ())
+    fun transProg(absyn) = (transExp(E.base_venv, E.base_tenv, absyn, Tr.outermost); ())
 end
