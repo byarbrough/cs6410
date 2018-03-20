@@ -2,6 +2,9 @@ signature FRAME =
 sig
 	type frame
 	type access
+	datatype frag = 
+		  PROC of {body: Tree.stm, frame: frame} 
+		| STRING of Temp.label * string
 	val newFrame: {name: Temp.label, formals: bool list} -> frame
 	val name : frame -> Temp.label
 	val formals: frame -> access list
@@ -12,10 +15,13 @@ end
 structure MipsFrame : FRAME = 
 struct
 	datatype access = InFrame of int 
-                    | InReg of Temp.temp 
+	                | InReg of Temp.temp 
   val wordSize = 4
   type frame = {formals: access list, numLoc: int ref, numForm: int ref, funName: Temp.label }
 
+  datatype frag = 
+		  PROC of {body: Tree.stm, frame: frame} 
+		| STRING of Temp.label * string
   (*Allocate formal variables based on if they escape or not. *)
 	fun allocFormals({formals, numLoc, numForm, funName}) = fn(b) => 
 		if b then (numForm := !numForm + 1; InFrame(!numForm * wordSize))
@@ -40,9 +46,9 @@ struct
 		let
 			val pcount : int ref = ref 0;
 		in
-		fn(b) => 
-			if b then (numLoc := !numLoc + 1; InFrame(!numLoc * wordSize))
-				   else (pcount := !pcount + 1; InReg(Temp.newtemp()))
+			fn(b) => 
+				if b then (numLoc := !numLoc + 1; InFrame(!numLoc * wordSize))
+				   	 else (pcount := !pcount + 1; InReg(Temp.newtemp()))
 		end
 
 end

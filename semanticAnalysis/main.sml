@@ -1,6 +1,6 @@
 signature MAIN = 
 sig
-	val run : string -> unit
+	val run : string -> Translate.frag list
 end
 structure Main : MAIN = 
 struct

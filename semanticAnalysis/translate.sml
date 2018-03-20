@@ -2,6 +2,7 @@ signature TRANSLATE =
 sig
 	type level
 	type access
+  type frag
   type exp
 	val outermost : level
 	val newLevel : {parent: level, 
@@ -12,6 +13,9 @@ sig
   val unEx : exp -> Tree.exp
   val unNx : exp -> Tree.stm
   val unCx : exp -> (Temp.label * Temp.label -> Tree.stm)
+  val procEntryExit : {level: level, body: exp} -> unit
+  (*structure Frame : FRAME*)
+  val getResult : unit -> frag list
 end
 
 structure Translate : TRANSLATE = struct 
@@ -25,7 +29,7 @@ structure Translate : TRANSLATE = struct
     | Nx of Tr.stm
     | Cx of T.label * T.label -> Tr.stm
   type access = level * F.access
-  
+  type frag = F.frag
   (*The outermost level*)
   val outermost = TopLevel
 
@@ -46,6 +50,7 @@ structure Translate : TRANSLATE = struct
   fun seq([]) = ErrorMsg.impossible "seq should not be given an empty list"
     | seq(last :: []) = last
     | seq(first :: rest) = Tr.SEQ(first, seq(rest))
+
 
   fun unEx(Ex e) = e
     | unEx(Cx genstm) =
@@ -69,14 +74,18 @@ structure Translate : TRANSLATE = struct
         let 
           val t = T.newlabel() and f = T.newlabel()
         in 
-          Tr.SEQ(seq[Tr.CJUMP(Tr.EQ, unEx(Nx(genstm(t, f))), Tr.CONST 1, t, f),
-                     Tr.LABEL t],
-                     Tr.LABEL f)
+          Tr.SEQ(
+            seq[genstm(t, f),
+                Tr.LABEL t],
+                Tr.LABEL f)
         end
 
   fun unCx(Cx c) = c
     | unCx(Ex e) = (fn(t, f) => Tr.CJUMP(Tr.NE, e, Tr.CONST 0, t, f))        
     | unCx(Nx n) = ErrorMsg.impossible "Nx should not ever be converted to Cx"
 
+  fun procEntryExit _  = ()
+
+  fun getResult() = []
 end
     

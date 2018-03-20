@@ -4,7 +4,7 @@ TODO:
 
 signature SEMANT = 
 sig
-    val transProg : Absyn.exp -> unit
+    val transProg : Absyn.exp -> Translate.frag list
 end
 structure Semant : SEMANT = 
 struct 
@@ -494,5 +494,5 @@ struct
     fun transProg(absyn) = 
       (transExp(E.base_venv, E.base_tenv, absyn, 
                 Tr.newLevel(
-                  {parent=Tr.outermost, name=Temp.newlabel(), formals=[]})); ())
+                  {parent=Tr.outermost, name=Temp.newlabel(), formals=[]})); Tr.getResult())
 end
