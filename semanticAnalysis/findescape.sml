@@ -102,5 +102,6 @@ struct
 		in trdec(d, decs)
 		end 
 
+	(*Calculates the escaoes of the given expression*)
 	fun findEscape(prog: A.exp) : unit = traverseExp(S.empty, 0, prog)
 end

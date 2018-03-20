@@ -20,9 +20,10 @@ structure Translate : TRANSLATE = struct
   val outermost = TopLevel
   fun newLevel({parent, name, formals}) = 
   		Level({ parent= parent,
-		  frame= F.newFrame({name= name, formals= formals}), 
-		  uni = ref ()})
-  fun formals(level) = nil (*stubbed*)
+		          frame= F.newFrame({name= name, formals= formals}), 
+		          uni = ref ()})
+  fun formals(TopLevel) = ErrorMsg.impossible "Formals should not be given outermost level"
+    | formals(Level({parent, frame, uni})) = F.formals(frame)
  
   fun allocLocal(TopLevel) = 
   		ErrorMsg.impossible "allocLocal should not be given outermost level"

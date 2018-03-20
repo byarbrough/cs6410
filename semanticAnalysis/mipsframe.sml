@@ -13,12 +13,25 @@ structure MipsFrame : FRAME =
 struct
 	datatype access = InFrame of int 
                     | InReg of Temp.temp 
-    type frame = {formals: access list, vs: Temp.temp list, numLoc: int, funStart: Temp.label }
-	
-    fun newFrame({name, formals}) = {formals= nil, vs= nil, numLoc= 1, funStart= Temp.newlabel()}
-    fun name(frame) = Temp.newlabel()
-	fun formals(frame) = nil
-	fun allocLocal(frame) = fn(b) => InFrame(1)
+  val wordSize = 4
+  type frame = {formals: access list, numLoc: int ref, funStart: Temp.label }
+	(*create a new empty frame with formals allocated*)
+  fun newFrame({name, formals}) = 
+  	let 
+  		val frame = {formals= nil, numLoc= ref 0, funStart= name}
+  		val formals' = map (allocLocal frame) formals
+  	in 
+  		{formals= formals',numLoc = ref 0, name = name}
+  	end
+  (*Return the label associated with the given frame*)
+  fun name({formals, numLoc, funStart}) = funStart
+  (*Return the formals of the given frame*)
+	fun formals({formals, numLoc, funStart}) = formals
+	(*Allocate local variabled based on if they escape or not. *)
+	fun allocLocal({formals,numLoc, funStart}) = fn(b) => 
+														(case b 
+															of True => (numLoc := !numLoc + 1; InFrame(!numLoc * wordSize))
+															 | False => InReg(Temp.newTemp())
 
 
 end
