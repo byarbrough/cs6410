@@ -19,7 +19,7 @@ struct
   (*Allocate formal variables based on if they escape or not. *)
 	fun allocFormals({formals, numLoc, numForm, funName}) = fn(b) => 
 		if b then (numForm := !numForm + 1; InFrame(!numForm * wordSize))
-				 else InReg(Temp.newTemp())
+				 else InReg(Temp.newtemp())
 
 
 	(*create a new empty frame with formals allocated*)
@@ -42,7 +42,7 @@ struct
 		in
 		fn(b) => 
 			if b then (numLoc := !numLoc + 1; InFrame(!numLoc * wordSize))
-				   else (pcount := !pcount + 1; InReg(Temp.newTemp()))
+				   else (pcount := !pcount + 1; InReg(Temp.newtemp()))
 		end
 
 end

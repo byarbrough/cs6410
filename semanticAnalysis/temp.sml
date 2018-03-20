@@ -1,7 +1,7 @@
 signature TEMP = 
 sig
 	eqtype temp
-	val newTemp : unit -> temp
+	val newtemp : unit -> temp
 	val makestring: temp -> string
 	structure Table : TABLE sharing type Table.key = temp
 
@@ -18,7 +18,7 @@ struct
 	val curNumTemp = ref 0
 	type temp = int
 	(* return new temp from infinite set of temps *)	
-	fun newTemp() = (curNumTemp := !curNumTemp + 1; 
+	fun newtemp() = (curNumTemp := !curNumTemp + 1; 
 		            !curNumTemp)
 	(*returns a string version of a given temp*)
 	fun makestring(temp) = Int.toString(temp)

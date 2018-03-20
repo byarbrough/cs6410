@@ -17,6 +17,8 @@ temp.sml
 mipsframe.sml
 main.sml
 findescape.sml
+tree.sml
+printtree.sml
 $/ml-yacc-lib.cm
 $/smlnj-lib.cm
 $/basis.cm
