@@ -16,6 +16,11 @@ sig
   val procEntryExit : {level: level, body: exp} -> unit
   (*structure Frame : FRAME*)
   val getResult : unit -> frag list
+
+  (*Conversion functions below*)
+
+  (*from int*)
+  val irInt : int -> exp
 end
 
 structure Translate : TRANSLATE = struct 
@@ -87,5 +92,8 @@ structure Translate : TRANSLATE = struct
   fun procEntryExit _  = ()
 
   fun getResult() = []
+
+  fun irInt(num) = Ex(Tr.CONST(num))
+
 end
     

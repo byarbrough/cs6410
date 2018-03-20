@@ -97,11 +97,11 @@ struct
       | checkArrayElement(aty, ty) = false
     
     (*Translate the given exp with the given envionrments and level to *)
-    fun transExp(venv, tenv, exp, level) =
+    fun transExp(venv, tenv, exp, level) : {exp:Tr.exp, ty: T.ty} =
       let fun 
           trexp (A.VarExp(var)) = trvar(var)
         | trexp (A.NilExp) = {exp=(),ty=T.NIL}
-        | trexp (A.IntExp(num)) = {exp=(),ty=T.INT}
+        | trexp (A.IntExp(num)) = {exp=Tr.irInt(num),ty=T.INT}
         | trexp (A.StringExp(str)) = {exp=(),ty=T.STRING}
 
         | trexp (A.CallExp{func, args, pos}) = 
