@@ -18,8 +18,8 @@ struct
 
   (*Allocate formal variables based on if they escape or not. *)
 	fun allocFormals({formals, numLoc, numForm, funName}) = fn(b) => 
-										if b then (numForm := !numForm + 1; InFrame(!numForm * wordSize))
-												 else InReg(Temp.newTemp())
+		if b then (numForm := !numForm + 1; InFrame(!numForm * wordSize))
+				 else InReg(Temp.newTemp())
 
 
 	(*create a new empty frame with formals allocated*)
@@ -35,9 +35,14 @@ struct
   (*Return the formals of the given frame*)
 	fun formals({formals, numLoc,numForm, funName}) = formals
 	(*Allocate local variables based on if they escape or not. *)
-	fun allocLocal({formals,numLoc, numForm, funName}) = fn(b) => 
-									if b then (numLoc := !numLoc + 1; InFrame(!numLoc * wordSize))
-										   else InReg(Temp.newTemp())
-
+	fun allocLocal({formals,numLoc, numForm, funName}) =
+		(*Only first four non-escaping variables are saved in registers *)
+		let
+			val pcount : int ref = ref 0;
+		in
+		fn(b) => 
+			if b then (numLoc := !numLoc + 1; InFrame(!numLoc * wordSize))
+				   else (pcount := !pcount + 1; InReg(Temp.newTemp()))
+		end
 
 end
