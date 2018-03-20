@@ -5,5 +5,10 @@ end
 structure Main : MAIN = 
 struct
 	fun run filename =
-		Semant.transProg(Parse.parse(filename))
+		let 
+			val ast = Parse.parse(filename)
+		in 
+			FindEscape.findEscape(ast);
+			Semant.transProg(ast)
+		end
 end

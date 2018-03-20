@@ -491,5 +491,8 @@ struct
       (trdec dec)
     end     
     (*Translates the given expression to _____*)
-    fun transProg(absyn) = (transExp(E.base_venv, E.base_tenv, absyn, Tr.outermost); ())
+    fun transProg(absyn) = 
+      (transExp(E.base_venv, E.base_tenv, absyn, 
+                Tr.newLevel(
+                  {parent=Tr.outermost, name=Temp.newlabel(), formals=[]})); ())
 end
