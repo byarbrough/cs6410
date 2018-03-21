@@ -419,7 +419,7 @@ struct
      and trvar (A.SimpleVar(id, pos)) = 
           (case S.look(venv,id)
               of SOME(E.VarEntry{access,ty}) => 
-              {exp=Tr.irSimpleVar(access, level), 
+              {exp=Tr.simpleVar(access, level), 
                ty=actual_ty ty}
               | SOME(E.FunEntry{level, label, formals, result}) => 
                   (ErrorMsg.error pos 
@@ -432,21 +432,41 @@ struct
                   ("undefined variable " ^ S.name id);
                   raise TypeErrorException(pos)))
 
-       | trvar (A.FieldVar(var, field, pos)) =  
-          (case actual_ty (#ty (trvar(var)))
+       | trvar (A.FieldVar(var, field, pos)) =
+          let
+            fun findField(f, []) =
+                  (ErrorMsg.error pos 
+                    ("expected variable not a record");
+                  raise TypeErrorException(pos))
+              | findField(f, curF :: fields) =
+                  if #name f = #name curF
+                  then 0
+                  else 1 + findField(f, fields) 
+            val var' = trvar var
+          in
+            (case actual_ty (#ty var')
               of T.RECORD(fields, unique) => 
-                {exp=(), ty=checkField(field, fields, pos)}
+                {exp=irFieldVar(#exp var', 
+                                findField(field, fields)), 
+                 ty=checkField(field, fields, pos)}
               | ty => ( ErrorMsg.error pos 
                   ("expected variable not a record");
                   raise TypeErrorException(pos)))
+          end
        | trvar (A.SubscriptVar(var, exp, pos)) = 
-          (case actual_ty (#ty (trvar(var)))
+          let
+            val exp' = trexp exp
+            val var' = trvar var
+          in 
+          (case actual_ty (#ty var')
               of T.ARRAY(ty, unique) => 
-                (checkTypeWrapper(checkInt(trexp exp), pos);
-                 {exp=(), ty=ty})
+                (checkTypeWrapper(checkInt(exp', pos);
+                 {exp=irSubscriptVar(#exp var', #exp exp') 
+                  ty=ty}))
               | ty => ( ErrorMsg.error pos 
                   ("expected variable not an array");
                   raise TypeErrorException(pos)))
+          end 
       in 
           (trexp exp)
       end

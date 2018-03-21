@@ -46,7 +46,7 @@ struct
   								 funName= name}
   		val formals' = map (allocFormals frame) formals
   	in 
-  		{formals= formals,
+  		{formals= formals',
   		 numLoc = ref 0, 
   		 numForm= #numForm frame, 
   		 funName = name}

@@ -43,6 +43,8 @@ sig
   val irArrayExp : () -> ()
   *)
   (* trvar *)
+  val irFieldVar : exp * int -> exp
+  val irSubscriptVar : exp * exp -> exp
   val simpleVar : access * level -> exp
 
 end
@@ -260,5 +262,21 @@ structure Translate : TRANSLATE = struct
     access with a given level following static links*)
   fun simpleVar(access, level) =
     Ex(irSimpleVar(access, level))
+
+  fun irFieldVar(recExp, fieldNum) =
+    Ex(Tr.MEM(
+        Tr.BINOP(
+          Tr.PLUS,
+          unEx(recExp),
+          Tr.CONST(fieldNum * F.wordSize)))) 
+  fun irSubscriptVar(arrExp, subExp) =
+    Ex(Tr.MEM(
+        Tr.BINOP(
+          Tr.PLUS,
+          unEx(arrExp),
+          Tr.BINOP(
+            Tr.MUL,
+            unEx(subExp),
+            Tr.CONST(F.wordSize)))))
 end
     
