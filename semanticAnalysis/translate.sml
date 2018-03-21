@@ -35,8 +35,8 @@ sig
   val irAssignExp : () -> ()
   *)
   val irIfExp : exp * exp * exp option * int -> exp
-  (*)
-  val irWhileExp : () -> ()
+  val irWhileExp : exp * exp * int -> exp
+(*
   val irForExp : () -> ()
   val irBreakExp : () -> ()
   val irLetExp : () -> ()
@@ -225,7 +225,8 @@ structure Translate : TRANSLATE = struct
         Tr.LABEL(f)]))
     end
 
-  fun irWhileExp(test, body, pos) = ()
+  fun irWhileExp(test, body, pos) =
+    Ex(Tr.CONST 0)
   fun irForExp(var, escape, lo, hi, body, pos) = ()
   fun irBreakExp(pos) = ()
 

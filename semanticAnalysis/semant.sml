@@ -349,7 +349,7 @@ struct
               (checkInt(trexp test) andalso 
               checkBreak(trexp body)), pos);
              looplevel := !looplevel - 1;
-             {exp=(), ty= T.UNIT})
+             {exp=irWhileExp(test, body, pos), ty= T.UNIT})
         | trexp (A.ForExp{var, escape, lo, hi, body, pos}) = 
             let 
               val venv' = 
