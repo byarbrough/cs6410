@@ -46,7 +46,7 @@ struct
              | ESEQ of stm * exp
              | NAME of label
              | CONST of int
-	     | CALL of exp * exp list
+	           | CALL of exp * exp list
 
       and binop = PLUS | MINUS | MUL | DIV 
                 | AND | OR | LSHIFT | RSHIFT | ARSHIFT | XOR

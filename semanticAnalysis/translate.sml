@@ -156,7 +156,9 @@ structure Translate : TRANSLATE = struct
   fun comp(trComp : Tr.relop, l, r) = 
      Cx(fn(t : T.label, f : T.label) => 
           Tr.CJUMP(Tr.LT, unEx(l), unEx(r), t, f))
-  
+
+  fun compStr(oper, ex) =
+    Cx(fn(t,f) => Tr.CJUMP(oper, unEx(ex), Tr.CONST(0), t, f))
 
   fun irOpExp({exp=l, ty=_}, A.PlusOp, 
               {exp=r, ty=_}, pos) = 
@@ -174,22 +176,43 @@ structure Translate : TRANSLATE = struct
         arith(Tr.DIV, l, r)           
     | irOpExp({exp=l, ty=Types.STRING}, A.LtOp, 
               {exp=r, ty=ty2}, pos) = 
-        Ex(F.externalCall("stringLT", [unEx(l), unEx(r)]))
+        compStr(Tr.LT,
+          Ex(F.externalCall("stringCompare", [unEx(l), unEx(r)])))
     | irOpExp({exp=l, ty=ty1}, A.LtOp, 
               {exp=r, ty=ty2}, pos) = 
-        comp(Tr.LT, l, r)   
+        comp(Tr.LT, l, r)
+    | irOpExp({exp=l, ty=Types.STRING}, A.LeOp, 
+              {exp=r, ty=ty2}, pos) = 
+        compStr(Tr.LE,
+          Ex(F.externalCall("stringCompare", [unEx(l), unEx(r)])))   
     | irOpExp({exp=l, ty=_}, A.LeOp, 
               {exp=r, ty=_}, pos) =
-        comp(Tr.LE, l, r)   
+        comp(Tr.LE, l, r)
+    | irOpExp({exp=l, ty=Types.STRING}, A.GtOp, 
+              {exp=r, ty=ty2}, pos) = 
+        compStr(Tr.GT,
+          Ex(F.externalCall("stringCompare", [unEx(l), unEx(r)])))   
     | irOpExp({exp=l, ty=_}, A.GtOp, 
               {exp=r, ty=_}, pos) =
-         comp(Tr.GT, l, r)   
+         comp(Tr.GT, l, r)
+    | irOpExp({exp=l, ty=Types.STRING}, A.GeOp, 
+              {exp=r, ty=ty2}, pos) = 
+        compStr(Tr.GE,
+          Ex(F.externalCall("stringCompare", [unEx(l), unEx(r)])))   
     | irOpExp({exp=l, ty=_}, A.GeOp, 
               {exp=r, ty=_}, pos) =
-         comp(Tr.GE, l, r)             
+         comp(Tr.GE, l, r)
+    | irOpExp({exp=l, ty=Types.STRING}, A.EqOp, 
+              {exp=r, ty=ty2}, pos) = 
+        compStr(Tr.NE,
+          Ex(F.externalCall("stringCompare", [unEx(l), unEx(r)])))             
     | irOpExp({exp=l, ty=_}, A.EqOp, 
               {exp=r, ty=_}, pos) =
-         comp(Tr.EQ, l, r)   
+         comp(Tr.EQ, l, r)
+    | irOpExp({exp=l, ty=Types.STRING}, A.NeqOp, 
+              {exp=r, ty=ty2}, pos) = 
+        compStr(Tr.EQ,
+          Ex(F.externalCall("stringCompare", [unEx(l), unEx(r)])))   
     | irOpExp({exp=l, ty=_}, A.NeqOp, 
               {exp=r, ty=_}, pos) =
          comp(Tr.NE, l, r)               

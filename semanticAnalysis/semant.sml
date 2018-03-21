@@ -434,19 +434,19 @@ struct
 
        | trvar (A.FieldVar(var, field, pos)) =
           let
-            fun findField(f, []) =
+            fun findField(n, []) =
                   (ErrorMsg.error pos 
                     ("expected variable not a record");
                   raise TypeErrorException(pos))
-              | findField(f, curF :: fields) =
-                  if #name f = #name curF
+              | findField(n, (curN, ty) :: fields) =
+                  if n = curN
                   then 0
-                  else 1 + findField(f, fields) 
+                  else 1 + findField(n, fields) 
             val var' = trvar var
           in
             (case actual_ty (#ty var')
               of T.RECORD(fields, unique) => 
-                {exp=irFieldVar(#exp var', 
+                {exp=Tr.irFieldVar(#exp var', 
                                 findField(field, fields)), 
                  ty=checkField(field, fields, pos)}
               | ty => ( ErrorMsg.error pos 
@@ -461,7 +461,7 @@ struct
           (case actual_ty (#ty var')
               of T.ARRAY(ty, unique) => 
                 (checkTypeWrapper(checkInt(exp', pos);
-                 {exp=irSubscriptVar(#exp var', #exp exp') 
+                 {exp=Tr.irSubscriptVar(#exp var', #exp exp') 
                   ty=ty}))
               | ty => ( ErrorMsg.error pos 
                   ("expected variable not an array");
