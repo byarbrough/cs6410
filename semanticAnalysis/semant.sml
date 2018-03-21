@@ -322,9 +322,19 @@ struct
         in 
          {exp=(), ty= rty}
         end
-        | trexp (A.SeqExp(nil)) = {exp=(), ty= T.UNIT}
-        | trexp (A.SeqExp((exp, pos) :: tail)) = 
-          (trexp(A.SeqExp(tail)); trexp(exp))
+        | trexp (A.SeqExp(nil)) = {exp=Tr.irSeqExp([]), ty= T.UNIT}
+        | trexp (A.SeqExp(seq)) =
+          let 
+            fun combineSeq((ex, _), (exps, ty)) =
+              let 
+                val { exp, ty } = trexp ex
+              in 
+                (exp :: exps, ty) 
+              end
+            val (seq', ty) = foldr combineSeq ([], T.NIL) seq    
+          in 
+            {exp = Tr.irSeqExp(seq'), ty= ty}
+          end
         | trexp (A.AssignExp{var, exp, pos}) = 
             (checkTypeWrapper(
               checkSame( #ty (trvar var), #ty (trexp exp)), pos);

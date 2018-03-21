@@ -30,8 +30,8 @@ sig
                  {exp: exp, ty : Types.ty} *
                  Absyn.pos -> exp
   (*
-  val irRecordExp : () -> ()
-  val irSeqExp : () -> ()
+  val irRecordExp : () -> ()*)
+  val irSeqExp : exp list -> exp(*
   val irAssignExp : () -> ()
   *)
   val irIfExp : exp * exp * exp option * int -> exp
@@ -218,10 +218,12 @@ structure Translate : TRANSLATE = struct
          comp(Tr.NE, l, r)               
 
   fun irRecordExp{fields, typ, pos} = ()
-(*
-  fun irSeqExp(nil') = {exp, ty}
-    | irSeqExp(exp, pos) :: tail) = ()
-*)
+
+  fun irSeqExp([]) =  Ex(Tr.CONST 0)
+    | irSeqExp(exp :: []) = exp
+    | irSeqExp(exp :: seq) =
+        Ex(Tr.ESEQ(unNx exp, unEx(irSeqExp seq)))
+
   fun irAssignExp{var, exp, pos} = ()
 
   fun irIfExp(test, thn, SOME(els), pos) =
