@@ -17,10 +17,31 @@ sig
   (*structure Frame : FRAME*)
   val getResult : unit -> frag list
 
-  (*Conversion functions below*)
+  (* make sure Semant doesn't need to touch the tree *)
+  val simpleVar : access * level -> exp
 
-  (*from int*)
+  (*Conversion functions below*)
+  (* transExp *)
+  (*
+  val irVar : () -> ()
+  val irNil : () -> ()
+  *)
   val irInt : int -> exp
+  (*
+  val irString : () -> ()
+  val irCallExp : () -> ()
+  val irOpExp : () -> ()
+  val irRecordExp : () -> ()
+  val irSeqExp : () -> ()
+  val irAssignExp : () -> ()
+  val irIfExp : () -> ()
+  val irWhileExp : () -> ()
+  val irForExp : () -> ()
+  val irBreakExp : () -> ()
+  val irLetExp : () -> ()
+  val irArrayExp : () -> ()
+  *)
+
 end
 
 structure Translate : TRANSLATE = struct 
@@ -93,7 +114,35 @@ structure Translate : TRANSLATE = struct
 
   fun getResult() = []
 
+  (*Translate semant to IR tree language*)
+  (* transExp *)
+  (*location of var: k is offset within frame and fp is frame pointer *)
+  fun irVar(var{fp, k}) = Ex(Tr.MEM(Tr.BINOP(Tr.PLUS, TR.TEMP fp, TR.CONST k)))
+  fun irNil() = ()
   fun irInt(num) = Ex(Tr.CONST(num))
+  fun irString(str) = () 
+
+  fun irCallExp{func, args, pose} = ()
+
+  fun irOpExp{left, oper, right, pos} = ()
+
+  fun irRecordExp{fields, typ, pos} = ()
+(*
+  fun irSeqExp(nil') = {exp, ty}
+    | irSeqExp(exp, pos) :: tail) = ()
+*)
+  fun irAssignExp{var, exp, pos} = ()
+
+  fun irIfExp{test, thn, els= SOME(exp), pos} = ()
+    | irIfExp{test, thn, els= NONE, pos} = ()
+  fun irWhileExp{tset, body, pos} = ()
+  fun irForExp{var, escape, lo, hi, body, pos} = ()
+  fun irBreakExp(pos) = ()
+
+  fun irLetExp{decs, body, pos} = ()
+  fun irArrayExp{typ, size, int, pos} = ()
+
+  (* trvar *)
 
 end
     

@@ -42,13 +42,8 @@ struct
 	fun formals({formals, numLoc,numForm, funName}) = formals
 	(*Allocate local variables based on if they escape or not. *)
 	fun allocLocal({formals,numLoc, numForm, funName}) =
-		(*Only first four non-escaping variables are saved in registers *)
-		let
-			val pcount : int ref = ref 0;
-		in
-			fn(b) => 
-				if b then (numLoc := !numLoc + 1; InFrame(!numLoc * wordSize))
-				   	 else (pcount := !pcount + 1; InReg(Temp.newtemp()))
-		end
+		fn(b) => 
+		if b then (numLoc := !numLoc + 1; InFrame(!numLoc * wordSize))
+		   	 else InReg(Temp.newtemp())
 
 end
