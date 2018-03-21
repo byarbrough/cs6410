@@ -89,8 +89,8 @@ struct
 
     (*Returns the type of a if statement given the two types for then and else exps*)
     fun checkIf(T.BREAK, ty2, pos) = ty2
-     |  checkIf(ty1, T.BREAK, pos) = ty1
-     |  checkIf(ty1, ty2, pos) = (checkTypeWrapper(checkSame(ty1, ty2), pos); ty1)
+      |  checkIf(ty1, T.BREAK, pos) = ty1
+      |  checkIf(ty1, ty2, pos) = (checkTypeWrapper(checkSame(ty1, ty2), pos); ty1)
 
     (*Check if a given type is equal to the type of the given array*)
     fun checkArrayElement(T.ARRAY(aty, unique), ty) = checkSame(aty, ty)
@@ -103,7 +103,6 @@ struct
         | trexp (A.NilExp) = {exp=Tr.irNil,ty=T.NIL}
         | trexp (A.IntExp(num)) = {exp=Tr.irInt(num),ty=T.INT}
         | trexp (A.StringExp(str)) = {exp=Tr.irString(str),ty=T.STRING}
-
         | trexp (A.CallExp{func, args, pos}) = 
           let 
               val (formals, result) =
@@ -128,74 +127,132 @@ struct
           end
         
         | trexp (A.OpExp{left, oper= A.PlusOp, right, pos}) =
-                    (checkTypeWrapper(
-                      checkInt(trexp left) andalso 
-                      checkInt(trexp right), pos);
-                    {exp=(),ty= T.INT})
+            let 
+              val leftExp = trexp left
+              val rightExp = trexp right
+            in
+              (checkTypeWrapper(
+                checkInt(leftExp) andalso 
+                checkInt(rightExp), pos);
+              {exp=Tr.irOpExp(leftExp, A.PlusOp, rightExp, pos), ty=T.INT})
+            end
+        
         | trexp (A.OpExp{left, oper= A.MinusOp, right, pos}) =
-                    (checkTypeWrapper(
-                      checkInt(trexp left) andalso 
-                      checkInt(trexp right), pos);
-                    {exp=(),ty= T.INT})
+            let 
+              val leftExp = trexp left
+              val rightExp = trexp right
+            in
+              (checkTypeWrapper(
+                checkInt(leftExp) andalso 
+                checkInt(rightExp), pos);
+              {exp=Tr.irOpExp(leftExp, A.MinusOp, rightExp, pos), ty=T.INT})
+            end
+        
         | trexp (A.OpExp{left, oper= A.TimesOp, right, pos}) =
-                    (checkTypeWrapper(
-                      checkInt(trexp left) andalso 
-                      checkInt(trexp right), pos);
-                    {exp=(),ty= T.INT})
+            let 
+              val leftExp = trexp left
+              val rightExp = trexp right
+            in
+              (checkTypeWrapper(
+                checkInt(leftExp) andalso 
+                checkInt(rightExp), pos);
+              {exp=Tr.irOpExp(leftExp, A.TimesOp, rightExp, pos), ty=T.INT})
+            end
+        
         | trexp (A.OpExp{left, oper= A.DivideOp, right, pos}) =
-                    (checkTypeWrapper(
-                      checkInt(trexp left) andalso 
-                      checkInt(trexp right), pos);
-                    {exp=(),ty= T.INT})
+            let 
+              val leftExp = trexp left
+              val rightExp = trexp right
+            in
+              (checkTypeWrapper(
+                checkInt(leftExp) andalso 
+                checkInt(rightExp), pos);
+              {exp=Tr.irOpExp(leftExp, A.DivideOp, rightExp, pos), ty=T.INT})
+            end
+        
         | trexp (A.OpExp{left, oper= A.LtOp, right, pos}) =
-                    (checkTypeWrapper(
-                      (checkStr(trexp left) andalso 
-                       checkStr(trexp right)) orelse
-                      (checkInt(trexp left) andalso
-                       checkInt(trexp right)), pos);
-                    {exp=(),ty= T.INT})
+            let 
+              val leftExp = trexp left
+              val rightExp = trexp right
+            in
+              (checkTypeWrapper(
+                (checkStr(leftExp) andalso 
+                 checkStr(rightExp)) orelse
+                (checkInt(leftExp) andalso
+                 checkInt(rightExp)), pos);
+              {exp=Tr.irOpExp(leftExp, A.LtOp, rightExp, pos), ty=T.INT})
+            end
+        
         | trexp (A.OpExp{left, oper= A.LeOp, right, pos}) =
-                   (checkTypeWrapper(
-                      (checkStr(trexp left) andalso 
-                       checkStr(trexp right)) orelse
-                      (checkInt(trexp left) andalso
-                       checkInt(trexp right)), pos);
-                    {exp=(),ty= T.INT})
-        | trexp (A.OpExp{left, oper= A.GtOp, right, pos}) =
-                    (checkTypeWrapper(
-                      (checkStr(trexp left) andalso 
-                       checkStr(trexp right)) orelse
-                      (checkInt(trexp left) andalso
-                       checkInt(trexp right)), pos);
-                    {exp=(),ty= T.INT})
-        | trexp (A.OpExp{left, oper= A.GeOp, right, pos}) =
-                    (checkTypeWrapper(
-                      (checkStr(trexp left) andalso 
-                       checkStr(trexp right)) orelse
-                      (checkInt(trexp left) andalso
-                       checkInt(trexp right)), pos);
-                    {exp=(),ty= T.INT})
+            let 
+              val leftExp = trexp left
+              val rightExp = trexp right
+            in
+              (checkTypeWrapper(
+                (checkStr(leftExp) andalso 
+                 checkStr(rightExp)) orelse
+                (checkInt(leftExp) andalso
+                 checkInt(rightExp)), pos);
+              {exp=Tr.irOpExp(leftExp, A.LeOp, rightExp, pos), ty=T.INT})
+            end
 
+        | trexp (A.OpExp{left, oper= A.GtOp, right, pos}) =
+            let 
+              val leftExp = trexp left
+              val rightExp = trexp right
+            in
+              (checkTypeWrapper(
+                (checkStr(leftExp) andalso 
+                 checkStr(rightExp)) orelse
+                (checkInt(leftExp) andalso
+                 checkInt(rightExp)), pos);
+              {exp=Tr.irOpExp(leftExp, A.GtOp, rightExp, pos), ty=T.INT})    
+            end
+
+        | trexp (A.OpExp{left, oper= A.GeOp, right, pos}) =
+            let 
+              val leftExp = trexp left
+              val rightExp = trexp right
+            in
+              (checkTypeWrapper(
+                (checkStr(leftExp) andalso 
+                 checkStr(rightExp)) orelse
+                (checkInt(leftExp) andalso
+                 checkInt(rightExp)), pos);
+              {exp=Tr.irOpExp(leftExp, A.GeOp, rightExp, pos), ty=T.INT})
+            end
+        
         | trexp (A.OpExp{left, oper= A.EqOp, right, pos}) =
-                    (checkTypeWrapper(
-                      (checkRecord(trexp left) andalso
-                        checkRecord(trexp right)) orelse
-                       checkArrays(trexp left, trexp right) orelse
-                      (checkStr(trexp left) andalso 
-                       checkStr(trexp right)) orelse
-                      (checkInt(trexp left) andalso
-                       checkInt(trexp right)), pos);
-                    {exp=(),ty= T.INT})
+            let 
+              val leftExp = trexp left
+              val rightExp = trexp right
+            in
+              (checkTypeWrapper(
+                (checkRecord(leftExp) andalso
+                 checkRecord(rightExp)) orelse
+                checkArrays(leftExp, rightExp) orelse
+                (checkStr(leftExp) andalso 
+                 checkStr(rightExp)) orelse
+                (checkInt(leftExp) andalso
+                 checkInt(rightExp)), pos);
+              {exp=Tr.irOpExp(leftExp, A.EqOp, rightExp, pos), ty=T.INT})
+            end
+
         | trexp (A.OpExp{left, oper= A.NeqOp, right, pos}) =
-                    (checkTypeWrapper(
-                      (checkRecord(trexp left) andalso
-                        checkRecord(trexp right)) orelse
-                       checkArrays(trexp left, trexp right) orelse
-                      (checkStr(trexp left) andalso 
-                       checkStr(trexp right)) orelse
-                      (checkInt(trexp left) andalso
-                       checkInt(trexp right)), pos);
-                    {exp=(),ty= T.INT}) 
+            let 
+              val leftExp = trexp left
+              val rightExp = trexp right
+            in
+              (checkTypeWrapper(
+                (checkRecord(leftExp) andalso
+                 checkRecord(rightExp)) orelse
+                checkArrays(leftExp, rightExp) orelse
+                (checkStr(leftExp) andalso 
+                 checkStr(rightExp)) orelse
+                (checkInt(leftExp) andalso
+                 checkInt(rightExp)), pos);
+              {exp=Tr.irOpExp(leftExp, A.NeqOp, rightExp, pos), ty=T.INT})
+            end
 
         | trexp (A.RecordExp{fields, typ, pos}) = 
         let 

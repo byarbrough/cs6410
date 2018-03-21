@@ -7,11 +7,12 @@ sig
 		| STRING of Temp.label * string
 	val newFrame: {name: Temp.label, formals: bool list} -> frame
 	val name : frame -> Temp.label
-	val formals: frame -> access list
+	val formals: frame -> access list	
 	val allocLocal : frame -> bool -> access
 	val FP : Temp.temp
 	val wordSize : int
 	val exp : access -> Tree.exp -> Tree.exp
+	val externalCall : string * Tree.exp list -> Tree.exp
 end
 
 
@@ -52,6 +53,7 @@ struct
 		if b then (numLoc := !numLoc + 1; InFrame(!numLoc * wordSize))
 		   	 else InReg(Temp.newtemp())
 
- 	
-
+ 	(*Call a function in an external program*)
+ 	fun externalCall(s, args) =
+ 		Tree.CALL(Tree.NAME(Temp.namelabel s), args)
 end
