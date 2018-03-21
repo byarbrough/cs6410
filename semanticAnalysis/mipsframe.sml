@@ -21,10 +21,9 @@ struct
 	datatype access = InFrame of int 
 	                | InReg of Temp.temp 
 
-	val FP = nil
+	val FP = Temp.newtemp()
   val wordSize = 4
-  val exp = nil
-  type frame = {formals: access list, numLoc: int ref, numForm: int ref, funName: Temp.label }
+  type frame = {formals: access list, numLoc: int ref, numForm: int ref, funName: Temp.label}
 
   datatype frag = 
 		  PROC of {body: Tree.stm, frame: frame} 
@@ -56,4 +55,9 @@ struct
  	(*Call a function in an external program*)
  	fun externalCall(s, args) =
  		Tree.CALL(Tree.NAME(Temp.namelabel s), args)
+
+ 	fun exp(InReg(temp)) = fn(exp) => Tree.TEMP(temp)
+ 		| exp(InFrame(k)) (Tree.TEMP(FP)) = 
+ 				Tree.MEM(
+ 					Tree.BINOP(Tree.PLUS, Tree.TEMP(FP), Tree.CONST(k)))
 end

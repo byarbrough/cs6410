@@ -197,7 +197,12 @@ structure Translate : TRANSLATE = struct
   (*fun simpleVar*)
   (* trvar *)
   (*location of var: k is offset within frame and fp is frame pointer *)
-  fun irSimpleVar(fp, k) = 
-    Ex(Tr.MEM(Tr.BINOP(Tr.PLUS, Tr.TEMP fp, Tr.CONST k)))
+  fun irSimpleVar(
+    ({parent= p1, frame= f1, uni= u1}, access), 
+     {parent= p2, frame= f2, uni= u2}) = 
+    if u1 = u2 then F.exp(access)(F.FP) else 
+      Tr.MEM(Tr.PLUS, Tr.CONST(sl), 
+              irSimpleVar(({parent=p1, frame=f1, uni=u1}, access),
+                          p2))
 end
     
