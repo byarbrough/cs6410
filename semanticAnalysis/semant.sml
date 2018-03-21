@@ -424,6 +424,7 @@ struct
               | SOME(E.FunEntry{level, label, formals, result}) => 
                   (ErrorMsg.error pos 
                   ("function name not found for variable " ^ 
+                
                     S.name id);
                   raise TypeErrorException(pos))
 

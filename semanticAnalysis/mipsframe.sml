@@ -23,7 +23,10 @@ struct
 
 	val FP = Temp.newtemp()
   val wordSize = 4
-  type frame = {formals: access list, numLoc: int ref, numForm: int ref, funName: Temp.label}
+  type frame = {formals: access list, 
+  							numLoc: int ref, 
+  							numForm: int ref, 
+  							funName: Temp.label}
 
   datatype frag = 
 		  PROC of {body: Tree.stm, frame: frame} 
@@ -37,10 +40,16 @@ struct
 	(*create a new empty frame with formals allocated*)
   fun newFrame({name, formals}) = 
   	let 
-  		val frame = {formals= nil, numLoc= ref 0, numForm= ref 0, funName= name}
+  		val frame = {formals= nil, 
+  								 numLoc= ref 0, 
+  								 numForm= ref 0, 
+  								 funName= name}
   		val formals' = map (allocFormals frame) formals
   	in 
-  		{formals= formals',numLoc = ref 0, numForm= #numForm frame, funName = name}
+  		{formals= formals,
+  		 numLoc = ref 0, 
+  		 numForm= #numForm frame, 
+  		 funName = name}
   	end
   (*Return the label associated with the given frame*)
   fun name({formals, numLoc, numForm, funName}) = funName
