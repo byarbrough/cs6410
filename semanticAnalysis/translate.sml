@@ -56,7 +56,9 @@ structure Translate : TRANSLATE = struct
   structure Tr = Tree
   structure A = Absyn
   datatype level = TopLevel 
-  			 | Level of {parent: level, frame: F.frame, uni: unit ref}
+  			 | Level of {parent: level, 
+                     frame: F.frame, 
+                     uni: unit ref}
   datatype exp = 
       Ex of Tr.exp 
     | Nx of Tr.stm
@@ -68,24 +70,31 @@ structure Translate : TRANSLATE = struct
 
   val fragList = []
 
-  (* returns a new level from the give name, parent level and formals and gives
-      the static link to formals*)
+  (* returns a new level from the give name, 
+     parent level and formals and gives the static 
+     link to formals*)
   fun newLevel({parent, name, formals}) = 
   		Level({ parent= parent,
-		          frame= F.newFrame({name= name, formals= true :: formals}), 
+		          frame = F.newFrame({name= name, 
+                                  formals= true :: formals}), 
 		          uni = ref ()})
-  (*Return the access list of formals for the given level without the static link*)
+  (*Return the access list of formals for 
+    the given level without the static link*)
   fun formals(TopLevel) = []
     | formals(Level(level)) = 
         tl (map (fn(formal) => (Level(level), formal)) 
             (F.formals(#frame level)))
  
-  (*Return a function that will return an allocated variable given a boolean.*)
+  (*Return a function that will return an 
+    allocated variable given a boolean.*)
   fun allocLocal(TopLevel) = 
-  		ErrorMsg.impossible "allocLocal should not be given outermost level"
-  	| allocLocal(Level level) = fn(b) => (Level(level), (F.allocLocal(#frame level) b))
+  		ErrorMsg.impossible 
+        "allocLocal should not be given outermost level"
+  	| allocLocal(Level level) = 
+        fn(b) => (Level(level), (F.allocLocal(#frame level) b))
 
-  fun seq([]) = ErrorMsg.impossible "seq should not be given an empty list"
+  fun seq([]) = ErrorMsg.impossible 
+                  "seq should not be given an empty list"
     | seq(last :: []) = last
     | seq(first :: rest) = Tr.SEQ(first, seq(rest))
 
@@ -119,8 +128,10 @@ structure Translate : TRANSLATE = struct
         end
 
   fun unCx(Cx c) : T.label * T.label -> Tr.stm = c
-    | unCx(Ex e) = (fn(t, f) => Tr.CJUMP(Tr.NE, e, Tr.CONST 0, t, f))        
-    | unCx(Nx n) = ErrorMsg.impossible "Nx should not ever be converted to Cx"
+    | unCx(Ex e) = (fn(t, f) => 
+                      Tr.CJUMP(Tr.NE, e, Tr.CONST 0, t, f))        
+    | unCx(Nx n) = ErrorMsg.impossible 
+                    "Nx should not ever be converted to Cx"
 
   fun procEntryExit _  = ()
 
@@ -215,11 +226,15 @@ structure Translate : TRANSLATE = struct
   (*Helper for simpleVar, used to follow static links to find
     the location of a given access at a given level*)
   fun irSimpleVar((TopLevel, _), _ ) = 
-        ErrorMsg.impossible "simpleVar should not look into topLevel"
+        ErrorMsg.impossible 
+          "simpleVar should not look into topLevel"
     | irSimpleVar(_ , TopLevel) =
-        ErrorMsg.impossible "simpleVar should not look into topLevel"
+        ErrorMsg.impossible 
+          "simpleVar should not look into topLevel"
     | irSimpleVar(
-        (Level({parent= pDest, frame= fDest, uni= uniDest}), access), 
+        (Level({parent= pDest, 
+                frame= fDest, 
+                uni= uniDest}), access), 
          Level({parent= pCur, frame= fCur, uni= uniCur})) = 
         if uniCur = uniDest 
         then 
@@ -227,10 +242,13 @@ structure Translate : TRANSLATE = struct
         else
           F.exp (hd (F.formals(fCur)))
                     (irSimpleVar(
-                      (Level({parent=pDest, frame=fDest, uni=uniDest}), access),
+                      (Level({parent=pDest, 
+                              frame=fDest, 
+                              uni=uniDest}), 
+                       access),
                         pCur))
-  (*Returns a exp which loads the given access with a given level 
-    following static links*)
+  (*Returns a exp which loads the given
+    access with a given level following static links*)
   fun simpleVar(access, level) =
     Ex(irSimpleVar(access, level))
 end
