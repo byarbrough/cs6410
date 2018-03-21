@@ -24,7 +24,6 @@ sig
   val irInt : int -> exp
   val irString : string -> exp
   (*
-  val irString : () -> ()
   val irCallExp : () -> ()*)
   val irOpExp : {exp: exp, ty : Types.ty} * 
                  Absyn.oper *
@@ -34,7 +33,12 @@ sig
   val irRecordExp : () -> ()
   val irSeqExp : () -> ()
   val irAssignExp : () -> ()
-  val irIfExp : () -> ()
+  *)
+  val irIfExp : {test: exp, ty : Types.ty} * 
+                  {thn: exp, ty : Types.ty} *
+                  {els: exp, ty : Types.ty} *
+                  Absyn.pos -> exp
+  (*)
   val irWhileExp : () -> ()
   val irForExp : () -> ()
   val irBreakExp : () -> ()
@@ -184,9 +188,19 @@ structure Translate : TRANSLATE = struct
 *)
   fun irAssignExp{var, exp, pos} = ()
 
-  fun irIfExp{test, thn, els= SOME(exp), pos} = ()
-    | irIfExp{test, thn, els= NONE, pos} = ()
-  fun irWhileExp{tset, body, pos} = ()
+  fun irIfExp{test, thn, els= SOME(exp), pos} =
+    let
+      val r = T.newtemp();
+      val t = T.newlabel();
+      val f = T.newlabel();
+      val e1 = unCx(test);
+      val e2 = unEx(thn);
+      val e3 = unEx(els)
+    in
+      ()
+    end
+
+  fun irWhileExp{test, body, pos} = ()
   fun irForExp{var, escape, lo, hi, body, pos} = ()
   fun irBreakExp(pos) = ()
 

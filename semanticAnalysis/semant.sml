@@ -284,14 +284,14 @@ struct
         | trexp (A.AssignExp{var, exp, pos}) = 
             (checkTypeWrapper(
               checkSame( #ty (trvar var), #ty (trexp exp)), pos);
-            {exp=(), ty= T.UNIT})
+            {exp=Tr.irIfExp(var, exp, pos), ty= T.UNIT})
         | trexp (A.IfExp{test, then', else'= SOME(exp), pos}) = 
             let 
                 val {ty = tty, ...} = trexp then'
                 val {ty = ety, ...} = trexp exp
             in
               (checkTypeWrapper(checkInt(trexp test), pos); 
-                {exp=(), ty=checkIf(tty, ety, pos)})
+                {exp=Tr.irIfExp(var, exp, pos), ty=checkIf(tty, ety, pos)})
             end          
         | trexp (A.IfExp{test, then', else'= NONE, pos}) = (checkTypeWrapper( 
               checkInt(trexp test) andalso checkBreak(trexp then'), pos); 
