@@ -46,7 +46,7 @@ sig
   val irArrayExp : () -> ()
   *)
   (* trvar *)
-  val irSimpleVar : access * level -> exp
+  val simpleVar : access * level -> exp
 
 end
 
@@ -68,14 +68,17 @@ structure Translate : TRANSLATE = struct
 
   val fragList = []
 
-  (* returns a new level from the give name, parent level and formals*)
+  (* returns a new level from the give name, parent level and formals and gives
+      the static link to formals*)
   fun newLevel({parent, name, formals}) = 
   		Level({ parent= parent,
-		          frame= F.newFrame({name= name, formals= formals}), 
+		          frame= F.newFrame({name= name, formals= true :: formals}), 
 		          uni = ref ()})
-  (*Return the access list of formals for the given level*)
+  (*Return the access list of formals for the given level without the static link*)
   fun formals(TopLevel) = []
-    | formals(Level(level)) = map (fn(formal) => (Level(level), formal)) (F.formals(#frame level))
+    | formals(Level(level)) = 
+        tl (map (fn(formal) => (Level(level), formal)) 
+            (F.formals(#frame level)))
  
   (*Return a function that will return an allocated variable given a boolean.*)
   fun allocLocal(TopLevel) = 
@@ -207,16 +210,28 @@ structure Translate : TRANSLATE = struct
   fun irLetExp{decs, body, pos} = ()
   fun irArrayExp{typ, size, int, pos} = ()
 
-
-  (*fun simpleVar*)
   (* trvar *)
-  (*location of var: k is offset within frame and fp is frame pointer *)
-  fun irSimpleVar(
-    ({parent= p1, frame= f1, uni= u1}, access), 
-     {parent= p2, frame= f2, uni= u2}) = 
-    if u1 = u2 then F.exp(access)(F.FP) else 
-      Tr.MEM(Tr.PLUS, Tr.CONST(sl), 
-              irSimpleVar(({parent=p1, frame=f1, uni=u1}, access),
-                          p2))
+  
+  (*Helper for simpleVar, used to follow static links to find
+    the location of a given access at a given level*)
+  fun irSimpleVar((TopLevel, _), _ ) = 
+        ErrorMsg.impossible "simpleVar should not look into topLevel"
+    | irSimpleVar(_ , TopLevel) =
+        ErrorMsg.impossible "simpleVar should not look into topLevel"
+    | irSimpleVar(
+        (Level({parent= pDest, frame= fDest, uni= uniDest}), access), 
+         Level({parent= pCur, frame= fCur, uni= uniCur})) = 
+        if uniCur = uniDest 
+        then 
+          F.exp(access)(Tr.TEMP(F.FP)) 
+        else
+          F.exp (hd (F.formals(fCur)))
+                    (irSimpleVar(
+                      (Level({parent=pDest, frame=fDest, uni=uniDest}), access),
+                        pCur))
+  (*Returns a exp which loads the given access with a given level 
+    following static links*)
+  fun simpleVar(access, level) =
+    Ex(irSimpleVar(access, level))
 end
     

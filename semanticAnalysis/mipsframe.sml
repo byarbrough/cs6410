@@ -56,8 +56,10 @@ struct
  	fun externalCall(s, args) =
  		Tree.CALL(Tree.NAME(Temp.namelabel s), args)
 
- 	fun exp(InReg(temp)) = fn(exp) => Tree.TEMP(temp)
- 		| exp(InFrame(k)) (Tree.TEMP(FP)) = 
+ 	fun exp access loc = 
+ 		(case access 
+			of InReg(temp) => Tree.TEMP(temp)
+ 		   | InFrame(k) => 
  				Tree.MEM(
- 					Tree.BINOP(Tree.PLUS, Tree.TEMP(FP), Tree.CONST(k)))
+ 					Tree.BINOP(Tree.PLUS, loc, Tree.CONST(k))))
 end
