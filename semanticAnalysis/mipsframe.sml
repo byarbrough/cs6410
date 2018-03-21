@@ -9,6 +9,9 @@ sig
 	val name : frame -> Temp.label
 	val formals: frame -> access list
 	val allocLocal : frame -> bool -> access
+	val FP : Temp.temp
+	val wordSize : int
+	val exp : access -> Tree.exp -> Tree.exp
 end
 
 
@@ -16,7 +19,10 @@ structure MipsFrame : FRAME =
 struct
 	datatype access = InFrame of int 
 	                | InReg of Temp.temp 
+
+	val FP = nil
   val wordSize = 4
+  val exp = nil
   type frame = {formals: access list, numLoc: int ref, numForm: int ref, funName: Temp.label }
 
   datatype frag = 
@@ -45,5 +51,7 @@ struct
 		fn(b) => 
 		if b then (numLoc := !numLoc + 1; InFrame(!numLoc * wordSize))
 		   	 else InReg(Temp.newtemp())
+
+ 	
 
 end

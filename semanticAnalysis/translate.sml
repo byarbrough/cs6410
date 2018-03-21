@@ -16,19 +16,14 @@ sig
   val procEntryExit : {level: level, body: exp} -> unit
   (*structure Frame : FRAME*)
   val getResult : unit -> frag list
-
-  (* make sure Semant doesn't need to touch the tree *)
-  val simpleVar : access * level -> exp
+  val fragList : frag list
 
   (*Conversion functions below*)
   (* transExp *)
-  (*
-  val irVar : () -> ()
-  val irNil : () -> ()
-  *)
+  val irNil : unit -> exp
   val irInt : int -> exp
+  val irString : string -> exp
   (*
-  val irString : () -> ()
   val irCallExp : () -> ()
   val irOpExp : () -> ()
   val irRecordExp : () -> ()
@@ -41,6 +36,8 @@ sig
   val irLetExp : () -> ()
   val irArrayExp : () -> ()
   *)
+  (* trvar *)
+  val irSimpleVar : access * level -> exp
 
 end
 
@@ -58,6 +55,8 @@ structure Translate : TRANSLATE = struct
   type frag = F.frag
   (*The outermost level*)
   val outermost = TopLevel
+
+  val fragList = []
 
   (* returns a new level from the give name, parent level and formals*)
   fun newLevel({parent, name, formals}) = 
@@ -116,11 +115,15 @@ structure Translate : TRANSLATE = struct
 
   (*Translate semant to IR tree language*)
   (* transExp *)
-  (*location of var: k is offset within frame and fp is frame pointer *)
-  fun irVar(var{fp, k}) = Ex(Tr.MEM(Tr.BINOP(Tr.PLUS, TR.TEMP fp, TR.CONST k)))
-  fun irNil() = ()
+  fun irNil() = Ex(Tr.CONST 0)
   fun irInt(num) = Ex(Tr.CONST(num))
-  fun irString(str) = () 
+  fun irString(str) =
+  let
+     val lab = T.newlabel()
+   in
+      F.STRING(lab, str) :: fragList;
+      Ex(Tr.NAME(lab))
+   end 
 
   fun irCallExp{func, args, pose} = ()
 
@@ -143,6 +146,8 @@ structure Translate : TRANSLATE = struct
   fun irArrayExp{typ, size, int, pos} = ()
 
   (* trvar *)
-
+  (*location of var: k is offset within frame and fp is frame pointer *)
+  fun irSimpleVar(fp, k) = 
+    Ex(Tr.MEM(Tr.BINOP(Tr.PLUS, Tr.TEMP fp, Tr.CONST k)))
 end
     

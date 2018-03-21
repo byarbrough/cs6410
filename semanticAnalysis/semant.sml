@@ -100,9 +100,9 @@ struct
     fun transExp(venv, tenv, exp, level) : {exp:Tr.exp, ty: T.ty} =
       let fun 
           trexp (A.VarExp(var)) = trvar(var)
-        | trexp (A.NilExp) = {exp=(),ty=T.NIL}
+        | trexp (A.NilExp) = {exp=Tr.irNil,ty=T.NIL}
         | trexp (A.IntExp(num)) = {exp=Tr.irInt(num),ty=T.INT}
-        | trexp (A.StringExp(str)) = {exp=(),ty=T.STRING}
+        | trexp (A.StringExp(str)) = {exp=Tr.irString(str),ty=T.STRING}
 
         | trexp (A.CallExp{func, args, pos}) = 
           let 
@@ -299,7 +299,7 @@ struct
      and trvar (A.SimpleVar(id, pos)) = 
           (case S.look(venv,id)
               of SOME(E.VarEntry{access,ty}) => 
-              {exp=(), ty=actual_ty ty}
+              {exp=Tr.irSimpleVar(access, level), ty=actual_ty ty}
               | SOME(E.FunEntry{level, label, formals, result}) => ( ErrorMsg.error pos 
                   ("function name not found for variable " ^ S.name id);
                   raise TypeErrorException(pos))
