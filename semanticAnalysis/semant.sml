@@ -342,7 +342,7 @@ struct
             (checkTypeWrapper( 
               checkInt(trexp test) andalso 
               checkBreak(trexp then'), pos); 
-             {exp=(), ty= T.UNIT})              
+             {exp=Tr.irIfExp(var, exp, pos), ty= T.UNIT})              
         | trexp (A.WhileExp{test, body, pos}) = 
             (looplevel := !looplevel + 1;
              checkTypeWrapper(

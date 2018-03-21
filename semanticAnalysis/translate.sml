@@ -34,10 +34,7 @@ sig
   val irSeqExp : () -> ()
   val irAssignExp : () -> ()
   *)
-  val irIfExp : {test: exp, ty : Types.ty} * 
-                  {thn: exp, ty : Types.ty} *
-                  {els: exp, ty : Types.ty} *
-                  Absyn.pos -> exp
+  val irIfExp : exp * exp * exp option * int -> exp
   (*)
   val irWhileExp : () -> ()
   val irForExp : () -> ()
@@ -202,7 +199,7 @@ structure Translate : TRANSLATE = struct
 *)
   fun irAssignExp{var, exp, pos} = ()
 
-  fun irIfExp{test, thn, els= SOME(exp), pos} =
+  fun irIfExp(test, thn, SOME(els), pos) =
     let
       val r = T.newtemp();
       val t = T.newlabel();
@@ -211,11 +208,23 @@ structure Translate : TRANSLATE = struct
       val e2 = unEx(thn);
       val e3 = unEx(els)
     in
-      ()
+      Nx(seq([Tr.LABEL(t), Tr.MOVE(Tr.TEMP(r), e2),
+        Tr.LABEL(f), Tr.MOVE(Tr.TEMP(r), e3), Tr.LABEL(T.newlabel())]))
+    end
+    | irIfExp(test, thn, NONE, pos) =
+    let
+      val r = T.newtemp();
+      val t = T.newlabel();
+      val f = T.newlabel();
+      val e1 = unCx(test);
+      val e2 = unEx(thn);
+    in
+      Nx(seq([Tr.LABEL(t), Tr.MOVE(Tr.TEMP(r), e2),
+        Tr.LABEL(f)]))
     end
 
-  fun irWhileExp{test, body, pos} = ()
-  fun irForExp{var, escape, lo, hi, body, pos} = ()
+  fun irWhileExp(test, body, pos) = ()
+  fun irForExp(var, escape, lo, hi, body, pos) = ()
   fun irBreakExp(pos) = ()
 
   fun irLetExp{decs, body, pos} = ()
