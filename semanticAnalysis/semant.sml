@@ -413,7 +413,7 @@ struct
                                 actual_ty((#ty ity))) andalso
               checkInt(sty), pos); 
 
-          {exp=(), ty= aty})
+          {exp=irArrayExp(typ, size, init, pos), ty= aty})
       end
      (*Translate Vars*)
      and trvar (A.SimpleVar(id, pos)) = 
