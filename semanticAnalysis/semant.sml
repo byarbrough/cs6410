@@ -443,7 +443,6 @@ struct
               checkArrayElement(actual_ty(aty), 
                                 actual_ty((#ty ity))) andalso
               checkInt(sty), pos); 
-
           {exp=Tr.irArrayExp(#exp sty, #exp ity, pos), ty= aty})
       end
      (*Translate Vars*)
