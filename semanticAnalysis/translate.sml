@@ -34,7 +34,7 @@ sig
   val irAssignExp : exp * exp * Absyn.pos -> exp
   
   val irIfExp : exp * exp * exp option * int -> exp
-  val irWhileExp : exp * exp * int -> exp
+  val irWhileExp : exp * exp * exp -> exp
 
   val irForExp : unit -> exp (*STUBBED*)
 
@@ -253,9 +253,21 @@ structure Translate : TRANSLATE = struct
         Tr.LABEL(f)]))))
     end
 
-  fun irWhileExp(test, body, pos) =
-    Ex(Tr.CONST 0)
-  fun irForExp(var, escape, lo, hi, body, pos) = ()
+  fun irWhileExp(test, body, done) =
+    let
+      val t = T.newlabel();
+      val s = T.newlabel();
+      val d = T.newlabel(); (* this needs to be the same as the done that is passed in *)
+      val r = T.newtemp();
+      val e1: T.label * T.label -> Tr.stm = unCx(test);
+      val e2: Tr.exp = unEx(body)
+    in
+      Ex(unEx(Nx(seq([Tr.JUMP(Tr.NAME(t), [t]), Tr.LABEL(s), Tr.MOVE(Tr.TEMP(r), e2),
+        Tr.LABEL(t), e1(s, d), Tr.LABEL(d)]))))
+    end
+
+
+  fun irForExp(var, escape, lo, hi, body) = ()
   fun irBreakExp(pos) = ()
 
   fun irLetExp{decs, body, pos} = ()

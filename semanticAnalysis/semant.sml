@@ -112,7 +112,7 @@ struct
     
     (*Translate the given exp with the 
       given envionrments and level to *)
-    fun transExp(venv, tenv, exp, level)
+    fun transExp(venv, tenv, exp, level, done option)
          : {exp:Tr.exp, ty: T.ty} =
       let fun 
           trexp (A.VarExp(var)) : {exp:Tr.exp, ty: T.ty} 
@@ -368,7 +368,7 @@ struct
                                 NONE, pos), 
                 ty= T.UNIT})  
             end            
-        | trexp (A.WhileExp{test, body, pos}) =
+        | trexp (A.WhileExp{test, body, done, pos}) =
             let 
               val test' = trexp test
               val body' = trexp body
@@ -379,9 +379,9 @@ struct
                 checkBreak(body')), pos);
                looplevel := !looplevel - 1;
                {exp=Tr.irWhileExp(#exp test', 
-                                  #exp body', pos), ty= T.UNIT})
+                                  #exp body', done), ty= T.UNIT})
             end
-        | trexp (A.ForExp{var, escape, lo, hi, body, pos}) = 
+        | trexp (A.ForExp{var, escape, lo, hi, body, done, pos}) = 
             let 
               val venv' = 
                 S.enter(venv, var, 
@@ -539,7 +539,7 @@ struct
 
     (* returns a record {venv, tenv} for the 
        new enviornment including the declerations in dec*)
-    and transDec(venv, tenv, dec, level) = 
+    and transDec(venv, tenv, dec, level, done option) = 
     let fun
       trdec (A.FunctionDec(fundecs)) = 
         let 
