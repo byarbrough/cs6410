@@ -23,25 +23,25 @@ sig
   val irNil : unit -> exp
   val irInt : int -> exp
   val irString : string -> exp
-  (*
-  val irCallExp : () -> ()*)
+  val irCallExp : unit -> exp (*STUBBED*)
   val irOpExp : {exp: exp, ty : Types.ty} * 
                  Absyn.oper *
                  {exp: exp, ty : Types.ty} *
                  Absyn.pos -> exp
-  (*
-  val irRecordExp : () -> ()*)
-  val irSeqExp : exp list -> exp(*
-  val irAssignExp : () -> ()
-  *)
+  
+  val irRecordExp : unit -> exp (*STUBBED*)
+  val irSeqExp : exp list -> exp(*STUBBED*)
+  val irAssignExp : exp * exp * Absyn.pos -> exp
+  
   val irIfExp : exp * exp * exp option * int -> exp
   val irWhileExp : exp * exp * int -> exp
-(*
-  val irForExp : () -> ()
-  val irBreakExp : () -> ()
-  val irLetExp : () -> ()
-  *)
-  val irArrayExp : Types.ty * int * exp * int-> exp
+
+  val irForExp : unit -> exp (*STUBBED*)
+
+  val irBreakExp : unit -> exp (*STUBBED*)
+  (*val irLetExp : () -> ()*)
+  
+  val irArrayExp : exp * exp * Absyn.pos -> exp
   
   (* trvar *)
   val irFieldVar : exp * int -> exp
@@ -257,8 +257,8 @@ structure Translate : TRANSLATE = struct
   fun irBreakExp(pos) = ()
 
   fun irLetExp{decs, body, pos} = ()
-  fun irArrayExp(typ, size, init, pos) =
-      Ex(F.externalCall("initArray",[size, init]))
+  fun irArrayExp(size, init, pos) =
+      Ex(F.externalCall("initArray",[unEx(size), unEx(init)]))
 
   (* trvar *)
   
@@ -306,5 +306,14 @@ structure Translate : TRANSLATE = struct
             Tr.MUL,
             unEx(subExp),
             Tr.CONST(F.wordSize)))))
+  fun irCallExp() = Ex(Tr.CONST(1))
+
+  fun irRecordExp() = Ex(Tr.CONST(1)) 
+
+  fun irForExp() = Ex(Tr.CONST(1))
+
+  fun irBreakExp() = Ex(Tr.CONST(1))
+
+  fun irAssignExp(var, exp, pos) = Ex(Tr.CONST(1))
 end
     

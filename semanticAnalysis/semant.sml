@@ -115,12 +115,13 @@ struct
     fun transExp(venv, tenv, exp, level)
          : {exp:Tr.exp, ty: T.ty} =
       let fun 
-          trexp (A.VarExp(var)) = trvar(var)
+          trexp (A.VarExp(var)) : {exp:Tr.exp, ty: T.ty} 
+            = trvar(var)
         | trexp (A.NilExp) = 
-            {exp=Tr.irNil,ty=T.NIL}
+            {exp=Tr.irNil(),ty=T.NIL}
         | trexp (A.IntExp(num)) = 
             {exp=Tr.irInt(num),ty=T.INT}
-        | trexp (A.StringExp(str)) = 
+        | trexp (A.StringExp(str, pos)) = 
             {exp=Tr.irString(str),ty=T.STRING}
         | trexp (A.CallExp{func, args, pos}) = 
           let 
@@ -149,7 +150,7 @@ struct
                 | checkArgs(args, types) = false
           in 
               (checkTypeWrapper(checkArgs(formals, args), pos); 
-               {exp=(), ty=result})
+               {exp=Tr.irCallExp(), ty=result})
           end
         
         | trexp (A.OpExp{left, oper= A.PlusOp, right, pos}) =
@@ -320,7 +321,7 @@ struct
                               S.name typ);
                             raise TypeErrorException(pos)))
         in 
-         {exp=(), ty= rty}
+         {exp=Tr.irRecordExp(), ty= rty}
         end
         | trexp (A.SeqExp(nil)) = {exp=Tr.irSeqExp([]), ty= T.UNIT}
         | trexp (A.SeqExp(seq)) =
@@ -336,30 +337,50 @@ struct
             {exp = Tr.irSeqExp(seq'), ty= ty}
           end
         | trexp (A.AssignExp{var, exp, pos}) = 
-            (checkTypeWrapper(
-              checkSame( #ty (trvar var), #ty (trexp exp)), pos);
-            {exp=Tr.irIfExp(var, exp, pos), ty= T.UNIT})
+            let 
+              val {exp=var', ty=vty} = (trvar var)
+              val {exp=exp', ty=ety} = (trexp exp)
+            in
+              (checkTypeWrapper(
+                checkSame( vty, ety), pos);
+              {exp=Tr.irAssignExp(var', exp', pos), ty= T.UNIT}) 
+            end(*STUBBED*)
         | trexp (A.IfExp{test, then', else'= SOME(exp), pos}) = 
             let 
-                val {ty = tty, ...} = trexp then'
-                val {ty = ety, ...} = trexp exp
+                val {exp= then'', ty = tty} = trexp then'
+                val {exp=exp', ty = ety} = trexp exp
+                val test' = trexp test
             in
-              (checkTypeWrapper(checkInt(trexp test), pos); 
-                {exp=Tr.irIfExp(var, exp, pos), 
+              (checkTypeWrapper(checkInt(test'), pos); 
+                {exp=Tr.irIfExp(#exp test', then'', SOME(exp'), pos), 
                  ty=checkIf(tty, ety, pos)})
             end          
         | trexp (A.IfExp{test, then', else'= NONE, pos}) = 
-            (checkTypeWrapper( 
-              checkInt(trexp test) andalso 
-              checkBreak(trexp then'), pos); 
-             {exp=Tr.irIfExp(var, exp, pos), ty= T.UNIT})              
-        | trexp (A.WhileExp{test, body, pos}) = 
-            (looplevel := !looplevel + 1;
-             checkTypeWrapper(
-              (checkInt(trexp test) andalso 
-              checkBreak(trexp body)), pos);
-             looplevel := !looplevel - 1;
-             {exp=irWhileExp(test, body, pos), ty= T.UNIT})
+            let 
+                  val then'' = trexp then'
+                  val test' = trexp test
+            in
+              (checkTypeWrapper( 
+                checkInt(test') andalso 
+                checkBreak(then''), pos); 
+               {exp= Tr.irIfExp(#exp test', 
+                                #exp then'', 
+                                NONE, pos), 
+                ty= T.UNIT})  
+            end            
+        | trexp (A.WhileExp{test, body, pos}) =
+            let 
+              val test' = trexp test
+              val body' = trexp body
+            in
+              (looplevel := !looplevel + 1;
+               checkTypeWrapper(
+                (checkInt(test') andalso 
+                checkBreak(body')), pos);
+               looplevel := !looplevel - 1;
+               {exp=Tr.irWhileExp(#exp test', 
+                                  #exp body', pos), ty= T.UNIT})
+            end
         | trexp (A.ForExp{var, escape, lo, hi, body, pos}) = 
             let 
               val venv' = 
@@ -377,13 +398,13 @@ struct
                  checkBreak(
                     transExp(venv', tenv, body, level)), pos);
               looplevel := !looplevel - 1;
-              {exp=(), ty= T.UNIT})
+              {exp=Tr.irForExp(), ty= T.UNIT})
             end
         | trexp (A.BreakExp(pos)) = (case !looplevel of
           0 => (ErrorMsg.error pos 
                   ("break found outside of loop");
                               raise TypeErrorException(pos))
-          | num => {exp=(), ty= T.BREAK})
+          | num => {exp=Tr.irBreakExp(), ty= T.BREAK})
         | trexp (A.LetExp{decs, body, pos}) =
             let 
                 (* Combine Var and Fun Declerations together.*)
@@ -404,7 +425,7 @@ struct
                         {venv=venv, tenv=tenv} 
                         (combineDecs(decs))
             in 
-                transExp(venv', tenv', body, level)
+                transExp(venv', tenv', body, level) (*STUBBED*)
             end
         | trexp (A.ArrayExp{typ, size, init, pos}) =
           let 
@@ -423,7 +444,7 @@ struct
                                 actual_ty((#ty ity))) andalso
               checkInt(sty), pos); 
 
-          {exp=irArrayExp(typ, size, init, pos), ty= aty})
+          {exp=Tr.irArrayExp(#exp sty, #exp ity, pos), ty= aty})
       end
      (*Translate Vars*)
      and trvar (A.SimpleVar(id, pos)) = 
@@ -470,9 +491,9 @@ struct
           in 
           (case actual_ty (#ty var')
               of T.ARRAY(ty, unique) => 
-                (checkTypeWrapper(checkInt(exp', pos);
-                 {exp=Tr.irSubscriptVar(#exp var', #exp exp') 
-                  ty=ty}))
+                (checkTypeWrapper(checkInt(exp'), pos);
+                 {exp=Tr.irSubscriptVar(#exp var', #exp exp'), 
+                  ty=ty})
               | ty => ( ErrorMsg.error pos 
                   ("expected variable not an array");
                   raise TypeErrorException(pos)))
