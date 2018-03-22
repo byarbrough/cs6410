@@ -345,21 +345,21 @@ struct
                 val {ty = ety, ...} = trexp exp
             in
               (checkTypeWrapper(checkInt(trexp test), pos); 
-                {exp=Tr.irIfExp(var, exp, pos), 
+                {exp=Tr.irIfExp(test, then', exp, pos), 
                  ty=checkIf(tty, ety, pos)})
             end          
         | trexp (A.IfExp{test, then', else'= NONE, pos}) = 
             (checkTypeWrapper( 
               checkInt(trexp test) andalso 
               checkBreak(trexp then'), pos); 
-             {exp=Tr.irIfExp(var, exp, pos), ty= T.UNIT})              
+             {exp=Tr.irIfExp(test, then', NONE, pos), ty= T.UNIT})              
         | trexp (A.WhileExp{test, body, pos}) = 
             (looplevel := !looplevel + 1;
              checkTypeWrapper(
               (checkInt(trexp test) andalso 
               checkBreak(trexp body)), pos);
              looplevel := !looplevel - 1;
-             {exp=irWhileExp(test, body, pos), ty= T.UNIT})
+             {exp=Tr.irWhileExp(test, body, pos), ty= T.UNIT})
         | trexp (A.ForExp{var, escape, lo, hi, body, pos}) = 
             let 
               val venv' = 
@@ -423,7 +423,7 @@ struct
                                 actual_ty((#ty ity))) andalso
               checkInt(sty), pos); 
 
-          {exp=irArrayExp(typ, size, init, pos), ty= aty})
+          {exp=Tr.irArrayExp(size, init, pos), ty= aty})
       end
      (*Translate Vars*)
      and trvar (A.SimpleVar(id, pos)) = 

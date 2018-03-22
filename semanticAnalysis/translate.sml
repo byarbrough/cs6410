@@ -41,7 +41,7 @@ sig
   val irBreakExp : () -> ()
   val irLetExp : () -> ()
   *)
-  val irArrayExp : Types.ty * int * exp * int-> exp
+  val irArrayExp : exp * exp * int-> exp
   
   (* trvar *)
   val irFieldVar : exp * int -> exp
@@ -257,8 +257,9 @@ structure Translate : TRANSLATE = struct
   fun irBreakExp(pos) = ()
 
   fun irLetExp{decs, body, pos} = ()
-  fun irArrayExp(typ, size, init, pos) =
-      Ex(F.externalCall("initArray",[size, init]))
+
+  fun irArrayExp(Ex(size), Ex(init), pos) =
+      Ex(F.externalCall("initArray", [size, init]))
 
   (* trvar *)
   
