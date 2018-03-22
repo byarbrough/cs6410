@@ -398,7 +398,7 @@ struct
                  checkBreak(
                     transExp(venv', tenv, body, level)), pos);
               looplevel := !looplevel - 1;
-              {exp=Tr.irForExp(), ty= T.UNIT})
+              {exp=Tr.irForExp(var, escape, lo, hi, body, done, pos), ty= T.UNIT})
             end
         | trexp (A.BreakExp(pos)) = (case !looplevel of
           0 => (ErrorMsg.error pos 

@@ -36,8 +36,7 @@ sig
   val irIfExp : exp * exp * exp option * int -> exp
   val irWhileExp : exp * exp * exp -> exp
 
-  val irForExp : unit -> exp (*STUBBED*)
-
+  val irForExp : exp * exp * exp * exp * exp * exp * int -> exp
   val irBreakExp : unit -> exp (*STUBBED*)
   (*val irLetExp : () -> ()*)
   
@@ -267,7 +266,23 @@ structure Translate : TRANSLATE = struct
     end
 
 
-  fun irForExp(var, escape, lo, hi, body) = ()
+  fun irForExp(var, escape, lo, hi, body, done) =
+    let
+      (* need to sub in var so it can be used? *)
+      val i = T.newtemp();
+      val h = T.newtemp();
+      val r = T.newtemp();
+      val t = T.newlabel();
+      val b = T.newlabel();
+      val d = T.newlabel();
+      val bod: Tr.exp = unEx(body)
+
+    in
+      Ex(unEx(Nx(seq([Tr.MOVE(Tr.TEMP(i), lo), Tr.MOVE(Tr.TEMP(h), hi), Tr.LABEL(t),
+        Tr.CJUMP(Tr.LT, Tr.TEMP(i), Tr.TEMP(h), b, d),
+        Tr.MOVE(Tr.TEMP(r), bod), Tr.JUMP(Tr.NAME(t), [t]), Tr.LABEL(d)]))))
+    end
+
   fun irBreakExp(pos) = ()
 
   fun irLetExp{decs, body, pos} = ()
