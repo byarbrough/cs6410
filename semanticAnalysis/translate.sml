@@ -232,23 +232,25 @@ structure Translate : TRANSLATE = struct
       val r = T.newtemp();
       val t = T.newlabel();
       val f = T.newlabel();
-      val e1 = unCx(test);
-      val e2 = unEx(thn);
-      val e3 = unEx(els)
+      val join = T.newlabel();
+      val e1: T.label * T.label -> Tr.stm  = unCx(test);
+      val e2: Tr.exp = unEx(thn);
+      val e3: Tr.exp = unEx(els)
     in
-      Nx(seq([Tr.LABEL(t), Tr.MOVE(Tr.TEMP(r), e2),
-        Tr.LABEL(f), Tr.MOVE(Tr.TEMP(r), e3), Tr.LABEL(T.newlabel())]))
+      Ex(unEx(Nx(seq([e1(t, f), Tr.LABEL(t), Tr.MOVE(Tr.TEMP(r), e2),
+        Tr.JUMP(Tr.NAME join, [join]), Tr.LABEL(f), Tr.MOVE(Tr.TEMP(r), e3),
+        Tr.LABEL(join)]))))
     end
     | irIfExp(test, thn, NONE, pos) =
     let
       val r = T.newtemp();
       val t = T.newlabel();
       val f = T.newlabel();
-      val e1 = unCx(test);
-      val e2 = unEx(thn);
+      val e1: T.label * T.label -> Tr.stm  = unCx(test);
+      val e2: Tr.exp = unEx(thn);
     in
-      Nx(seq([Tr.LABEL(t), Tr.MOVE(Tr.TEMP(r), e2),
-        Tr.LABEL(f)]))
+      Ex(unEx(Nx(seq([e1(t, f), Tr.LABEL(t), Tr.MOVE(Tr.TEMP(r), e2),
+        Tr.LABEL(f)]))))
     end
 
   fun irWhileExp(test, body, pos) =
