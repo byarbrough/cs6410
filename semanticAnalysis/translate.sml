@@ -30,16 +30,17 @@ sig
                  Absyn.pos -> exp
   
   val irRecordExp : unit -> exp (*STUBBED*)
-  val irSeqExp : exp list -> exp(*STUBBED*)
-  val irAssignExp : exp * exp * Absyn.pos -> exp
+  val irSeqExp : exp list -> exp
+  val irAssignExp : exp * exp -> exp
   
   val irIfExp : exp * exp * exp option * int -> exp
-  val irWhileExp : exp * exp * int -> exp
+  val irWhileExp : exp * exp * int -> exp (*STUBBED*)
 
   val irForExp : unit -> exp (*STUBBED*)
 
   val irBreakExp : unit -> exp (*STUBBED*)
-  (*val irLetExp : () -> ()*)
+  
+  val irLetExp : exp list * exp -> exp
   
   val irArrayExp : exp * exp * Absyn.pos -> exp
   
@@ -218,14 +219,13 @@ structure Translate : TRANSLATE = struct
               {exp=r, ty=_}, pos) =
          comp(Tr.NE, l, r)               
 
-  fun irRecordExp{fields, typ, pos} = ()
-
   fun irSeqExp([]) =  Ex(Tr.CONST 0)
     | irSeqExp(exp :: []) = exp
     | irSeqExp(exp :: seq) =
         Ex(Tr.ESEQ(unNx exp, unEx(irSeqExp seq)))
 
-  fun irAssignExp{var, exp, pos} = ()
+  fun irAssignExp(var, exp) = 
+    Nx(Tr.MOVE(unEx(var), unEx(exp)))
 
   fun irIfExp(test, thn, SOME(els), pos) =
     let
@@ -315,6 +315,8 @@ structure Translate : TRANSLATE = struct
 
   fun irBreakExp() = Ex(Tr.CONST(1))
 
-  fun irAssignExp(var, exp, pos) = Ex(Tr.CONST(1))
+  fun irLetExp(decs, body) = Ex(Tr.CONST(1))
+
+
 end
     

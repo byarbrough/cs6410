@@ -115,7 +115,7 @@ struct
     fun transExp(venv, tenv, exp, level)
          : {exp:Tr.exp, ty: T.ty} =
       let fun 
-          trexp (A.VarExp(var)) : {exp:Tr.exp, ty: T.ty} 
+          trexp (A.VarExp(var))
             = trvar(var)
         | trexp (A.NilExp) = 
             {exp=Tr.irNil(),ty=T.NIL}
@@ -343,7 +343,7 @@ struct
             in
               (checkTypeWrapper(
                 checkSame( vty, ety), pos);
-              {exp=Tr.irAssignExp(var', exp', pos), ty= T.UNIT}) 
+              {exp=Tr.irAssignExp(var', exp'), ty= T.UNIT}) 
             end(*STUBBED*)
         | trexp (A.IfExp{test, then', else'= SOME(exp), pos}) = 
             let 
@@ -418,11 +418,21 @@ struct
                       combineDecs(A.TypeDec(l1 @ l2) :: rest)
                   | combineDecs(first :: rest) = 
                       first :: combineDecs(rest)
-                fun addDecs(dec, {venv=venv', tenv=tenv'}) = 
-                      transDec(venv', tenv', dec, level)
-                val {venv=venv', tenv=tenv'} = 
+                fun addDecs(dec, {venv=venv', tenv=tenv', exps}) = 
+                      let
+                        val {venv=venv'', 
+                             tenv=tenv'',
+                             exps=exps'} = 
+                              transDec(venv', tenv', dec, level)
+                      in 
+                        {venv=venv'', 
+                         tenv=tenv'', 
+                         exps=exps' @ exps}
+                      end
+
+                val {venv=venv', tenv=tenv', exps} = 
                   foldl addDecs 
-                        {venv=venv, tenv=tenv} 
+                        {venv=venv, tenv=tenv, exps=[]} 
                         (combineDecs(decs))
             in 
                 transExp(venv', tenv', body, level) (*STUBBED*)
@@ -537,7 +547,7 @@ struct
           (trty ty)
       end
 
-    (* returns a record {venv, tenv} for the 
+    (* returns a record {venv, tenv, exps} for the 
        new enviornment including the declerations in dec*)
     and transDec(venv, tenv, dec, level) = 
     let fun
@@ -613,42 +623,42 @@ struct
                   checkTypeWrapper(
                     checkSame(#ty bodyty, result_ty), pos)
               end) fundecs;
-          {venv=venv', tenv= tenv})
+          {venv=venv', tenv= tenv, exps=[]})
           
         in  
-          {venv= venv', tenv=tenv}
+          {venv= venv', tenv=tenv, exps= []}
         end
 
       | trdec (A.VarDec{name, escape, typ, init, pos}) = 
-        let val {exp, ty} = transExp(venv, tenv, init, level)
-        in (case typ 
-            of SOME(id, pos) => 
-              (case S.look(tenv, id)
-               of NONE => 
-                (ErrorMsg.error pos 
-                  ("type name not found for variable " 
-                    ^ S.name id);
-                 raise TypeErrorException(pos))
-               |  SOME(ety) =>
-                (checkTypeWrapper(checkSame(ty, ety), pos));
-              {tenv=tenv, 
-               venv= S.enter(venv, name,
-                         E.VarEntry{
-                          access=(Tr.allocLocal(level) (!escape)), 
-                          ty=ty})})
-            | NONE => 
-              (case (actual_ty(ty)) 
-                of T.NIL =>
+        let 
+          val {exp, ty} = transExp(venv, tenv, init, level)
+          val acc = 
+            (case typ 
+              of SOME(id, pos) => 
+                (case S.look(tenv, id)
+                 of NONE => 
                   (ErrorMsg.error pos 
-                    ("Nil variable decleration" ^  
-                     "must have type for var " ^ S.name name);
-                      raise TypeErrorException(pos))
-                | ty  =>  
-                    {tenv=tenv, 
-                     venv=S.enter(venv, name, 
-                        E.VarEntry{
-                          access=(Tr.allocLocal(level) (!escape)), 
-                          ty=ty})}))
+                    ("type name not found for variable " 
+                      ^ S.name id);
+                   raise TypeErrorException(pos))
+                 |  SOME(ety) =>
+                  (checkTypeWrapper(checkSame(ty, ety), pos));
+                   Tr.allocLocal(level) (!escape))
+              | NONE => 
+                (case (actual_ty(ty)) 
+                  of T.NIL =>
+                    (ErrorMsg.error pos 
+                      ("Nil variable decleration" ^  
+                       "must have type for var " ^ S.name name);
+                        raise TypeErrorException(pos))
+                  | ty  =>  Tr.allocLocal(level) (!escape)))
+        in 
+          {venv = S.enter(venv, name,
+                    E.VarEntry{access=acc, ty=ty}),
+           tenv = tenv,
+           exps = [Tr.irAssignExp( 
+                    (Tr.simpleVar(acc, level)), exp)]
+          }
         end
 
       | trdec (A.TypeDec(typeDecs)) = 
@@ -704,7 +714,7 @@ struct
               end) 
            typeDecs;
            checkTyCycles(tenv');
-          {venv=venv, tenv= tenv'})
+          {venv=venv, tenv= tenv', exps=[]})
         end
     in 
       (trdec dec)
