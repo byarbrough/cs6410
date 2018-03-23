@@ -21,7 +21,7 @@ sig
   val irNil : unit -> exp
   val irInt : int -> exp
   val irString : string -> exp
-  val irCallExp : unit -> exp (*STUBBED*)
+  val irCallExp : Temp.label * level * exp list * level -> exp 
   val irOpExp : {exp: exp, ty : Types.ty} * 
                  Absyn.oper *
                  {exp: exp, ty : Types.ty} *
@@ -148,16 +148,13 @@ structure Translate : TRANSLATE = struct
   fun irNil() = Ex(Tr.CONST 0)
   fun irInt(num) = Ex(Tr.CONST(num))
   fun irString(str) =
-  let
-     val lab = T.newlabel()
-   in
-      F.STRING(lab, str) :: !fragList;
+    let
+      val lab = T.newlabel()
+    in
+      fragList := F.STRING(lab, str) :: !fragList;
       Ex(Tr.NAME(lab))
-   end 
+    end 
 
-  fun irCallExp{func, args, pos} = ()
-
-  
   fun arith(trOp : Tr.binop, l, r) =
         Ex(Tr.BINOP(trOp, unEx(l), unEx(r)))
   fun comp(trComp : Tr.relop, l, r) = 
@@ -287,44 +284,41 @@ structure Translate : TRANSLATE = struct
         Tr.MOVE(Tr.TEMP(r), bod), Tr.JUMP(Tr.NAME(t), [t]), Tr.LABEL(d)]))))
     end
 
-  fun irBreakExp(done, pos) =
-    Nx(Tr.JUMP(Tr.NAME(done), [done]))
-
-  fun irLetExp{decs, body, pos} = ()
+  fun irBreakExp(break, pos) =
+    Nx(Tr.JUMP(Tr.NAME(break), [break]))
 
   fun irArrayExp(size, init, pos) =
       Ex(F.externalCall("initArray",[unEx(size), unEx(init)]))
 
   (* trvar *)
   
-  (*Helper for simpleVar, used to follow static links to find
+  (*Helper for getting static link, used to find the 
     the location of a given access at a given level*)
-  fun irSimpleVar((TopLevel, _), _ ) = 
+  fun staticLink(TopLevel, _) = 
         ErrorMsg.impossible 
-          "simpleVar should not look into topLevel"
-    | irSimpleVar(_ , TopLevel) =
+          "staticLink should not look into topLevel"
+    | staticLink(_ , TopLevel) =
         ErrorMsg.impossible 
-          "simpleVar should not look into topLevel"
-    | irSimpleVar(
-        (Level({parent= pDest, 
+          "staticLink should not look into topLevel"
+    | staticLink(
+        Level({parent= pDest, 
                 frame= fDest, 
-                uni= uniDest}), access), 
-         Level({parent= pCur, frame= fCur, uni= uniCur})) = 
-        if uniCur = uniDest 
-        then 
-          F.exp(access)(Tr.TEMP(F.FP)) 
-        else
-          F.exp (hd (F.formals(fCur)))
-                    (irSimpleVar(
-                      (Level({parent=pDest, 
-                              frame=fDest, 
-                              uni=uniDest}), 
-                       access),
+                uni= uniDest}), 
+        Level({parent= pCur, frame= fCur, uni= uniCur})) = 
+          if uniCur = uniDest 
+          then 
+            Tr.TEMP(F.FP) 
+          else
+            F.exp (hd (F.formals(fCur)))
+                      (staticLink(
+                        Level({parent=pDest, 
+                                frame=fDest, 
+                                uni=uniDest}),
                         pCur))
   (*Returns a exp which loads the given
     access with a given level following static links*)
-  fun simpleVar(access, level) =
-    Ex(irSimpleVar(access, level))
+  fun simpleVar((destLevel, access), curLevel) =
+        Ex(F.exp(access)(staticLink(destLevel, curLevel)))
 
   fun irFieldVar(recExp, fieldNum) =
     Ex(Tr.MEM(
@@ -341,11 +335,19 @@ structure Translate : TRANSLATE = struct
             Tr.MUL,
             unEx(subExp),
             Tr.CONST(F.wordSize)))))
-  fun irCallExp() = Ex(Tr.CONST(1))
+  fun irCallExp(name, Level(flevel), args, clevel) =
+        Ex(Tr.CALL(
+            Tr.NAME(name), 
+                    staticLink(#parent flevel, clevel) ::  
+                    map unEx args))
+    | irCallExp(name, TopLevel, args, clevel) = 
+        Ex(F.externalCall(Temp.name name, map unEx args))
 
   fun irRecordExp() = Ex(Tr.CONST(1)) 
 
-  fun irLetExp(decs, body) = Ex(Tr.CONST(1))
+
+  fun irLetExp(decs, body) = 
+        Ex(Tr.ESEQ(seq(map unNx decs), unEx(body)))
 
   fun irFunDec(TopLevel, _) = 
          ErrorMsg.impossible 

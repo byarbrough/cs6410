@@ -125,13 +125,13 @@ struct
             {exp=Tr.irString(str),ty=T.STRING}
         | trexp (A.CallExp{func, args, pos}) = 
           let 
-              val (formals, result) =
+              val (flevel, formals, result) =
                 (case S.look(venv, func) 
                   of SOME(E.FunEntry{ level, 
                                       label, 
                                       formals, 
                                       result}) =>
-                      (formals, result)
+                      (level, formals, result)
                    | SOME(E.VarEntry{...}) =>
                       (ErrorMsg.error pos
                       ("variable name " ^ 
@@ -143,14 +143,16 @@ struct
                       ("function name not defined for " ^ 
                         S.name func);
                               raise TypeErrorException(pos)))
-              fun checkArgs(nil, nil) = true
-                | checkArgs(fty :: formals, exp :: args) = 
-                      checkSame(fty, #ty (trexp exp)) andalso 
+              val args' = map trexp args
+              fun checkArgs([], []) = true
+                | checkArgs(fty :: formals, {exp, ty} :: args) = 
+                      checkSame(fty, ty) andalso 
                       checkArgs(formals, args)
                 | checkArgs(args, types) = false
           in 
-              (checkTypeWrapper(checkArgs(formals, args), pos); 
-               {exp=Tr.irCallExp(), ty=result})
+              (checkTypeWrapper(checkArgs(formals, args'), pos); 
+               {exp=Tr.irCallExp(func, flevel, map #exp args', level), 
+                ty=result})
           end
         
         | trexp (A.OpExp{left, oper= A.PlusOp, right, pos}) =
@@ -404,16 +406,14 @@ struct
                                #exp hi',
                                #exp body', newBreak), ty= T.UNIT})
             end
-        | trexp (A.BreakExp{breakpoint, pos}) = (case !looplevel of
-          0 => (ErrorMsg.error pos 
-                  ("break found outside of loop");
-                              raise TypeErrorException(pos))
-          | num => (case breakpoint of SOME(break) =>
-            {exp=Tr.irBreakExp(break, pos), ty= T.BREAK})
-          | NONE =>
-          (ErrorMsg.error pos 
-                  ("break found outside of loop");
-                              raise TypeErrorException(pos)))
+        | trexp (A.BreakExp(pos)) = 
+            (case breakpoint 
+              of SOME(break) =>
+                  {exp=Tr.irBreakExp(break, pos), ty= T.BREAK}
+               | NONE =>
+                  (ErrorMsg.error pos 
+                    ("break found outside of loop");
+                  raise TypeErrorException(pos)))
         | trexp (A.LetExp{decs, body, pos}) =
             let 
                 (* Combine Var and Fun Declerations together.*)
@@ -443,8 +443,9 @@ struct
                   foldl addDecs 
                         {venv=venv, tenv=tenv, exps=[]} 
                         (combineDecs(decs))
+                val {exp, ty} =  transExp(venv', tenv', body, level, breakpoint)
             in 
-                transExp(venv', tenv', body, level, breakpoint) (*STUBBED*)
+               {exp=Tr.irLetExp(exps, exp), ty=ty}
             end
         | trexp (A.ArrayExp{typ, size, init, pos}) =
           let 

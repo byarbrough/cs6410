@@ -8,6 +8,7 @@ sig
 	type label 
 	val newlabel : unit -> label
 	val namelabel : string -> label
+	val name : label -> string
 end
 
 (* Temps are abstract names for local variables*)
@@ -30,5 +31,7 @@ struct
 					 Symbol.symbol("L" ^ Int.toString(!curNumLabel)))
 	(* returns a new label for assembly language *)
 	fun namelabel(str) = Symbol.symbol str 
+
+	fun name(label) = Symbol.name label 
 end
 
