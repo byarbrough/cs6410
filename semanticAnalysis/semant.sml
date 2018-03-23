@@ -404,11 +404,16 @@ struct
                                #exp hi',
                                #exp body', newBreak), ty= T.UNIT})
             end
-        | trexp (A.BreakExp(pos)) = (case !looplevel of
+        | trexp (A.BreakExp{breakpoint, pos}) = (case !looplevel of
           0 => (ErrorMsg.error pos 
                   ("break found outside of loop");
                               raise TypeErrorException(pos))
-          | num => {exp=Tr.irBreakExp(), ty= T.BREAK})
+          | num => (case breakpoint of SOME(break) =>
+            {exp=Tr.irBreakExp(break, pos), ty= T.BREAK})
+          | NONE =>
+          (ErrorMsg.error pos 
+                  ("break found outside of loop");
+                              raise TypeErrorException(pos)))
         | trexp (A.LetExp{decs, body, pos}) =
             let 
                 (* Combine Var and Fun Declerations together.*)

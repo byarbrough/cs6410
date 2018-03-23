@@ -35,7 +35,7 @@ sig
   val irWhileExp : exp * exp * Temp.label -> exp
 
   val irForExp : exp * exp * exp * Temp.label -> exp
-  val irBreakExp : unit -> exp (*STUBBED*)
+  val irBreakExp : Tree.label * int -> exp
   
   val irLetExp : exp list * exp -> exp
 
@@ -234,10 +234,10 @@ structure Translate : TRANSLATE = struct
 
   fun irIfExp(test, thn, SOME(els), pos) =
     let
-      val r = T.newtemp();
-      val t = T.newlabel();
-      val f = T.newlabel();
-      val join = T.newlabel();
+      val r = T.newtemp(); (* result *)
+      val t = T.newlabel(); (* true *)
+      val f = T.newlabel(); (* false *)
+      val join = T.newlabel(); (* the end *)
       val e1: T.label * T.label -> Tr.stm  = unCx(test);
       val e2: Tr.exp = unEx(thn);
       val e3: Tr.exp = unEx(els)
@@ -258,12 +258,11 @@ structure Translate : TRANSLATE = struct
         Tr.LABEL(f)]))))
     end
 
-  fun irWhileExp(test, body, done) =
+  fun irWhileExp(test, body, d) =
     let
-      val t = T.newlabel();
-      val s = T.newlabel();
-      val d = T.newlabel(); (* this needs to be the same as the done that is passed in *)
-      val r = T.newtemp();
+      val t = T.newlabel(); (* test *)
+      val s = T.newlabel(); (* start *)
+      val r = T.newtemp();  (* result *)
       val e1: T.label * T.label -> Tr.stm = unCx(test);
       val e2: Tr.exp = unEx(body)
     in
@@ -275,12 +274,11 @@ structure Translate : TRANSLATE = struct
   fun irForExp(lo, hi, body, d) =
     let
       (* need to sub in var so it can be used? *)
-      val i = T.newtemp();
-      val h = T.newtemp();
-      val r = T.newtemp();
-      val t = T.newlabel();
-      val b = T.newlabel();
-      (*val d = T.newlabel(); im guessing this is where breaks should go*) 
+      val i = T.newtemp(); (* current val *)
+      val h = T.newtemp(); (* hi *)
+      val r = T.newtemp(); (* result *)
+      val t = T.newlabel(); (* test *)
+      val b = T.newlabel(); (* body *)
       val bod: Tr.exp = unEx(body)
 
     in
@@ -289,7 +287,8 @@ structure Translate : TRANSLATE = struct
         Tr.MOVE(Tr.TEMP(r), bod), Tr.JUMP(Tr.NAME(t), [t]), Tr.LABEL(d)]))))
     end
 
-  fun irBreakExp(pos) = ()
+  fun irBreakExp(done, pos) =
+    Nx(Tr.JUMP(Tr.NAME(done), [done]))
 
   fun irLetExp{decs, body, pos} = ()
 
@@ -345,8 +344,6 @@ structure Translate : TRANSLATE = struct
   fun irCallExp() = Ex(Tr.CONST(1))
 
   fun irRecordExp() = Ex(Tr.CONST(1)) 
-
-  fun irBreakExp() = Ex(Tr.CONST(1))
 
   fun irLetExp(decs, body) = Ex(Tr.CONST(1))
 
