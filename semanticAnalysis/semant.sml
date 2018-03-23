@@ -618,10 +618,13 @@ struct
                 the functions and function parameters from this 
                 function included*)
               val venv'' = foldl enterparam venv' params' 
-              val bodyty = transExp(venv'', tenv, body, level);
+              val {exp=body', ty=bodyTy} = 
+                    transExp(venv'', tenv, body, level);
               in 
-                  checkTypeWrapper(
-                    checkSame(#ty bodyty, result_ty), pos)
+                  (checkTypeWrapper(
+                    checkSame(bodyTy, result_ty), pos);
+                    Tr.irFunDec(level, body'))
+
               end) fundecs;
           {venv=venv', tenv= tenv, exps=[]})
           

@@ -10,9 +10,12 @@ sig
 	val formals: frame -> access list	
 	val allocLocal : frame -> bool -> access
 	val FP : Temp.temp
+	val RV : Temp.temp
 	val wordSize : int
 	val exp : access -> Tree.exp -> Tree.exp
 	val externalCall : string * Tree.exp list -> Tree.exp
+	val procEntryExit1 : frame * Tree.exp -> Tree.exp (*STUBBED*)
+	val procEntryExit3 : frame * Tree.exp -> Tree.exp (*STUBBED*)
 end
 
 
@@ -22,6 +25,7 @@ struct
 	                | InReg of Temp.temp 
 
 	val FP = Temp.newtemp()
+	val RV = Temp.newtemp()
   val wordSize = 4
   type frame = {formals: access list, 
   							numLoc: int ref, 
@@ -70,5 +74,9 @@ struct
 			of InReg(temp) => Tree.TEMP(temp)
  		   | InFrame(k) => 
  				Tree.MEM(
- 					Tree.BINOP(Tree.PLUS, loc, Tree.CONST(k))))
+ 					Tree.BINOP(Tree.MINUS, loc, Tree.CONST(k))))
+ 	fun procEntryExit1(frame, body)= body
+
+	fun procEntryExit3(frame, body)= body
+
 end

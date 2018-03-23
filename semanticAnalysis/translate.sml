@@ -13,10 +13,8 @@ sig
   val unEx : exp -> Tree.exp
   val unNx : exp -> Tree.stm
   val unCx : exp -> (Temp.label * Temp.label -> Tree.stm)
-  val procEntryExit : {level: level, body: exp} -> unit
-  (*structure Frame : FRAME*)
+  val procEntryExit : level *  exp -> unit
   val getResult : unit -> frag list
-  val fragList : frag list
 
   (*Conversion functions below*)
   (* transExp *)
@@ -41,6 +39,8 @@ sig
   val irBreakExp : unit -> exp (*STUBBED*)
   
   val irLetExp : exp list * exp -> exp
+
+  val irFunDec : level * exp -> unit
   
   val irArrayExp : exp * exp * Absyn.pos -> exp
   
@@ -69,7 +69,7 @@ structure Translate : TRANSLATE = struct
   (*The outermost level*)
   val outermost = TopLevel
 
-  val fragList = []
+  val fragList : frag list ref= ref []
 
   (* returns a new level from the give name, 
      parent level and formals and gives the static 
@@ -134,7 +134,13 @@ structure Translate : TRANSLATE = struct
     | unCx(Nx n) = ErrorMsg.impossible 
                     "Nx should not ever be converted to Cx"
 
-  fun procEntryExit _  = ()
+  fun procEntryExit(Level({parent, frame, uni}), exp)  = 
+      (fragList := 
+        F.PROC({body= unNx(exp), frame= frame}) :: !fragList;
+        ())
+    | procEntryExit(TopLevel, _) =
+        ErrorMsg.impossible 
+          "ProcEntryExit should not be called with TopLevel"
 
   fun getResult() = []
 
@@ -146,7 +152,7 @@ structure Translate : TRANSLATE = struct
   let
      val lab = T.newlabel()
    in
-      F.STRING(lab, str) :: fragList;
+      F.STRING(lab, str) :: !fragList;
       Ex(Tr.NAME(lab))
    end 
 
@@ -317,6 +323,13 @@ structure Translate : TRANSLATE = struct
 
   fun irLetExp(decs, body) = Ex(Tr.CONST(1))
 
+  fun irFunDec(TopLevel, _) = 
+         ErrorMsg.impossible 
+          "irFunDec should not be given topLevel"
+    | irFunDec(Level(level), exp) = 
+        procEntryExit(Level(level),
+          Nx(Tr.MOVE(Tr.TEMP(F.RV), 
+                     F.procEntryExit1(#frame level, unEx(exp)))))
 
 end
     
