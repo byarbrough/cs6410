@@ -729,10 +729,15 @@ struct
     end     
     (*Translates the given expression to _____*)
     fun transProg(absyn) = 
-      (transExp(E.base_venv, E.base_tenv, absyn, 
-                Tr.newLevel(
-                  {parent=Tr.outermost, 
-                   name=Temp.newlabel(), 
-                   formals=[]}), NONE); 
-       Tr.getResult())
+      let 
+        val level = Tr.newLevel(
+                      {parent=Tr.outermost, 
+                       name=Temp.newlabel(), 
+                       formals=[]})
+        val {exp, ty} = transExp(E.base_venv, 
+                                E.base_tenv, absyn, 
+                                level, NONE); 
+      in 
+        (Tr.procEntryExit(level, exp); Tr.getResult())
+      end
 end
