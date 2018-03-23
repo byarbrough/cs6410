@@ -32,10 +32,9 @@ sig
   val irAssignExp : exp * exp -> exp
   
   val irIfExp : exp * exp * exp option * int -> exp
-  val irWhileExp : exp * exp * int -> exp (*STUBBED*)
+  val irWhileExp : exp * exp * Temp.label -> exp
 
-  val irForExp : unit -> exp (*STUBBED*)
-
+  val irForExp : exp * exp * exp * Temp.label -> exp
   val irBreakExp : unit -> exp (*STUBBED*)
   
   val irLetExp : exp list * exp -> exp
@@ -238,28 +237,58 @@ structure Translate : TRANSLATE = struct
       val r = T.newtemp();
       val t = T.newlabel();
       val f = T.newlabel();
-      val e1 = unCx(test);
-      val e2 = unEx(thn);
-      val e3 = unEx(els)
+      val join = T.newlabel();
+      val e1: T.label * T.label -> Tr.stm  = unCx(test);
+      val e2: Tr.exp = unEx(thn);
+      val e3: Tr.exp = unEx(els)
     in
-      Nx(seq([Tr.LABEL(t), Tr.MOVE(Tr.TEMP(r), e2),
-        Tr.LABEL(f), Tr.MOVE(Tr.TEMP(r), e3), Tr.LABEL(T.newlabel())]))
+      Ex(unEx(Nx(seq([e1(t, f), Tr.LABEL(t), Tr.MOVE(Tr.TEMP(r), e2),
+        Tr.JUMP(Tr.NAME join, [join]), Tr.LABEL(f), Tr.MOVE(Tr.TEMP(r), e3),
+        Tr.LABEL(join)]))))
     end
     | irIfExp(test, thn, NONE, pos) =
     let
       val r = T.newtemp();
       val t = T.newlabel();
       val f = T.newlabel();
-      val e1 = unCx(test);
-      val e2 = unEx(thn);
+      val e1: T.label * T.label -> Tr.stm  = unCx(test);
+      val e2: Tr.exp = unEx(thn);
     in
-      Nx(seq([Tr.LABEL(t), Tr.MOVE(Tr.TEMP(r), e2),
-        Tr.LABEL(f)]))
+      Ex(unEx(Nx(seq([e1(t, f), Tr.LABEL(t), Tr.MOVE(Tr.TEMP(r), e2),
+        Tr.LABEL(f)]))))
     end
 
-  fun irWhileExp(test, body, pos) =
-    Ex(Tr.CONST 0)
-  fun irForExp(var, escape, lo, hi, body, pos) = ()
+  fun irWhileExp(test, body, done) =
+    let
+      val t = T.newlabel();
+      val s = T.newlabel();
+      val d = T.newlabel(); (* this needs to be the same as the done that is passed in *)
+      val r = T.newtemp();
+      val e1: T.label * T.label -> Tr.stm = unCx(test);
+      val e2: Tr.exp = unEx(body)
+    in
+      Ex(unEx(Nx(seq([Tr.JUMP(Tr.NAME(t), [t]), Tr.LABEL(s), Tr.MOVE(Tr.TEMP(r), e2),
+        Tr.LABEL(t), e1(s, d), Tr.LABEL(d)]))))
+    end
+
+
+  fun irForExp(lo, hi, body, d) =
+    let
+      (* need to sub in var so it can be used? *)
+      val i = T.newtemp();
+      val h = T.newtemp();
+      val r = T.newtemp();
+      val t = T.newlabel();
+      val b = T.newlabel();
+      (*val d = T.newlabel(); im guessing this is where breaks should go*) 
+      val bod: Tr.exp = unEx(body)
+
+    in
+      Ex(unEx(Nx(seq([Tr.MOVE(Tr.TEMP(i), unEx(lo)), Tr.MOVE(Tr.TEMP(h), unEx(hi)), Tr.LABEL(t),
+        Tr.CJUMP(Tr.LT, Tr.TEMP(i), Tr.TEMP(h), b, d),
+        Tr.MOVE(Tr.TEMP(r), bod), Tr.JUMP(Tr.NAME(t), [t]), Tr.LABEL(d)]))))
+    end
+
   fun irBreakExp(pos) = ()
 
   fun irLetExp{decs, body, pos} = ()
@@ -316,8 +345,6 @@ structure Translate : TRANSLATE = struct
   fun irCallExp() = Ex(Tr.CONST(1))
 
   fun irRecordExp() = Ex(Tr.CONST(1)) 
-
-  fun irForExp() = Ex(Tr.CONST(1))
 
   fun irBreakExp() = Ex(Tr.CONST(1))
 

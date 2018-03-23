@@ -112,7 +112,7 @@ struct
     
     (*Translate the given exp with the 
       given envionrments and level to *)
-    fun transExp(venv, tenv, exp, level)
+    fun transExp(venv, tenv, exp, level, breakpoint)
          : {exp:Tr.exp, ty: T.ty} =
       let fun 
           trexp (A.VarExp(var))
@@ -370,8 +370,10 @@ struct
             end            
         | trexp (A.WhileExp{test, body, pos}) =
             let 
+              val break = Temp.newlabel()
               val test' = trexp test
-              val body' = trexp body
+              val body' = transExp(venv, tenv, body, 
+                                   level,SOME(break))
             in
               (looplevel := !looplevel + 1;
                checkTypeWrapper(
@@ -379,7 +381,7 @@ struct
                 checkBreak(body')), pos);
                looplevel := !looplevel - 1;
                {exp=Tr.irWhileExp(#exp test', 
-                                  #exp body', pos), ty= T.UNIT})
+                                  #exp body', break), ty= T.UNIT})
             end
         | trexp (A.ForExp{var, escape, lo, hi, body, pos}) = 
             let 
@@ -388,17 +390,19 @@ struct
                         E.VarEntry{
                           access=(Tr.allocLocal(level) (!escape)),
                           ty=T.INT})
+              val newBreak = Temp.newlabel()
+              val break = SOME(newBreak)
+              val lo' = transExp(venv', tenv, lo, level, break)
+              val hi' = transExp(venv', tenv, hi, level, break)
+              val body' = transExp(venv', tenv, body, level, break)
             in 
-              (looplevel := !looplevel + 1;
-                checkTypeWrapper(
-                  checkInt(
-                    transExp(venv', tenv, lo, level)) andalso 
-                  checkInt(
-                    transExp(venv', tenv, hi, level)) andalso
-                 checkBreak(
-                    transExp(venv', tenv, body, level)), pos);
-              looplevel := !looplevel - 1;
-              {exp=Tr.irForExp(), ty= T.UNIT})
+              (checkTypeWrapper(
+                  checkInt(lo') andalso 
+                  checkInt(hi') andalso
+                 checkBreak(body'), pos);
+              {exp=Tr.irForExp(#exp lo', 
+                               #exp hi',
+                               #exp body', newBreak), ty= T.UNIT})
             end
         | trexp (A.BreakExp(pos)) = (case !looplevel of
           0 => (ErrorMsg.error pos 
@@ -423,7 +427,7 @@ struct
                         val {venv=venv'', 
                              tenv=tenv'',
                              exps=exps'} = 
-                              transDec(venv', tenv', dec, level)
+                              transDec(venv', tenv', dec, level, breakpoint)
                       in 
                         {venv=venv'', 
                          tenv=tenv'', 
@@ -435,7 +439,7 @@ struct
                         {venv=venv, tenv=tenv, exps=[]} 
                         (combineDecs(decs))
             in 
-                transExp(venv', tenv', body, level) (*STUBBED*)
+                transExp(venv', tenv', body, level, breakpoint) (*STUBBED*)
             end
         | trexp (A.ArrayExp{typ, size, init, pos}) =
           let 
@@ -549,7 +553,7 @@ struct
 
     (* returns a record {venv, tenv, exps} for the 
        new enviornment including the declerations in dec*)
-    and transDec(venv, tenv, dec, level) = 
+    and transDec(venv, tenv, dec, level, breakpoint) = 
     let fun
       trdec (A.FunctionDec(fundecs)) = 
         let 
@@ -619,7 +623,7 @@ struct
                 function included*)
               val venv'' = foldl enterparam venv' params' 
               val {exp=body', ty=bodyTy} = 
-                    transExp(venv'', tenv, body, level);
+                    transExp(venv'', tenv, body, level, breakpoint);
               in 
                   (checkTypeWrapper(
                     checkSame(bodyTy, result_ty), pos);
@@ -634,7 +638,8 @@ struct
 
       | trdec (A.VarDec{name, escape, typ, init, pos}) = 
         let 
-          val {exp, ty} = transExp(venv, tenv, init, level)
+          val {exp, ty} = transExp(venv, tenv, init, 
+                                   level, breakpoint)
           val acc = 
             (case typ 
               of SOME(id, pos) => 
@@ -728,6 +733,6 @@ struct
                 Tr.newLevel(
                   {parent=Tr.outermost, 
                    name=Temp.newlabel(), 
-                   formals=[]})); 
+                   formals=[]}), NONE); 
        Tr.getResult())
 end
