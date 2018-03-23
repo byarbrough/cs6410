@@ -27,7 +27,7 @@ sig
                  {exp: exp, ty : Types.ty} *
                  Absyn.pos -> exp
   
-  val irRecordExp : unit -> exp (*STUBBED*)
+  val irRecordExp : exp list -> exp
   val irSeqExp : exp list -> exp
   val irAssignExp : exp * exp -> exp
   
@@ -263,7 +263,9 @@ structure Translate : TRANSLATE = struct
       val e1: T.label * T.label -> Tr.stm = unCx(test);
       val e2: Tr.exp = unEx(body)
     in
-      Ex(unEx(Nx(seq([Tr.JUMP(Tr.NAME(t), [t]), Tr.LABEL(s), Tr.MOVE(Tr.TEMP(r), e2),
+      Ex(unEx(Nx(seq([Tr.JUMP(Tr.NAME(t), [t]),  
+                      Tr.LABEL(s), 
+                      Tr.MOVE(Tr.TEMP(r), e2),
         Tr.LABEL(t), e1(s, d), Tr.LABEL(d)]))))
     end
 
@@ -279,7 +281,8 @@ structure Translate : TRANSLATE = struct
       val bod: Tr.exp = unEx(body)
 
     in
-      Ex(unEx(Nx(seq([Tr.MOVE(Tr.TEMP(i), unEx(lo)), Tr.MOVE(Tr.TEMP(h), unEx(hi)), Tr.LABEL(t),
+      Ex(unEx(Nx(seq([Tr.MOVE(Tr.TEMP(i), unEx(lo)), 
+                      Tr.MOVE(Tr.TEMP(h), unEx(hi)), Tr.LABEL(t),
         Tr.CJUMP(Tr.LT, Tr.TEMP(i), Tr.TEMP(h), b, d),
         Tr.MOVE(Tr.TEMP(r), bod), Tr.JUMP(Tr.NAME(t), [t]), Tr.LABEL(d)]))))
     end
@@ -350,7 +353,24 @@ structure Translate : TRANSLATE = struct
     | irCallExp(name, TopLevel, args, clevel) = 
         Ex(F.externalCall(Temp.name name, map unEx args))
 
-  fun irRecordExp() = Ex(Tr.CONST(1)) 
+  fun irRecordExp(fields) = 
+    let
+      val r = Tr.TEMP(Temp.newtemp())
+
+      (*given an index and a list of exp return IR for the 
+        field at the given index*)
+      fun accFields(num, [])= []
+        | accFields(num, field :: fields) =
+          Tr.MOVE(
+              Tr.MEM(
+                Tr.BINOP(Tr.PLUS, r, Tr.CONST(num * F.wordSize))),
+              unEx(field)) :: accFields(num + 1, fields)
+    in
+      Ex(Tr.ESEQ(seq(Tr.MOVE(r, 
+          F.externalCall("allocRecord", 
+                         [Tr.CONST((length fields) * F.wordSize)]))
+                :: accFields(0, fields)), r))
+    end 
 
 
   fun irLetExp(decs, body) = 

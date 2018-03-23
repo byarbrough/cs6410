@@ -294,23 +294,31 @@ struct
             end
 
         | trexp (A.RecordExp{fields, typ, pos}) = 
-        let 
+        let
+          val fields' = map trexp (map #2 fields)
+          (*checks if each field is correctly ordered*)
+          fun checkFieldsOrder([], []) = true
+            | checkFieldsOrder((fid, exp, pos) :: fields, 
+                               (tfid, ty) :: tyfields) =
+              fid = tfid andalso 
+              checkFieldsOrder(fields, tyfields)
+            | checkFieldsOrder(fields, tyfields) = false  
           (*Check if each field type is correct*)
-          fun checkFields(nil, nil) = true
-            | checkFields((fid, exp, pos) :: fields, 
+          fun checkFieldsTy([], []) = true
+            | checkFieldsTy({exp, ty=fty} :: fields, 
                           (tfid, ty) :: tyfields) = 
-                fid = tfid andalso 
-                checkSame(#ty (trexp exp), ty) andalso 
-                checkFields(fields, tyfields)  
+                checkSame(fty, ty) andalso 
+                checkFieldsTy(fields, tyfields)  
 
-            | checkFields(fields, tyfields) = false  
+            | checkFieldsTy(fields, tyfields) = false  
 
           val rty = 
               (case  S.look(tenv, typ)
                  of SOME(t) => (case actual_ty(t) 
                     of T.RECORD(tyfields, unique) => 
                       (checkTypeWrapper(
-                        checkFields(fields, tyfields), pos);
+                        checkFieldsOrder(fields, tyfields) andalso
+                        checkFieldsTy(fields', tyfields), pos);
                        T.RECORD(tyfields, unique))
                     | t => (ErrorMsg.error pos 
                             (S.name typ ^ 
@@ -323,7 +331,7 @@ struct
                               S.name typ);
                             raise TypeErrorException(pos)))
         in 
-         {exp=Tr.irRecordExp(), ty= rty}
+         {exp=Tr.irRecordExp(map #exp fields'), ty= rty}
         end
         | trexp (A.SeqExp(nil)) = {exp=Tr.irSeqExp([]), ty= T.UNIT}
         | trexp (A.SeqExp(seq)) =
