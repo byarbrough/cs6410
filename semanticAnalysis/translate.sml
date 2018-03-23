@@ -141,7 +141,7 @@ structure Translate : TRANSLATE = struct
         ErrorMsg.impossible 
           "ProcEntryExit should not be called with TopLevel"
 
-  fun getResult() = []
+  fun getResult() = !fragList
 
   (*Translate semant to IR tree language*)
   (* transExp *)
