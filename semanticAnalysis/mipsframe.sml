@@ -37,7 +37,8 @@ struct
 		| STRING of Temp.label * string
   (*Allocate formal variables based on if they escape or not. *)
 	fun allocFormals({formals, numLoc, numForm, funName}) = fn(b) => 
-		if b then (numForm := !numForm + 1; InFrame(!numForm * wordSize))
+		if b orelse !numForm > 4 then (numForm := !numForm + 1;
+			InFrame(!numForm * wordSize))
 				 else InReg(Temp.newtemp())
 
 
