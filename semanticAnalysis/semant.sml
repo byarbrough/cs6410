@@ -346,7 +346,7 @@ struct
               (checkTypeWrapper(
                 checkSame( vty, ety), pos);
               {exp=Tr.irAssignExp(var', exp'), ty= T.UNIT}) 
-            end(*STUBBED*)
+            end
         | trexp (A.IfExp{test, then', else'= SOME(exp), pos}) = 
             let 
                 val {exp= then'', ty = tty} = trexp then'
@@ -463,7 +463,7 @@ struct
               checkArrayElement(actual_ty(aty), 
                                 actual_ty((#ty ity))) andalso
               checkInt(sty), pos); 
-          {exp=Tr.irArrayExp(#exp sty, #exp ity, pos), ty= aty})
+          {exp=Tr.irArrayExp(#exp sty, #exp ity), ty= aty})
       end
      (*Translate Vars*)
      and trvar (A.SimpleVar(id, pos)) = 

@@ -41,7 +41,7 @@ sig
 
   val irFunDec : level * exp -> unit
   
-  val irArrayExp : exp * exp * Absyn.pos -> exp
+  val irArrayExp : exp * exp -> exp
   
   (* trvar *)
   val irFieldVar : exp * int -> exp
@@ -287,8 +287,15 @@ structure Translate : TRANSLATE = struct
   fun irBreakExp(break, pos) =
     Nx(Tr.JUMP(Tr.NAME(break), [break]))
 
-  fun irArrayExp(size, init, pos) =
-      Ex(F.externalCall("initArray",[unEx(size), unEx(init)]))
+  fun irArrayExp(size, init) =
+    let
+      val r = Tr.TEMP(T.newtemp())
+    in
+      Ex(Tr.ESEQ(
+          Tr.MOVE(r, 
+                  F.externalCall("initArray",
+                                 [unEx(size), unEx(init)])), r))
+    end
 
   (* trvar *)
   
