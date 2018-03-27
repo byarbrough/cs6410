@@ -10,12 +10,31 @@ struct
 	structure T = Tree
 	structure F = MipsFrame
 
-	fun codegen(frame)
-		let
-			fun munchStm(stm) -> 
+	fun codegen (frame) (stm: T.stm) : A.instr list =
+		let 
+			val ilist = ref (nil: A.instr list)
+			(* accumulate results into list *)
+			fun emit(x) = 
+				ilist := x :: !ilist
+			(* hold result *)
+			fun result(gen) = 
+				let
+					val t = Temp.newtemp()
+				in 
+					gen t; t
+				end
 
-			and munchExp(exp) -> 	
+
+			fun munchStm() =
+
+			and munchExp(T.COSNT i ) =
+				result(fn r => emit(A.OPER
+					{"ADDI `d0 <- r0+" ^ int i ^ "\n", src[], dst=[r], jump=NONE}))
+			| munchExp(T.TEMP t) = t
+
+
 		in
-			munchStm
+			munchStm stm;
+			rev(!ilist)
 		end
 end
