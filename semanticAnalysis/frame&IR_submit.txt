@@ -1,0 +1,6 @@
+Thomas Kowalski - BS student in CCIS
+Brian Yarbrough - MS student in EECE
+
+These files, particularly the behemoths semant.sml and translate.sml produce an intermediate representation that is readily turned into machine code!
+There was a signifigant amount of refactoring between the previous projects and this one in order to make everything work. One example of this is having to change transexp and other semant functions to pass a break label around. Aside from that, it was mostly just a huge chunk of code; some expressions took some fun thinking (i.e. if, for, while).
+We also caught and fized some previous bugs, as well as cleaned things up.
