@@ -18,10 +18,11 @@ Group is
 ../semanticAnalysis/findescape.sml
 ../semanticAnalysis/tree.sml
 ../semanticAnalysis/printtree.sml
-main.sml
+newmain.sml
 assem.sml
 canon.sml
 flowgraph.sml
+mipsgen.sml
 graph.sig
 graph.sml
 $/ml-yacc-lib.cm

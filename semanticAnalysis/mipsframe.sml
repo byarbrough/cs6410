@@ -7,6 +7,7 @@ sig
 		| STRING of Temp.label * string
 	val newFrame: {name: Temp.label, formals: bool list} -> frame
 	val name : frame -> Temp.label
+	val string : Temp.label * string -> string
 	val formals: frame -> access list	
 	val allocLocal : frame -> bool -> access
 	val FP : Temp.temp
@@ -76,6 +77,9 @@ struct
  		   | InFrame(k) => 
  				Tree.MEM(
  					Tree.BINOP(Tree.MINUS, loc, Tree.CONST(k))))
+
+	fun string(label, str) = 
+		Symbol.name label ^ ": .asciiz \"" ^ str ^ "\"\n"
  	fun procEntryExit1(frame, body)= body
 
 	fun procEntryExit3(frame, body)= body

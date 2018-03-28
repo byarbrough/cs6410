@@ -1,15 +1,15 @@
 signature CODEGEN = 
 sig
 	structure Frame : FRAME
-	val codegen : Frame.Frame -> Tree.stm -> Assem.instr list
+	val codegen : Frame.frame -> Tree.stm -> Assem.instr list
 end
 
 structure MipsGen : CODEGEN = 
 struct
 	structure A = Assem
 	structure T = Tree
-	structure F = MipsFrame
-
+	structure Frame = MipsFrame
+  structure S = Symbol
 	fun codegen (frame) (stm: T.stm) : A.instr list =
 		let 
 			val ilist = ref (nil: A.instr list)
@@ -24,46 +24,65 @@ struct
 					gen t; t
 				end
 
+      (*Returns a string reprentation of a given int 
+        without '~' used for negation*)
+      fun int (i) =
+        if i >= 0
+        then Int.toString i
+        else "-" ^ Int.toString(~i)
+      (*Helper function for conditional expressions*)
+      fun helpCOp(T.EQ) = "beq"
+        | helpCOp(T.NE) = "bne"
+        | helpCOp(T.LT) = "blt"
+        | helpCOp(T.GT) = "bgt"
+        | helpCOp(T.LE) = "ble"
+        | helpCOp(T.GE) = "bge"
+        | helpCOp(T.ULT) = "blt"
+        | helpCOp(T.ULE) = "ble"
+        | helpCOp(T.UGT) = "bgt"
+        | helpCOp(T.UGE) = "bge"
+
 			(* Helper function for binary arithmetic *)
 			fun helpBinOp(r, T.PLUS, T.CONST(i), right) = 
-				  {assem="addi `d0, `s0, " ^ int i ^ "\n",
-				  src=[munchExp(right)], dest=[r], jump=NONE}
+				    {assem="addi `d0, `s0, " ^ int i ^ "\n",
+				     src=[munchExp(right)], dst=[r], jump=NONE}
 				| helpBinOp(r, T.PLUS, left, T.CONST(i))  =
-		          {assem="addi `d0, `s0, " ^ int i ^ "\n",
-		          src=[munchExp(left)], dest=[r], jump=NONE}
-		        | helpBinOp(r, T.PLUS, left, right) =
-		          {assem="add `d0, `s0, 's1\n",
-		          src=[munchExp(left), munchExp(right)], dest=[r], jump=NONE}
-		        | helpBinOp(r, T.MINUS, left, right) = 
-		          {assem="sub `d0, `s0, `s1\n",
-		          src=[munchExp(left), munchExp(right)], dest=[r], jump=NONE}
-		        | helpBinOp(r, T.MULT, left, right) = 
-		          {assem="mul `d0, `s0, `s1\n",
-		          src=[munchExp(left), munchExp(right)], dest=[r], jump=NONE}
-		        | helpBinOp(r, T.DIV, left, right) = 
-		          {assem="div `s0,  `s1\mflo `d0\n",
-		          src=[munchExp(left), munchExp(right)], dest=[r], jump=NONE}
+	          {assem="addi `d0, `s0, " ^ int i ^ "\n",
+	           src=[munchExp(left)], dst=[r], jump=NONE}
+        | helpBinOp(r, T.PLUS, left, right) =
+	          {assem="add `d0, `s0, 's1\n",
+	           src=[munchExp(left), munchExp(right)], dst=[r], jump=NONE}
+        | helpBinOp(r, T.MINUS, left, right) = 
+	          {assem="sub `d0, `s0, `s1\n",
+	           src=[munchExp(left), munchExp(right)], dst=[r], jump=NONE}
+        | helpBinOp(r, T.MUL, left, right) = 
+	          {assem="mul `d0, `s0, `s1\n",
+             src=[munchExp(left), munchExp(right)], dst=[r], jump=NONE}
+        | helpBinOp(r, T.DIV, left, right) = 
+	          {assem="div `s0, `s1\nmflo `d0\n",
+	           src=[munchExp(left), munchExp(right)], dst=[r], jump=NONE}
 
-	         (* Helper function for relational operators *)
-	         fun helpRelOp(r, ) =
-	         	{"", src=[], dest=[], JUMP=SOME}
-
-			fun munchStm(T.SEQ(a,b)) = (* stm sequence *)
-				  (muchStm(a), muchStm(b))
-				| muchStm(T.MOVE(T.MEM(e1), e2)) = (* store results in memory *)
+			and munchStm(T.SEQ(a,b)) = (* stm sequence *)
+				  (munchStm(a); munchStm(b))
+				| munchStm(T.MOVE(T.MEM(e1), e2)) = (* store results in memory *)
 				  emit(A.OPER{assem="sw `s0, 0(`s1)\n", 
 				  	src=[munchExp(e1), munchExp(e2)], dst=[], jump=NONE})
-				| muchStm(T.MOVE(T.TEMP i, e2)) = (* store results in temp *)
+				| munchStm(T.MOVE(T.TEMP i, e2)) = (* store results in temp *)
 				  emit(A.OPER{assem="add `d0, `s0, r0\n",
 				  	src=[munchExp(e2)], dst=[i], jump=NONE})
-				| muchStm(T.LABEL lab) = (* simple label *)
-				  emit(A.LABEL{assem= lab ^ "\n", lab=lab})
+				| munchStm(T.LABEL lab) = (* simple label *)
+				  emit(A.LABEL{assem= S.name lab ^ "\n", lab=lab})
+        | munchStm(T.CJUMP(cop, l, r, t, f)) =
+          emit(A.OPER{assem=helpCOp(cop) ^ "`s0, `s1, `j0",
+                      src=[munchExp(l), munchExp(r)],
+                      dst=[],
+                      jump=SOME([t,f])})
 
-			and munchExp(T.COSNT i ) = (* load constant *)
+			and munchExp(T.CONST i ) = (* load constant *)
 			  result(fn r => emit(A.OPER
 			  {assem="addo `d0, r0, " ^ int i ^ "\n", src=[], dst=[r], jump=NONE}))
-			| munchExp(T.BINOP(trop, left, right)) (* arithmetic *)
-				result(fn r => emit(helpBinOp(r, trop, left, right)))
+			| munchExp(T.BINOP(trop, left, right)) = (* arithmetic *)
+				result(fn r => emit(A.OPER(helpBinOp(r, trop, left, right))))
 			| munchExp(T.TEMP t) = t (* the temp *)
 
 
