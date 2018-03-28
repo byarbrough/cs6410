@@ -26,22 +26,22 @@ struct
 
 			(* Helper function for binary arithmetic *)
 			fun helpBinOp(r, T.PLUS, T.CONST(i), right) = 
-				  {assem="ADDI `d0, `s0+" ^ int i ^ "\n",
+				  {assem="ADDI `d0, `s0 " ^ int i ^ "\n",
 				  src=[munchExp(right)], dest=[r], jump=NONE}
 				| helpBinOp(r, T.PLUS, left, T.CONST(i))  =
-		          {assem="ADDI `d0, `s0+" ^ int i ^ "\n",
+		          {assem="ADDI `d0, `s0 " ^ int i ^ "\n",
 		          src=[munchExp(left)], dest=[r], jump=NONE}
 		        | helpBinOp(r, T.PLUS, left, right) =
-		          {assem="ADD `d0, `s0+'s1\n",
+		          {assem="ADD `d0, `s0 's1\n",
 		          src=[munchExp(left), munchExp(right)], dest=[r], jump=NONE}
 		        | helpBinOp(r, T.MINUS, left, right) = 
-		          {assem="SUB `d0, `s0-`s1\n",
+		          {assem="SUB `d0, `s0 `s1\n",
 		          src=[munchExp(left), munchExp(right)], dest=[r], jump=NONE}
 		        | helpBinOp(r, T.MULT, left, right) = 
-		          {assem="MUL `d0, `s0*`s1\n",
+		          {assem="MUL `d0, `s0 `s1\n",
 		          src=[munchExp(left), munchExp(right)], dest=[r], jump=NONE}
 		        | helpBinOp(r, T.DIV, left, right) = 
-		          {assem="DIV `s0\ `s1\n" ^ "MFLO `d0\n",
+		          {assem="DIV `s0  `s1\nMFLO `d0\n",
 		          src=[munchExp(left), munchExp(right)], dest=[r], jump=NONE}
 
 	         (* Helper function for relational operators *)
@@ -57,7 +57,7 @@ struct
 				  emit(A.OPER{assem="ADD `d0, `s0, r0\n",
 				  	src=[munchExp(e2)], dst=[i], jump=NONE})
 				| muchStm(T.LABEL lab) = (* simple label *)
-				  emit(A.LABEL{assem= lab ^ :\n", lab=lab})
+				  emit(A.LABEL{assem= lab ^ "\n", lab=lab})
 
 			and munchExp(T.COSNT i ) = (* load constant *)
 			  result(fn r => emit(A.OPER
