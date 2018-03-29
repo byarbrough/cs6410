@@ -75,7 +75,7 @@ struct
 				| munchStm(T.LABEL lab) = (* simple label *)
 			      emit(A.LABEL{assem= S.name lab ^ "\n", lab=lab})
         | munchStm(T.CJUMP(cop, l, r, t, f)) =
-            emit(A.OPER{assem=helpCOp(cop) ^ "`s0, `s1, `j0",
+            emit(A.OPER{assem=helpCOp(cop) ^ " `s0, `s1, `j0\n",
                       src=[munchExp(l), munchExp(r)],
                       dst=[],
                       jump=SOME([t,f])})
@@ -92,7 +92,7 @@ struct
         | munchStm(T.EXP(e)) =
             (munchExp(e); ())
         | munchStm(T.JUMP(e, labs)) = 
-            emit(A.OPER({assem="j `s0",
+            emit(A.OPER({assem="j `s0\n",
                           src=[munchExp(e)],
                           dst=[],
                           jump=SOME(labs)}))
@@ -112,10 +112,12 @@ struct
 				result(fn r => emit(A.OPER(helpBinOp(r, trop, left, right))))
 			| munchExp(T.TEMP t) = t (* the temp *)
       | munchExp(T.NAME lab) = 
-          result(fn r => emit(A.LABEL({assem= S.name lab ^ "\n", 
-                                      lab=lab})))
+          result(fn r => emit(A.OPER{assem="lw `d0, " ^ Symbol.name lab ^ "\n",
+                                src=[],
+                                dst=[r],
+                                jump=NONE}))
       | munchExp(T.MEM(e)) =
-        result(fn r => emit(Assem.OPER{assem="lw `d0, 0(`s0)",
+        result(fn r => emit(Assem.OPER{assem="la `d0, 0(`s0)\n",
                               src=[munchExp e],
                               dst=[r], jump=NONE}))
       | munchExp(T.CALL(T.NAME(lab), args)) =
