@@ -91,6 +91,11 @@ struct
                         jump=NONE})
         | munchStm(T.EXP(e)) =
             (munchExp(e); ())
+        | munchStm(T.JUMP(e, labs)) = 
+            emit(A.OPER({assem="j `s0",
+                          src=[munchExp(e)],
+                          dst=[],
+                          jump=SOME(labs)}))
         | munchStm(e) =
           ErrorMsg.impossible 
             (Printtree.printtree(TextIO.stdOut,e); 
@@ -106,6 +111,9 @@ struct
 			| munchExp(T.BINOP(trop, left, right)) = (* arithmetic *)
 				result(fn r => emit(A.OPER(helpBinOp(r, trop, left, right))))
 			| munchExp(T.TEMP t) = t (* the temp *)
+      | munchExp(T.NAME lab) = 
+          result(fn r => emit(A.LABEL({assem= S.name lab ^ "\n", 
+                                      lab=lab})))
       | munchExp(T.MEM(e)) =
         result(fn r => emit(Assem.OPER{assem="lw `d0, 0(`s0)",
                               src=[munchExp e],
@@ -120,11 +128,6 @@ struct
                         src=munchExp(e) :: munchArgs(0, args),
                         dst=Frame.calldefs,
                         jump=NONE}))
-      | munchExp(e) =
-          (Printtree.printtree(TextIO.stdOut,T.EXP(e)); 
-          ErrorMsg.impossible 
-            "munchExp match not found for exp ")
-
       
 
       and munchArgs(i, []) = []
