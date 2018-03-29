@@ -1,1 +1,1 @@
-CM.make "sources.cm"; Main.compile("../testcases/merge.tig");
+CM.make "sources.cm"; Main.compile("../testcases/factorial.tig");
