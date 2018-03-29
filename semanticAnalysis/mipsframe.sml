@@ -20,8 +20,9 @@ sig
 	val exp : access -> Tree.exp -> Tree.exp
 	val externalCall : string * Tree.exp list -> Tree.exp
 	val procEntryExit1 : frame * Tree.exp -> Tree.exp (*STUBBED*)
-	val procEntryExit2 : frame * Assem.instr list -> Assem.instr list (*STUBBED*)
-	val procEntryExit3 : frame * Tree.exp -> Tree.exp (*STUBBED*)
+	val procEntryExit2 : frame * Assem.instr list -> Assem.instr list
+	val procEntryExit3 : frame * Tree.exp -> 
+          {prolog : string, body : Tree.exp, epilog : string} (*STUBBED*)
 	val tempMap: register Temp.Table.table
 
 end
@@ -111,7 +112,14 @@ struct
 	fun string(label, str) = 
 		Symbol.name label ^ ": .asciiz \"" ^ str ^ "\"\n"
  	fun procEntryExit1(frame, body)= body
- 	fun procEntryExit2(frame, instr) = instr
-	fun procEntryExit3(frame, body)= body
+ 	fun procEntryExit2(frame, instr) =
+      instr @ [Assem.OPER{assem="",
+                src=[ZERO,RA,FP,RV],
+                dst=[],
+                jump=NONE}]
+	fun procEntryExit3({funName,formals, numLoc, numForm}, body) =
+    {prolog="PROCEDURE " ^ Symbol.name funName ^ "\n",
+     body=body, 
+     epilog = "END " ^ Symbol.name funName ^ "\n"}
 
 end
