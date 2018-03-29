@@ -1,0 +1,5 @@
+Thomas Kowalski - BS student in CCIS
+Brian Yarbrough - MS student in EECE
+
+The instruction selection phase of the compiler required some edits of previous parts of the project. We needed to add more to the frame interface to account for registers and for procedure entry exit, however the role of procentryexit1 to 3 is not clear yet. 
+We did not use a heavily optimized tiling algorithm and used simple components. This could be improved so that there are less tiles when munching a tree. 
