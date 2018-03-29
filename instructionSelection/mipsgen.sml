@@ -72,8 +72,8 @@ struct
 				  	src=[munchExp(e2)], dst=[i], jump=NONE})
 				| munchStm(T.LABEL lab) = (* simple label *)
 				  emit(A.LABEL{assem= S.name lab ^ "\n", lab=lab})
-        | munchStm(T.CJUMP(cop, l, r, t, f)) =
-          emit(A.OPER{assem=helpCOp(cop) ^ "`s0, `s1, `j0",
+        		| munchStm(T.CJUMP(cop, l, r, t, f)) = (* cjump *)
+          		  emit(A.OPER{assem=helpCOp(cop) ^ "`s0, `s1, `j0",
                       src=[munchExp(l), munchExp(r)],
                       dst=[],
                       jump=SOME([t,f])})
