@@ -93,8 +93,7 @@ structure Translate : TRANSLATE = struct
   	| allocLocal(Level level) = 
         fn(b) => (Level(level), (F.allocLocal(#frame level) b))
 
-  fun seq([]) = ErrorMsg.impossible 
-                  "seq should not be given an empty list"
+  fun seq([]) = Tr.EXP(Tr.CONST(0))
     | seq(last :: []) = last
     | seq(first :: rest) = Tr.SEQ(first, seq(rest))
 
