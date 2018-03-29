@@ -18,7 +18,7 @@ Group is
 ../semanticAnalysis/findescape.sml
 ../semanticAnalysis/tree.sml
 ../semanticAnalysis/printtree.sml
-newmain.sml
+main.sml
 assem.sml
 canon.sml
 flowgraph.sml

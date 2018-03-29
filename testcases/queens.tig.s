@@ -8,7 +8,7 @@ EXP(
       CONST 20)),
     ESEQ(
      MOVE(
-      TEMP t6,
+      TEMP t30,
       CALL(
        NAME initArray,
         BINOP(MINUS,
@@ -23,7 +23,7 @@ EXP(
             CONST 4))),
          CONST 1),
         CONST 0)),
-     TEMP t6)),
+     TEMP t30)),
    SEQ(
     MOVE(
      MEM(
@@ -32,7 +32,7 @@ EXP(
        CONST 16)),
      ESEQ(
       MOVE(
-       TEMP t5,
+       TEMP t29,
        CALL(
         NAME initArray,
          BINOP(MINUS,
@@ -47,7 +47,7 @@ EXP(
              CONST 4))),
           CONST 1),
          CONST 0)),
-      TEMP t5)),
+      TEMP t29)),
     SEQ(
      MOVE(
       MEM(
@@ -56,7 +56,7 @@ EXP(
         CONST 12)),
       ESEQ(
        MOVE(
-        TEMP t4,
+        TEMP t28,
         CALL(
          NAME initArray,
           MEM(
@@ -64,7 +64,7 @@ EXP(
             TEMP t1,
             CONST 4)),
           CONST 0)),
-       TEMP t4)),
+       TEMP t28)),
      SEQ(
       MOVE(
        MEM(
@@ -73,7 +73,7 @@ EXP(
          CONST 8)),
        ESEQ(
         MOVE(
-         TEMP t3,
+         TEMP t27,
          CALL(
           NAME initArray,
            MEM(
@@ -81,7 +81,7 @@ EXP(
              TEMP t1,
              CONST 4)),
            CONST 0)),
-        TEMP t3)),
+        TEMP t27)),
       MOVE(
        MEM(
         BINOP(MINUS,
@@ -93,12 +93,12 @@ EXP(
     TEMP t1,
     CONST 0)))
 MOVE(
- TEMP t28,
+ TEMP t52,
  BINOP(MINUS,
   TEMP t1,
   CONST 20))
 MOVE(
- TEMP t6,
+ TEMP t30,
  CALL(
   NAME initArray,
    BINOP(MINUS,
@@ -115,15 +115,15 @@ MOVE(
    CONST 0))
 MOVE(
  MEM(
-  TEMP t28),
- TEMP t6)
+  TEMP t52),
+ TEMP t30)
 MOVE(
- TEMP t29,
+ TEMP t53,
  BINOP(MINUS,
   TEMP t1,
   CONST 16))
 MOVE(
- TEMP t5,
+ TEMP t29,
  CALL(
   NAME initArray,
    BINOP(MINUS,
@@ -140,15 +140,15 @@ MOVE(
    CONST 0))
 MOVE(
  MEM(
-  TEMP t29),
- TEMP t5)
+  TEMP t53),
+ TEMP t29)
 MOVE(
- TEMP t30,
+ TEMP t54,
  BINOP(MINUS,
   TEMP t1,
   CONST 12))
 MOVE(
- TEMP t4,
+ TEMP t28,
  CALL(
   NAME initArray,
    MEM(
@@ -158,15 +158,15 @@ MOVE(
    CONST 0))
 MOVE(
  MEM(
-  TEMP t30),
- TEMP t4)
+  TEMP t54),
+ TEMP t28)
 MOVE(
- TEMP t31,
+ TEMP t55,
  BINOP(MINUS,
   TEMP t1,
   CONST 8))
 MOVE(
- TEMP t3,
+ TEMP t27,
  CALL(
   NAME initArray,
    MEM(
@@ -176,8 +176,8 @@ MOVE(
    CONST 0))
 MOVE(
  MEM(
-  TEMP t31),
- TEMP t3)
+  TEMP t55),
+ TEMP t27)
 MOVE(
  MEM(
   BINOP(MINUS,

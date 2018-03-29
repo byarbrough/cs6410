@@ -2,6 +2,7 @@ signature FRAME =
 sig
 	type frame
 	type access
+	type register
 	datatype frag = 
 		  PROC of {body: Tree.stm, frame: frame} 
 		| STRING of Temp.label * string
@@ -12,11 +13,17 @@ sig
 	val allocLocal : frame -> bool -> access
 	val FP : Temp.temp
 	val RV : Temp.temp
+	val RA : Temp.temp
+	val ZERO : Temp.temp
+  val calldefs : Temp.temp list
 	val wordSize : int
 	val exp : access -> Tree.exp -> Tree.exp
 	val externalCall : string * Tree.exp list -> Tree.exp
 	val procEntryExit1 : frame * Tree.exp -> Tree.exp (*STUBBED*)
+	val procEntryExit2 : frame * Assem.instr list -> Assem.instr list (*STUBBED*)
 	val procEntryExit3 : frame * Tree.exp -> Tree.exp (*STUBBED*)
+	val tempMap: register Temp.Table.table
+
 end
 
 
@@ -24,9 +31,32 @@ structure MipsFrame : FRAME =
 struct
 	datatype access = InFrame of int 
 	                | InReg of Temp.temp 
-
+	type register = string
 	val FP = Temp.newtemp()
 	val RV = Temp.newtemp()
+	val RA = Temp.newtemp()
+	val ZERO = Temp.newtemp()
+	val specialregs = [FP, RV, ZERO] 
+	(*a0-a3*)
+	val argregs = [Temp.newtemp(), Temp.newtemp(), 
+				   Temp.newtemp(), Temp.newtemp()]
+   	(*t0-t9*)
+	val callersaves = [Temp.newtemp(), Temp.newtemp(),
+					   Temp.newtemp(), Temp.newtemp(),
+					   Temp.newtemp(), Temp.newtemp(),
+					   Temp.newtemp(), Temp.newtemp(),
+					   Temp.newtemp(), Temp.newtemp()]
+    (*s0-s7*)
+	val callesaves = [Temp.newtemp(), Temp.newtemp(),
+					  Temp.newtemp(), Temp.newtemp(),
+					  Temp.newtemp(), Temp.newtemp(),
+					  Temp.newtemp(), Temp.newtemp()]
+  val calldefs =  RA :: RV :: callersaves 
+  val tempMap = 
+        foldr
+        (fn ((str, r), acc) =>
+          Temp.Table.enter (acc, r, str)) Temp.Table.empty
+        [("FP", FP), ("RV", RV), ("RA", RA), ("ZERO", ZERO)]
   val wordSize = 4
   type frame = {formals: access list, 
   							numLoc: int ref, 
@@ -81,7 +111,7 @@ struct
 	fun string(label, str) = 
 		Symbol.name label ^ ": .asciiz \"" ^ str ^ "\"\n"
  	fun procEntryExit1(frame, body)= body
-
+ 	fun procEntryExit2(frame, instr) = instr
 	fun procEntryExit3(frame, body)= body
 
 end
