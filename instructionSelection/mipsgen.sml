@@ -61,6 +61,8 @@ struct
         | helpBinOp(r, T.DIV, left, right) = 
 	          {assem="div `s0, `s1\nmflo `d0\n",
 	           src=[munchExp(left), munchExp(right)], dst=[r], jump=NONE}
+        | helpBinOp(r, bop, left, right) =
+          ErrorMsg.impossible "helpBinOp given unsupported operator"
 
 			and munchStm(T.SEQ(a,b)) = (* stm sequence *)
 				  (munchStm(a); munchStm(b))
@@ -77,6 +79,11 @@ struct
                       src=[munchExp(l), munchExp(r)],
                       dst=[],
                       jump=SOME([t,f])})
+        | munchStm(T.EXP(T.CALL(T.NAME(lab), args))) =
+            emit(A.OPER{assem="jal `j0\n", 
+                        src=munchArgs(0, args),
+                        dst=Frame.calldefs,
+                        jump=SOME([lab])})
         | munchStm(T.EXP(T.CALL(e, args))) =
             emit(A.OPER{assem="jal `s0\n", 
                         src=munchExp(e) :: munchArgs(0, args),
@@ -99,6 +106,20 @@ struct
 			| munchExp(T.BINOP(trop, left, right)) = (* arithmetic *)
 				result(fn r => emit(A.OPER(helpBinOp(r, trop, left, right))))
 			| munchExp(T.TEMP t) = t (* the temp *)
+      | munchExp(T.MEM(e)) =
+        result(fn r => emit(Assem.OPER{assem="lw `d0, 0(`s0)",
+                              src=[munchExp e],
+                              dst=[r], jump=NONE}))
+      | munchExp(T.CALL(T.NAME(lab), args)) =
+        result(fn r => emit(A.OPER{assem="jal `j0\n", 
+                        src= munchArgs(0, args),
+                        dst=Frame.calldefs,
+                        jump=SOME([lab])}))
+      | munchExp(T.CALL(e, args)) =
+        result(fn r => emit(A.OPER{assem="jal `s0\n", 
+                        src=munchExp(e) :: munchArgs(0, args),
+                        dst=Frame.calldefs,
+                        jump=NONE}))
       | munchExp(e) =
           (Printtree.printtree(TextIO.stdOut,T.EXP(e)); 
           ErrorMsg.impossible 
