@@ -6,7 +6,7 @@ sig
 		  gtemp: IGraph.node -> Temp.temp,
 		  moves: (IGraph.node * IGraph.node) list
 		}
-  val interferenceGrpah : Flow.flowgraph -> 
+  val interferenceGraph : Flow.flowgraph -> 
                           igraph * (Flow.Graph.node -> 
                                     Temp.temp list)
   val show : outstream * igraph -> unit

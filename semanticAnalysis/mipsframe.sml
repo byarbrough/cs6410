@@ -15,6 +15,7 @@ sig
 	val RV : Temp.temp
 	val RA : Temp.temp
 	val ZERO : Temp.temp
+	val registersAsTemps : Temp.temp list
   val calldefs : Temp.temp list
 	val wordSize : int
 	val exp : access -> Tree.exp -> Tree.exp
@@ -37,6 +38,7 @@ struct
 	val RV = Temp.newtemp()
 	val RA = Temp.newtemp()
 	val ZERO = Temp.newtemp()
+	val registersAsTemps = [ZERO, RA, FP, RV]
 	val specialregs = [FP, RV, ZERO] 
 	(*a0-a3*)
 	val argregs = [Temp.newtemp(), Temp.newtemp(), 
@@ -57,7 +59,7 @@ struct
         foldr
         (fn ((str, r), acc) =>
           Temp.Table.enter (acc, r, str)) Temp.Table.empty
-        [("FP", FP), ("RV", RV), ("RA", RA), ("ZERO", ZERO)]
+        [("fp", FP), ("rv", RV), ("ra", RA), ("zero", ZERO)]
   val wordSize = 4
   type frame = {formals: access list, 
   							numLoc: int ref, 
@@ -121,5 +123,4 @@ struct
     {prolog="PROCEDURE " ^ Symbol.name funName ^ "\n",
      body=body, 
      epilog = "END " ^ Symbol.name funName ^ "\n"}
-
 end

@@ -9,6 +9,7 @@ sig
 	val newlabel : unit -> label
 	val namelabel : string -> label
 	val name : label -> string
+	val tempint: temp -> int
 end
 
 (* Temps are abstract names for local variables*)
@@ -33,5 +34,7 @@ struct
 	fun namelabel(str) = Symbol.symbol str 
 
 	fun name(label) = Symbol.name label 
+
+	fun tempint(t) = t
 end
 

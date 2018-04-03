@@ -35,7 +35,7 @@ addi 51, r0, 0
 add 35, 51, r0
 L122
 addi 52, r0, 0
-add RV, 52, r0
+add rv, 52, r0
 lw 53, L129
 j 53
 L120
@@ -60,7 +60,7 @@ addi 64, r0, 0
 blt 32, 64, L113
 L114
 addi 65, r0, 0
-add RV, 65, r0
+add rv, 65, r0
 lw 66, L131
 j 66
 L113
