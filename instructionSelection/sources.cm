@@ -22,6 +22,7 @@ main.sml
 assem.sml
 makegraph.sml
 assemstore.sml
+liveness.sml
 canon.sml
 flowgraph.sml
 mipsgen.sml

@@ -10,32 +10,56 @@ struct
   structure S = Symbol
   structure A = Assem
   structure F = Flow
+  (* Update the JumpTable to have the label (if present)
+     associated with the given node. This is so a label is 
+     associated with the instruction (node) after it.*)
   fun updateJTable(jTable, node, NONE) = jTable
     | updateJTable(jTable, node, SOME(lab)) = 
-        S.enter(jTable, lab, node)
+        (print("adding label: " ^ Temp.name lab ^ " for node: " ^ F.Graph.nodename node ^ " \n");
+        S.enter(jTable, lab, node))
+  (* Update the graph to include the dependency on the previous
+     node (if present) *)
   fun addPrevNode(fromNode, NONE) = ()
     | addPrevNode(fromNode, SOME(toNode)) =
     G.mk_edge({from=fromNode, to=toNode})
 
+  (*Helper for instrs2graph with the following parameters:
+    1: Assem.instr list to process
+    2: node Option: the previous node to add a edge to if present
+    3: flowGraph the current flowGraph
+    4: jumpWL: a (label list * node) list which represents all of
+       the nodes which have jumps that need to be added to the 
+       graph. This is done at the end once all the labels are 
+       created
+    5: jTable: A Table of labels to nodes. This is built up as the 
+       instrs are processed and is used at the end to add the jumpWL
+       edges
+    6: addLabel: a label option used with updateJTable to add labels to 
+       the jTable.*)
+
 	fun instrsHelper([] : A.instr list, 
-                   prevNode : Flow.Graph.node option, 
-                   fgraph : Flow.flowgraph, 
-                   nodes : Flow.Graph.node list, 
-                   jumpWL : (Temp.label list * Flow.Graph.node) list, 
-                   jTable : Flow.Graph.node S.table, 
+                   prevNode : F.Graph.node option, 
+                   fgraph : F.flowgraph, 
+                   nodes : F.Graph.node list, 
+                   jumpWL : (Temp.label list * F.Graph.node) list, 
+                   jTable : F.Graph.node S.table, 
                    addLabel : Temp.label option) = 
         let
+          (*returns the node associated with a label using 
+            jTable*)
           fun getJumpNode(lab) =
             case S.look(jTable, lab) 
               of NONE => 
-                  ErrorMsg.impossible "label not in jumpeTable"
+                  (print("label" ^ Temp.name lab  ^ "\n");
+                   ErrorMsg.impossible "label not in jumpeTable")
                | SOME(node) => node
           
-          
+          (*Add an edge from the given node to 
+            every label in jList*)
           fun addEdges(jList, node) =
           let
             fun addEdge(lab) = 
-              G.mk_edge({to=node, from=getJumpNode(lab)})
+              G.mk_edge({from=node, to=getJumpNode(lab)})
           in
             app addEdge jList
           end
@@ -95,6 +119,7 @@ struct
                        NONE))
       end
 
+  (* Creates base values and calls them on instrsHelper *)
   fun instrs2graph(arr) = 
     let 
       val graph =F.FGRAPH({
