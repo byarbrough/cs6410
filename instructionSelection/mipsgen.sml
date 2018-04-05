@@ -50,7 +50,7 @@ struct
 	          {assem="addi `d0, `s0, " ^ int i ^ "\n",
 	           src=[munchExp(left)], dst=[r], jump=NONE}
         | helpBinOp(r, T.PLUS, left, right) =
-	          {assem="add `d0, `s0, 's1\n",
+	          {assem="add `d0, `s0, `s1\n",
 	           src=[munchExp(left), munchExp(right)], dst=[r], jump=NONE}
         | helpBinOp(r, T.MINUS, left, right) = 
 	          {assem="sub `d0, `s0, `s1\n",
