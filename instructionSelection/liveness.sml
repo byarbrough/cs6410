@@ -61,6 +61,13 @@ struct
                     "node not in map but should be"
          | SOME(v) => v
 
+   (* same as above but for temps *)
+   fun getFromTemp(temp, table) =
+   		case Temp.Table.look(table, temp)
+   			of NONE => ErrorMsg.impossible
+   				"temp not in map but should be"
+   			| SOME(v) => v
+
   (*check if the length of a listref is less than a list.*)
   fun compL(rold, lnew) = 
         length(!rold) < length(lnew)
@@ -154,46 +161,64 @@ struct
 	end
 
 
+
+
 fun interferenceGraph(fg) =
 
 	(* make IG from LiveMap *)
 	let 
-	(* return list of temps that are live-out at a node *)
-	fun liveOuts(n) = ()
+		val F.FGRAPH({control, def, use, ismove})=fg
+		val mapped = makeLiveMap(fg)
+		val bbnodes = G.nodes(control)
+		val regG = G.makeGraph()
+		val (ttable, ntable) = initIgraph(bbnodes, [])
+	(* add all temps from list to table *)
+	fun nodesAdd([], tt, nt) = (tt, nt)
+	 |  nodesAdd(t :: temps, tt, nt) = 
+	 	let
+	 		val node = G.newNode(regG)
+	 		(* update tables *)
+	 		val tt' = Temp.Table.enter(tt, t, node)
+	 		val nt' = T.enter(nt, node, t) 
+	 	in
+	 		nodesAdd(temps, tt', nt')
+	 	end
 
-	(* construct interference graph *)
-	fun makeIG({control, def, use, ismove}) = 
+	 (* add nodes to graph, return complete tables *)
+	fun initIgraph([], acctemps) =
+			nodesAdd(acctemps, Temp.Table.empty, T.empty)
+	  | initIgraph(n :: myNodes, acctemps) =
+	  		let
+	  			val (_, tlist) = getFrom(n, mapped)
+	  		in
+	  			initIgraph(myNodes, union(acctemps, tlist))
+	  		end
+
+	 fun constructIG(moves) =
+ 		IGRAPH({
+ 			graph=regG,
+ 			tnode= (fn(temp) => getFromTemp(temp, ttable))
+ 			gtemp= (fn(node) => getFrom(node, ntable))
+ 			moves=moves
+ 			})
+
+	(* make interference graph *)
+	fun makeIG([], moves) = constructIG(moves)
+	  | makeIG(bb :: bblocks, moves) = 
 		let
-			val newig = IGRAPH({
-				graph=G.newGraph(),
-				tnode=(),
-				gtemp=(),
-				moves=[]})
-
-			val nodes = G.nodes(control)
-			fun addEdge(node, regList) =
-				let
-					fun addEdge(reg) = 
-					G.mk_edge({from=reg, to=node})
-				in
-					app addEdge regList
-				end
-			fun findI([]) = ()
-			 |  findI(n :: nodes) =
-				let
-					(* if node is in def *)
-					val regList = getFrom(n, def)
-				in
-					(* add edge where temps are in liveMap *)
-					(addEdge(n, regList);
-					findI(nodes))
-				end
+			val defRegs = getFrom(bb, def)
+			val liveReg = getFrom(bb, mapped)
 		in
-			(findI(nodes); newig)
+			app (fn(dreg) => app (fn(lreg) => 
+				let
+					val dnode = getFromTemp(dreg, ttable)
+					val lnode = getFromTemp(lreg, ttable)
+				in
+					G.mk_edge({from=dnode, to=lnode})
+				end))
 		end
 	in
-		makeIG(fg)
-		(*igraph: makeIG(fg), (Flow.Graph.node -> Temp.temp list): liveouts;*)
+		makeIG(bbnodes, [])
 	end
 
 end
