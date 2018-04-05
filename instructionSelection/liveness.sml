@@ -148,13 +148,10 @@ struct
             rIn := liveIn;
             calcLiveNodes(nodes, hasChanged'))
           end
-    in
+	in
 
-      makeLiveMapHelper(inTable, outTable, true)
-    end
-
-
-
+		makeLiveMapHelper(inTable, outTable, true)
+	end
 
 
 fun interferenceGraph(fg) =
@@ -162,19 +159,25 @@ fun interferenceGraph(fg) =
 	(* make IG from LiveMap *)
 	let 
 	(* return list of temps that are live-out at a node *)
-    fun liveOuts(n) = ()
+	fun liveOuts(n) = ()
 
-    (* construct interference graph *)
-    fun makeIG({control, def, use, ismove}) = 
+	(* construct interference graph *)
+	fun makeIG({control, def, use, ismove}) = 
 		let
+			val newig = IGRAPH({
+				graph=G.newGraph(),
+				tnode=(),
+				gtemp=(),
+				moves=[]})
+
 			val nodes = G.nodes(control)
 			fun addEdge(node, regList) =
-      			let
-	            	fun addEdge(reg) = 
-	              	G.mk_edge({from=reg, to=node})
-          		in
-	            	app addEdge regList
-	          	end
+				let
+					fun addEdge(reg) = 
+					G.mk_edge({from=reg, to=node})
+				in
+					app addEdge regList
+				end
 			fun findI([]) = ()
 			 |  findI(n :: nodes) =
 				let
@@ -185,11 +188,11 @@ fun interferenceGraph(fg) =
 					(addEdge(n, regList);
 					findI(nodes))
 				end
-	 	in
-	 		findI(nodes)
-	 	end
-  	in 
-  		makeIG(fg)
+		in
+			(findI(nodes); newig)
+		end
+	in
+		makeIG(fg)
 		(*igraph: makeIG(fg), (Flow.Graph.node -> Temp.temp list): liveouts;*)
 	end
 
