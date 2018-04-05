@@ -167,11 +167,10 @@ fun interferenceGraph(fg) =
 
 	(* make IG from LiveMap *)
 	let 
-		val F.FGRAPH({control, def, use, ismove})=fg
+		val Flow.FGRAPH({control, def, use, ismove})=fg
 		val mapped = makeLiveMap(fg)
 		val bbnodes = G.nodes(control)
-		val regG = G.makeGraph()
-		val (ttable, ntable) = initIgraph(bbnodes, [])
+		val regG = G.newGraph()
 	(* add all temps from list to table *)
 	fun nodesAdd([], tt, nt) = (tt, nt)
 	 |  nodesAdd(t :: temps, tt, nt) = 
@@ -194,11 +193,14 @@ fun interferenceGraph(fg) =
 	  			initIgraph(myNodes, union(acctemps, tlist))
 	  		end
 
-	 fun constructIG(moves) =
+	val (ttable, ntable) = initIgraph(bbnodes, [])
+
+
+	fun constructIG(moves) =
  		IGRAPH({
  			graph=regG,
- 			tnode= (fn(temp) => getFromTemp(temp, ttable))
- 			gtemp= (fn(node) => getFrom(node, ntable))
+ 			tnode= (fn(temp) => getFromTemp(temp, ttable)),
+ 			gtemp= (fn(node) => getFrom(node, ntable)),
  			moves=moves
  			})
 
