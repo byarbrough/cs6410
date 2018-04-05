@@ -1,5 +1,7 @@
 CM.make "sources.cm"; 
 use("sier.sml");
+structure T = Graph.Table
+
 fun testCode(lab, i, instrs) =
 	let
 		val (Flow.FGRAPH{control,def, use, ismove} , nodes) = 
