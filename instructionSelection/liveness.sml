@@ -7,7 +7,7 @@ sig
 		  gtemp: G.node -> Temp.temp, 
 		  moves: (G.node * G.node) list
 		}
-  val interferenceGraph : Flow.flowgraph -> unit (*temp for building*)
+  val interferenceGraph : Flow.flowgraph -> igraph (*temp for building*)
                           (*igraph * (Flow.Graph.node -> 
                                     Temp.temp list)*)
   val show : TextIO.outstream * igraph -> unit
@@ -161,22 +161,36 @@ fun interferenceGraph(fg) =
 
 	(* make IG from LiveMap *)
 	let 
+	(* return list of temps that are live-out at a node *)
     fun liveOuts(n) = ()
+
+    (* construct interference graph *)
     fun makeIG({control, def, use, ismove}) = 
 		let
-		 	val defl = G.T.look(def, n)
+			val nodes = G.nodes(control)
+			fun addEdge(node, regList) =
+      			let
+	            	fun addEdge(reg) = 
+	              	G.mk_edge({from=reg, to=node})
+          		in
+	            	app addEdge regList
+	          	end
+			fun findI([]) = ()
+			 |  findI(n :: nodes) =
+				let
+					(* if node is in def *)
+					val regList = getFrom(n, def)
+				in
+					(* add edge where temps are in liveMap *)
+					(addEdge(n, regList);
+					findI(nodes))
+				end
 	 	in
-
+	 		findI(nodes)
 	 	end
- 	    	(* if node is in def *)
-		 	(* add edge where temps are in liveMap *)
-			G.mk_edge()
-	(* return list of temps that are live-out at a node *)
-	(* return *)
-  in 
-  ()
-	(*igraph: makeIG(fg), (Flow.Graph.node -> Temp.temp list): liveouts;*)
-end
-
+  	in 
+  		makeIG(fg)
+		(*igraph: makeIG(fg), (Flow.Graph.node -> Temp.temp list): liveouts;*)
+	end
 
 end
