@@ -162,11 +162,15 @@ fun interferenceGraph(fg) =
 	(* make IG from LiveMap *)
 	let 
     fun liveOuts(n) = ()
-    fun makeIG(fg) = ()
-		(* if node is in def *)
-		 
-		(* at edge where temps are in liveMap *)
+    fun makeIG({control, def, use, ismove}) = 
+		let
+		 	val defl = G.T.look(def, n)
+	 	in
 
+	 	end
+ 	    	(* if node is in def *)
+		 	(* add edge where temps are in liveMap *)
+			G.mk_edge()
 	(* return list of temps that are live-out at a node *)
 	(* return *)
   in 
