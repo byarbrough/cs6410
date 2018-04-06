@@ -1,13 +1,13 @@
 CM.make "sources.cm"; 
-use("sier.sml");
+use("hello.sml");
 structure T = Graph.Table
 
 fun testCode(lab, i, instrs) =
 	let
-		val (Flow.FGRAPH{control,def, use, ismove} , nodes) = 
-              MakeGraph.instrs2graph(instrs)
+		val (fg, nl) = MakeGraph.instrs2graph(instrs)
+		val (ig, liveMap) = Liveness.interferenceGraph(fg)
   	in
-		app (fn i => (print (Flow.Graph.nodename(i) ^ "\n"))) nodes
+		Liveness.show(TextIO.stdOut, ig)
 	end;
 app testCode insrLists;
 (*Main.compile("../testcases/factorial.tig");*)

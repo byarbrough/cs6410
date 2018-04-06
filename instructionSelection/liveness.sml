@@ -1,4 +1,4 @@
-structure LIVENESS:
+structure Liveness:
 sig
   structure G : GRAPH
 	datatype igraph = IGRAPH of 
@@ -7,9 +7,8 @@ sig
 		  gtemp: G.node -> Temp.temp, 
 		  moves: (G.node * G.node) list
 		}
-  val interferenceGraph : Flow.flowgraph -> igraph (*temp for building*)
-                          (*igraph * (Flow.Graph.node -> 
-                                    Temp.temp list)*)
+  val interferenceGraph : Flow.flowgraph -> 
+        igraph * (Flow.Graph.node -> Temp.temp list)
   val show : TextIO.outstream * igraph -> unit
 end =
 struct 
@@ -44,11 +43,11 @@ struct
 
 
   (*returns the union of two node lists.*)
-  fun union(l1 : Temp.temp list, l2 : Temp.temp list) : Temp.temp list = 
+  fun union(l1, l2)  = 
       helpUnionSub(l1, l2, makeHS(l2, Temp.Table.empty))
 
   (*returns the contents of l1 - the contents of l2*)
-  fun sub(l1: Temp.temp list, l2 : Temp.temp list) =
+  fun sub(l1, l2) =
       helpUnionSub(l1, [], makeHS(l2, Temp.Table.empty))
 
   (*Returns the value associated with the given
@@ -65,7 +64,7 @@ struct
    fun getFromTemp(temp, table) =
    		case Temp.Table.look(table, temp)
    			of NONE => ErrorMsg.impossible
-   				"temp not in map but should be"
+   				("temp: " ^ Int.toString(Temp.tempint(temp)) ^ " not in map but should be")
    			| SOME(v) => v
 
   (*check if the length of a listref is less than a list.*)
@@ -73,8 +72,17 @@ struct
         length(!rold) < length(lnew)
 
         
-  fun show(out, igraph) = () 
-(*TODO!*)
+  fun show(out, IGRAPH{graph, tnode, gtemp, moves}) =
+    let 
+      fun printNode(node) =
+        TextIO.output(out, 
+          "node " ^ G.nodename(node) ^ " : " ^ 
+          (foldr (fn(n, str) => G.nodename(n) ^ " " ^ str)
+          "" (G.adj(node))) ^ "\n")
+      val nodes = G.nodes
+    in
+    app printNode (G.nodes(graph))
+    end
 
   (* Creates a liveMap of nodes to thier
      liveOut temps.
@@ -156,12 +164,8 @@ struct
             calcLiveNodes(nodes, hasChanged'))
           end
 	in
-
 		makeLiveMapHelper(inTable, outTable, true)
 	end
-
-
-
 
 fun interferenceGraph(fg) =
 
@@ -171,56 +175,93 @@ fun interferenceGraph(fg) =
 		val mapped = makeLiveMap(fg)
 		val bbnodes = G.nodes(control)
 		val regG = G.newGraph()
-	(* add all temps from list to table *)
-	fun nodesAdd([], tt, nt) = (tt, nt)
-	 |  nodesAdd(t :: temps, tt, nt) = 
-	 	let
-	 		val node = G.newNode(regG)
-	 		(* update tables *)
-	 		val tt' = Temp.Table.enter(tt, t, node)
-	 		val nt' = T.enter(nt, node, t) 
-	 	in
-	 		nodesAdd(temps, tt', nt')
-	 	end
+  	(* add all temps from list to table *)
+  	fun nodesAdd([], tt, nt) = (tt, nt)
+  	 |  nodesAdd(t :: temps, tt, nt) = 
+  	 	let
+  	 		val node = G.newNode(regG)
+  	 		(* update tables *)
+  	 		val tt' = Temp.Table.enter(tt, t, node)
+  	 		val nt' = T.enter(nt, node, t) 
+  	 	in
+  	 		nodesAdd(temps, tt', nt')
+  	 	end
 
-	 (* add nodes to graph, return complete tables *)
-	fun initIgraph([], acctemps) =
-			nodesAdd(acctemps, Temp.Table.empty, T.empty)
-	  | initIgraph(n :: myNodes, acctemps) =
+  	 (* add nodes to graph, return complete tables *)
+  	fun initIgraph([], acctemps) =
+  			nodesAdd(acctemps, Temp.Table.empty, T.empty)
+  	  | initIgraph(n :: myNodes, acctemps) =
 	  		let
 	  			val (_, tlist) = getFrom(n, mapped)
 	  		in
 	  			initIgraph(myNodes, union(acctemps, tlist))
 	  		end
 
-	val (ttable, ntable) = initIgraph(bbnodes, [])
+  	val (ttable, ntable) = initIgraph(bbnodes, [])
+    val lol = app (fn(reg) => 
+            print(G.nodename reg ^ " : " ^ 
+                  Int.toString(Temp.tempint(
+                               getFrom(reg, ntable))) ^ "\n"))
+                                (G.nodes(regG))
+
+  	fun constructIG(moves) =
+      let 
+        val nodeToLiveTempTable = foldr 
+        (fn(node, tab) => 
+          let
+            val (_, l) = getFrom(node, mapped)
+          in
+            T.enter(tab, node, l)
+          end) T.empty bbnodes
+      in 
+   		(IGRAPH({
+   			graph=regG,
+   			tnode= (fn(temp) => getFromTemp(temp, ttable)),
+   			gtemp= (fn(node) => getFrom(node, ntable)),
+   			moves=moves
+   			}), (fn(node) => getFrom(node, nodeToLiveTempTable)))
+      end
+
+  	(* make interference graph *)
+  	fun makeIG([], moves) = constructIG(moves)
+  	  | makeIG(bb :: bblocks, moves) = 
+  		let
+  			val defRegs = getFrom(bb, def)
+        val isAMove = getFrom(bb, ismove)
+        val lol = if isAMove then
+            (print("node " ^ G.nodename bb ^ " :\n  use: ");
+             (app (fn(r) => 
+                print(Int.toString(Temp.tempint(r)) ^ " ")) 
+            (getFrom(bb, use)));
+             print("\n  def: ");
+             (app (fn(r) => 
+                print(Int.toString(Temp.tempint(r)) ^ " ")) 
+            (getFrom(bb, def)));
+             print("\n"))
 
 
-	fun constructIG(moves) =
- 		IGRAPH({
- 			graph=regG,
- 			tnode= (fn(temp) => getFromTemp(temp, ttable)),
- 			gtemp= (fn(node) => getFrom(node, ntable)),
- 			moves=moves
- 			})
+        else ()
 
-	(* make interference graph *)
-	fun makeIG([], moves) = constructIG(moves)
-	  | makeIG(bb :: bblocks, moves) = 
-		let
-			val defRegs = getFrom(bb, def)
-			val liveReg = getFrom(bb, mapped)
-		in
-			app (fn(dreg) => app (fn(lreg) => 
-				let
-					val dnode = getFromTemp(dreg, ttable)
-					val lnode = getFromTemp(lreg, ttable)
-				in
-					G.mk_edge({from=dnode, to=lnode})
-				end))
-		end
+        val useNode = getFromTemp((hd (getFrom(bb, use))), ttable)
+  			val (_, liveReg) = getFrom(bb, mapped)
+        val moves' = if isAMove 
+                     then (getFromTemp((hd defRegs), ttable),
+                           useNode) :: moves
+                     else moves 
+  		in
+  			(app (fn(dreg) => app (fn(lreg) => 
+  				let
+  					val dnode = getFromTemp(dreg, ttable)
+  					val lnode = getFromTemp(lreg, ttable)
+  				in
+  					if isAMove andalso G.eq(lnode, useNode) 
+            then () 
+            else G.mk_edge({from=dnode, to=lnode})
+  				end) liveReg) defRegs; 
+        makeIG(bblocks, moves'))
+  		end
 	in
 		makeIG(bbnodes, [])
-	end
+  end
 
 end
