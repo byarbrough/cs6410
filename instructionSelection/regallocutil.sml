@@ -1,0 +1,4 @@
+structure RegAllocUtil = 
+struct
+	
+end
