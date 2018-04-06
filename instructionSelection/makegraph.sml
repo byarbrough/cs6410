@@ -15,8 +15,7 @@ struct
      associated with the instruction (node) after it.*)
   fun updateJTable(jTable, node, NONE) = jTable
     | updateJTable(jTable, node, SOME(lab)) = 
-        (print("adding label: " ^ Temp.name lab ^ " for node: " ^ F.Graph.nodename node ^ " \n");
-        S.enter(jTable, lab, node))
+        S.enter(jTable, lab, node)
   (* Update the graph to include the dependency on the previous
      node (if present) *)
   fun addPrevNode(fromNode, NONE) = ()
@@ -50,8 +49,7 @@ struct
           fun getJumpNode(lab) =
             case S.look(jTable, lab) 
               of NONE => 
-                  (print("label" ^ Temp.name lab  ^ "\n");
-                   ErrorMsg.impossible "label not in jumpeTable")
+                   ErrorMsg.impossible "label not in jumpeTable"
                | SOME(node) => node
           
           (*Add an edge from the given node to 

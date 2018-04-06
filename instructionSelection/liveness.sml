@@ -192,17 +192,14 @@ fun interferenceGraph(fg) =
   			nodesAdd(acctemps, Temp.Table.empty, T.empty)
   	  | initIgraph(n :: myNodes, acctemps) =
 	  		let
-	  			val (_, tlist) = getFrom(n, mapped)
+          val defList = getFrom(n, def)
+          val useList = getFrom(n, use)
+          val temps = union(useList, defList)
 	  		in
-	  			initIgraph(myNodes, union(acctemps, tlist))
+	  			initIgraph(myNodes, union(acctemps, temps))
 	  		end
 
   	val (ttable, ntable) = initIgraph(bbnodes, [])
-    val lol = app (fn(reg) => 
-            print(G.nodename reg ^ " : " ^ 
-                  Int.toString(Temp.tempint(
-                               getFrom(reg, ntable))) ^ "\n"))
-                                (G.nodes(regG))
 
   	fun constructIG(moves) =
       let 
@@ -228,25 +225,17 @@ fun interferenceGraph(fg) =
   		let
   			val defRegs = getFrom(bb, def)
         val isAMove = getFrom(bb, ismove)
-        val lol = if isAMove then
-            (print("node " ^ G.nodename bb ^ " :\n  use: ");
-             (app (fn(r) => 
-                print(Int.toString(Temp.tempint(r)) ^ " ")) 
-            (getFrom(bb, use)));
-             print("\n  def: ");
-             (app (fn(r) => 
-                print(Int.toString(Temp.tempint(r)) ^ " ")) 
-            (getFrom(bb, def)));
-             print("\n"))
+        (*only used when isAMove*)
+        val useNode = if isAMove 
+                      then SOME(getFromTemp(
+                                (hd (getFrom(bb, use))), 
+                                ttable))
+                      else NONE
 
-
-        else ()
-
-        val useNode = getFromTemp((hd (getFrom(bb, use))), ttable)
   			val (_, liveReg) = getFrom(bb, mapped)
         val moves' = if isAMove 
                      then (getFromTemp((hd defRegs), ttable),
-                           useNode) :: moves
+                           valOf(useNode)) :: moves
                      else moves 
   		in
   			(app (fn(dreg) => app (fn(lreg) => 
@@ -254,7 +243,7 @@ fun interferenceGraph(fg) =
   					val dnode = getFromTemp(dreg, ttable)
   					val lnode = getFromTemp(lreg, ttable)
   				in
-  					if isAMove andalso G.eq(lnode, useNode) 
+  					if isAMove andalso G.eq(lnode, valOf(useNode)) 
             then () 
             else G.mk_edge({from=dnode, to=lnode})
   				end) liveReg) defRegs; 
