@@ -1,4 +1,4 @@
-structure Liveness:
+structure Liveness :
 sig
   structure G : GRAPH
 	datatype igraph = IGRAPH of 

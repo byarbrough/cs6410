@@ -28,6 +28,9 @@ flowgraph.sml
 mipsgen.sml
 graph.sig
 graph.sml
+regalloc.sig
+color.sml
+regalloc.sml
 $/ml-yacc-lib.cm
 $/smlnj-lib.cm
 $/basis.cm
