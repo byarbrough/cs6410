@@ -77,5 +77,5 @@ ctrl=[a-z];
 "assign"     => (Tokens.ASSIGN(!lineNum, yypos - hd(!linePos)));
 [0-9]+       =>  (Tokens.INT( Option.getOpt(Int.fromString(yytext),0), !lineNum, yypos - hd(!linePos)));		 
 {alpha}({alpha}|[0-9]|_)* =>  (Tokens.ID(yytext, !lineNum, yypos - hd(!linePos)));
-"\""(("\\"(n|t|{ctrl}|[0-127]|"\""|(" "*"\\")))|[^"\""])*"\""  =>  (Tokens.STRING(yytext, !lineNum, yypos - hd(!linePos)));
+"\""(("\\"(n|t|{ctrl}|[0-127]|"\""|(" "*"\\")))|[^"\""])*"\""  =>  (Tokens.STRING(substring(yytext,1,size(yytext)-2), !lineNum, yypos - hd(!linePos)));
 .            => ((ErrorMsg.error yypos ("illegal character " ^ yytext)); raise LexerException(!lineNum, yypos - hd(!linePos)));
