@@ -9,6 +9,7 @@ Group is
 ../parse/symbol.sml
 ../parse/tiger.grm
 ../parse/parse.sml
+assem.sml
 env.sml
 semant.sml
 translate.sml
