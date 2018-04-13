@@ -9,7 +9,7 @@ val linePos = ErrorMsg.linePos
 val commentNest = ref 0;
 fun err(p1,p2) = ErrorMsg.error p1
 
-    fun eof() = if !commentNest > 0 then raise LexerException(!lineNum, 0) else Tokens.EOF(!lineNum,0)
+fun eof() = if !commentNest > 0 then raise LexerException(!lineNum, 0) else Tokens.EOF(!lineNum,0)
 
 
 
@@ -17,6 +17,7 @@ fun err(p1,p2) = ErrorMsg.error p1
 %header (functor TigerLexFun (structure Tokens: Tiger_TOKENS));
 alpha=[A-Za-z];
 ctrl=[a-z];
+ascii=[0-9] | [0-9]{2} | 1[0-1][0-9] | 12[0-7];
 %s COMMENT E_COMMENT B_COMMENT;
 %%
 <INITIAL,COMMENT,B_COMMENT,E_COMMENT>\n           => (lineNum := !lineNum+1; linePos := yypos :: !linePos; continue());
@@ -76,5 +77,5 @@ ctrl=[a-z];
 "array"      => (Tokens.ARRAY(!lineNum, yypos - hd(!linePos)));	     
 [0-9]+       =>  (Tokens.INT( Option.getOpt(Int.fromString(yytext),0), !lineNum, yypos - hd(!linePos)));		 
 {alpha}({alpha}|[0-9]|_)* =>  (Tokens.ID(yytext, !lineNum, yypos - hd(!linePos)));
-"\""(("\\"(n|t|{ctrl}|[0-127]|"\""|(" "*"\\"))))*"\""  =>  (Tokens.STRING(substring(yytext,1,size(yytext)-2), !lineNum, yypos - hd(!linePos)));
+"\""(("\\"(n|t|"^"{ctrl}|{ascii}|"\""|(" "*"\\")))|[^"\""])*"\""  =>  (Tokens.STRING(substring(yytext,1,size(yytext)-2), !lineNum, yypos - hd(!linePos)));
 .            => ((ErrorMsg.error yypos ("illegal character " ^ yytext)); raise LexerException(!lineNum, yypos - hd(!linePos)));
