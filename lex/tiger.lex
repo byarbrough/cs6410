@@ -19,9 +19,11 @@ fun eof() = if !commentNest > 0 then raise LexerException(!lineNum, 0)
 alpha=[A-Za-z];
 ascii=[0-9] | [0-9]{2} | 1[0-1][0-9] | 12[0-7];
 ctrl=[a-z];
-str="\""(("\\"(n|t|"^"{ctrl}|{ascii}|"\""|(" "*"\\")))|[^"\""])*"\"";
-lineNum := !lineNum+1;
-linePos := yypos :: !linePos;
+str="\""(
+			("\\"(n|t|"^"{ctrl}|{ascii}|"\""|(" "*"\\"))) |
+			[^"\""])*
+	"\"";
+
 %s COMMENT E_COMMENT B_COMMENT;
 %%
 <INITIAL,COMMENT,B_COMMENT,E_COMMENT>\n  => (lineNum := !lineNum+1; linePos := yypos :: !linePos; continue());
