@@ -22,11 +22,13 @@ structure Main = struct
         val stms' = Canon.traceSchedule(Canon.basicBlocks stms)
         val instrs =   List.concat(map (MipsGen.codegen frame) stms') 
         val format0 = Assem.format(makestring)
-        val (Flow.FGRAPH{control,def, use, ismove} , nodes) = 
-              MakeGraph.instrs2graph(instrs)
+       (* val (Flow.FGRAPH{control,def, use, ismove} , nodes) = 
+              MakeGraph.instrs2graph(instrs)*)
     in  
-      ((app (fn i => (print (Flow.Graph.nodename(i)); ()))) nodes;
-      app (fn i => TextIO.output(out,format0 i)) instrs)
+      (
+      app (fn i => TextIO.output(out,format0 i)) instrs
+      (*(app (fn i => (print (Flow.Graph.nodename(i)); ()))) nodes*)
+      )
     end
   | emitproc out (F.STRING(lab,s)) = TextIO.output(out, F.string(lab,s))
 

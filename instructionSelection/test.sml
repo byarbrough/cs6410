@@ -1,5 +1,5 @@
 CM.make "sources.cm"; 
-use("sier.sml");
+(*use("sier.sml");
 structure T = Graph.Table
 
 fun testCode(lab, i, instrs) =
@@ -10,5 +10,5 @@ fun testCode(lab, i, instrs) =
 		(Liveness.show(TextIO.stdOut, ig);
 		TextIO.output(TextIO.stdOut, "\n\n\n"))
 	end;
-app testCode insrLists;
-(*Main.compile("../testcases/factorial.tig");*)
+app testCode insrLists;*)
+Main.compile("../testcases/toy.tig");
