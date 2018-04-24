@@ -121,7 +121,20 @@ struct
                 jump=NONE}]
     (* attach prologue and epilogue to function *)
 	fun procEntryExit3({funName,formals, numLoc, numForm}, body) =
-    {prolog="PROCEDURE " ^ Symbol.name funName ^ "\n",
+    {prolog="sw $17,-8($0)\n" ^
+    		"sw $18,-12($0)\n" ^
+    		"sw $19,-16($0)\n" ^
+    		"sw $20,-20($0)\n" ^
+    		"sw $21,-24($0)\n" ^
+    		"sw $22,-28($0)\n" ^
+    		"sw $23,-32($0)\n",
      body=body, 
-     epilog = "END " ^ Symbol.name funName ^ "\n"}
+     epilog ="lw $16,-4($0)\n" ^
+     		 "lw $17,-8($0)\n" ^
+    		 "lw $18,-12($0)\n" ^
+    		 "lw $19,-16($0)\n" ^
+    		 "lw $20,-20($0)\n" ^
+    		 "lw $21,-24($0)\n" ^
+    		 "lw $22,-28($0)\n" ^
+    		 "lw $23,-32($0)\n"}
 end
