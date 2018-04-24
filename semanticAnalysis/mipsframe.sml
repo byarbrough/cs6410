@@ -22,8 +22,8 @@ sig
 	val externalCall : string * Tree.exp list -> Tree.exp
 	val procEntryExit1 : frame * Tree.exp -> Tree.exp (*STUBBED*)
 	val procEntryExit2 : frame * Assem.instr list -> Assem.instr list
-	val procEntryExit3 : frame * Tree.exp -> 
-          {prolog : string, body : Tree.exp, epilog : string} (*STUBBED*)
+	val procEntryExit3 : frame * Assem.instr list ->
+						{prolog : string, body : Assem.instr list, epilog : string} 
 	val tempMap: register Temp.Table.table
 
 end
@@ -119,6 +119,7 @@ struct
                 src=[ZERO,RA,FP,RV],
                 dst=[],
                 jump=NONE}]
+    (* attach prologue and epilogue to function *)
 	fun procEntryExit3({funName,formals, numLoc, numForm}, body) =
     {prolog="PROCEDURE " ^ Symbol.name funName ^ "\n",
      body=body, 
