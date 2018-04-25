@@ -24,6 +24,10 @@ makegraph.sml
 assemstore.sml
 liveness.sml
 canon.sml
+color.sml
+regalloc.sml
+regalloc.sig
+regallocutil.sml
 flowgraph.sml
 mipsgen.sml
 graph.sig

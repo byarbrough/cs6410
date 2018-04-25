@@ -2,7 +2,7 @@ structure Main = struct
 
   structure Tr = Translate
   structure F = MipsFrame
-  (*structure R = RegAlloc*)
+  structure R = RegAlloc
 
 
   fun makestring(temp) = 

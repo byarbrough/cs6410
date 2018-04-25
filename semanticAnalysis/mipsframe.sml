@@ -16,7 +16,7 @@ sig
 	val RA : Temp.temp
 	val ZERO : Temp.temp
 	val registersAsTemps : Temp.temp list
-  val calldefs : Temp.temp list
+  	val calldefs : Temp.temp list
 	val wordSize : int
 	val exp : access -> Tree.exp -> Tree.exp
 	val externalCall : string * Tree.exp list -> Tree.exp
@@ -25,6 +25,7 @@ sig
 	val procEntryExit3 : frame * Assem.instr list ->
 						{prolog : string, body : Assem.instr list, epilog : string} 
 	val tempMap: register Temp.Table.table
+	val registers: register list
 
 end
 
@@ -55,12 +56,22 @@ struct
 					  Temp.newtemp(), Temp.newtemp(),
 					  Temp.newtemp(), Temp.newtemp()]
   val calldefs =  RA :: RV :: callersaves 
+
   val tempMap = 
         foldr
         (fn ((str, r), acc) =>
           Temp.Table.enter (acc, r, str)) Temp.Table.empty
         [("fp", FP), ("rv", RV), ("ra", RA), ("zero", ZERO)]
   val wordSize = 4
+
+  fun getReg(temp) =
+    	(case Temp.Table.look(tempMap,temp)
+        of  SOME(reg) => reg
+         |  NONE => Temp.makestring(temp))
+
+  val registers = map getReg (callersaves @ callesaves @ argregs)
+
+
   type frame = {formals: access list, 
   							numLoc: int ref, 
   							numForm: int ref, 
