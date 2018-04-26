@@ -10,25 +10,25 @@ structure Main = struct
       of SOME str => str
        | NONE => Temp.makestring(temp)
 
+ fun makeRegs(temp, alloc) = 
+    case Temp.Table.look(alloc, temp)
+      of SOME str => str
+       | NONE => Temp.makestring(temp)
+
   fun getsome (SOME x) = x
     | getsome (NONE) = ErrorMsg.impossible 
         "tried to get some of NONE"
 
   fun emitproc out (F.PROC{body,frame}) =
     let val _ = print ("emit " ^ Symbol.name(F.name frame) ^ "\n")
-        (*val _ = Printtree.printtree(out,body);*)
         val stms = Canon.linearize body
-       (* val _ = app (fn s => Printtree.printtree(out,s)) stms;*)
         val stms' = Canon.traceSchedule(Canon.basicBlocks stms)
-        val instrs =   List.concat(map (MipsGen.codegen frame) stms') 
+        val instrs =   List.concat(map (MipsGen.codegen frame) stms')
+        (*val (instrs', alloc) = R.alloc(instrs, frame)*)
         val format0 = Assem.format(makestring)
-       (* val (Flow.FGRAPH{control,def, use, ismove} , nodes) = 
-              MakeGraph.instrs2graph(instrs)*)
+        (*val format0 = Assem.format(fn(temp) => makeRegs(temp, alloc))*)
     in  
-      (
       app (fn i => TextIO.output(out,format0 i)) instrs
-      (*(app (fn i => (print (Flow.Graph.nodename(i)); ()))) nodes*)
-      )
     end
   | emitproc out (F.STRING(lab,s)) = TextIO.output(out, F.string(lab,s))
 
