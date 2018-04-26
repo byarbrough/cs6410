@@ -24,9 +24,9 @@ structure Main = struct
         val stms = Canon.linearize body
         val stms' = Canon.traceSchedule(Canon.basicBlocks stms)
         val instrs =   List.concat(map (MipsGen.codegen frame) stms')
-        (*val (instrs', alloc) = R.alloc(instrs, frame)*)
-        val format0 = Assem.format(makestring)
-        (*val format0 = Assem.format(fn(temp) => makeRegs(temp, alloc))*)
+        val (instrs', alloc) = R.alloc(instrs, frame)
+        (*val format0 = Assem.format(makestring)*)
+        val format0 = Assem.format(fn(temp) => makeRegs(temp, alloc))
     in  
       app (fn i => TextIO.output(out,format0 i)) instrs
     end
