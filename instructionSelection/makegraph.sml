@@ -50,7 +50,7 @@ struct
           fun getJumpNode(lab) =
             case S.look(jTable, lab) 
               of NONE => 
-                  (print(S.name(lab));
+                  (print(S.name(lab) ^ "\n");
                    ErrorMsg.impossible "label not in jumpeTable")
                | SOME(node) => node
           

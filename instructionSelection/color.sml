@@ -24,18 +24,16 @@ struct
  			(*table of int ref that represent the number of 
 			  adjacent nodes for a given node*)
 			val degreeTable : int ref G.Table.table =
-				(print("size of nodes: " ^ Int.toString(length(initialNodes)));
 				foldr(fn(node, table) => 
 					if not (RU.contains(node, precolored, Graph.eq))
 					then 
-						(print("adding" ^ G.nodename(node) ^ "\n"); G.Table.enter(table, node, ref (length(G.adj(node)))))
-					else (print("precolored" ^ G.nodename(node) ^ "\n");table)) G.Table.empty initialNodes)
+						G.Table.enter(table, node, ref (length(G.adj(node))))
+					else table) G.Table.empty initialNodes
 
 
 			(*Helper function that gets the degree of a given node*)
 			fun degree(node) : int =
-				(print("getting degree");
-				!(RU.getFrom(node, degreeTable)))
+				!(RU.getFrom(node, degreeTable))
  
 
 			(*other Data structures*)
@@ -57,12 +55,12 @@ struct
 			
 			val simplifyWL : G.node list ref = ref(
 							List.filter(fn(node) => 
-										RU.contains(node, precolored, Graph.eq)
+										not (RU.contains(node, precolored, Graph.eq))
 										andalso degree(node) < K) initialNodes)
 								
 			val spillWL : G.node list ref = ref (
 						List.filter(fn(node) => 
-										RU.contains(node, precolored, Graph.eq)
+										not(RU.contains(node, precolored, Graph.eq))
 										andalso degree(node) >= K) initialNodes)
 
 			val spilledNodes : G.node list ref = ref []
@@ -71,7 +69,7 @@ struct
 			(*Decrement the degree of a given node by 1*)
 		  fun decDegree(node) : unit = 
 		  	let 
-		  		val deg = (print("dec degree:"); RU.getFrom(node, degreeTable))
+		  		val deg = RU.getFrom(node, degreeTable)
 		  	in
 		  		deg := !deg - 1
 		  	end
@@ -82,7 +80,7 @@ struct
 		  (*all nodes adjacent to a given node except 
 		  	nodes in the selectStack*)
 		  fun adjacent(node) = 
-		  	RU.sub(!((print("getting adj"); RU.getFrom(node, adjList))), !selectStack)
+		  	RU.sub(!(RU.getFrom(node, adjList)), !selectStack)
 
 
 			  (*For all given nodes decrement their degree and 
@@ -134,7 +132,7 @@ struct
 							val badColors = 
 								map (fn(cnode) => RU.getFromTemp(gtemp(cnode), colors))
 								(List.filter(fn(anode) => RU.contains(anode, coloredNodes, G.eq)) 
-									(RU.union(precolored, !((print("getting adjlist"); RU.getFrom(n, adjList))))))
+									(RU.union(precolored, !( RU.getFrom(n, adjList)))))
 							
 
 							val ok = RU.msub(registers, badColors, fn(a, b) => a = b)
