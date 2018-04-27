@@ -125,13 +125,13 @@ struct
             {exp=Tr.irString(str),ty=T.STRING}
         | trexp (A.CallExp{func, args, pos}) = 
           let 
-              val (flevel, formals, result) =
+              val (flevel, label, formals, result) =
                 (case S.look(venv, func) 
                   of SOME(E.FunEntry{ level, 
                                       label, 
                                       formals, 
                                       result}) =>
-                      (level, formals, result)
+                      (level, label, formals, result)
                    | SOME(E.VarEntry{...}) =>
                       (ErrorMsg.error pos
                       ("variable name " ^ 
@@ -151,7 +151,7 @@ struct
                 | checkArgs(args, types) = false
           in 
               (checkTypeWrapper(checkArgs(formals, args'), pos); 
-               {exp=Tr.irCallExp(func, flevel, map #exp args', level), 
+               {exp=Tr.irCallExp(label, flevel, map #exp args', level), 
                 ty=result})
           end
         
@@ -598,7 +598,7 @@ struct
                               ("type name not found for variable " 
                                 ^ S.name rt);
                              raise TypeErrorException(pos))
-                  val label=Te.namelabel(S.name(name))
+                  val label=Te.newlabel()
                   val formals=map #ty params'
                   val escapeFormals= map ! (map #escape params')
               in

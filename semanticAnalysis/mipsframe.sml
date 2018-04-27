@@ -166,7 +166,7 @@ struct
 
 
  	fun procEntryExit2(frame, instr) =
-      instr @ [Assem.OPER{assem="test",
+      instr @ [Assem.OPER{assem="",
                 src=[ZERO,RA,FP,RV],
                 dst=[],
                 jump=NONE}]

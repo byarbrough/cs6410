@@ -84,11 +84,7 @@ struct
                         src=munchArgs(0, args),
                         dst=Frame.calldefs,
                         jump=SOME([lab])})
-        | munchStm(T.EXP(T.CALL(e, args))) =
-            emit(A.OPER{assem="jal `s0\n", 
-                        src=munchExp(e) :: munchArgs(0, args),
-                        dst=Frame.calldefs,
-                        jump=NONE})
+      
         | munchStm(T.EXP(e)) =
             (munchExp(e); ())
         | munchStm(T.JUMP(e, labs)) = 
@@ -125,11 +121,7 @@ struct
                         src= munchArgs(0, args),
                         dst=Frame.calldefs,
                         jump=SOME([lab])}))
-      | munchExp(T.CALL(e, args)) =
-        result(fn r => emit(A.OPER{assem="jal `s0\n", 
-                        src=munchExp(e) :: munchArgs(0, args),
-                        dst=Frame.calldefs,
-                        jump=NONE}))
+
       
 
       and munchArgs(i, []) = []

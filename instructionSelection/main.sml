@@ -25,10 +25,10 @@ structure Main = struct
         val stms' = Canon.traceSchedule(Canon.basicBlocks stms)
         val instrs =   List.concat(map (MipsGen.codegen frame) stms')
         val instrs' = F.procEntryExit2(frame, instrs)
-        val (instrs'', alloc) = R.alloc(instrs', frame)
-        (*val format0 = Assem.format(makestring)*)
-        val {prolog,body,epilog} = F.procEntryExit3(frame,instrs'')   
-        val format0 = Assem.format(fn(temp) => makeRegs(temp, alloc))
+        (*val (instrs', alloc) = R.alloc(instrs, frame)*)
+        val format0 = Assem.format(makestring)
+        val {prolog,body,epilog} = F.procEntryExit3(frame,instrs')   
+        (*val format0 = Assem.format(fn(temp) => makeRegs(temp, alloc))*)
     in  
       (TextIO.output(out,prolog);  
       (app (fn i => TextIO.output(out,format0 i)) body);

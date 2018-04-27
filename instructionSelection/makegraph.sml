@@ -51,7 +51,7 @@ struct
             case S.look(jTable, lab) 
               of NONE => 
                   (print(S.name(lab) ^ "\n");
-                   ErrorMsg.impossible "label not in jumpeTable")
+                   ErrorMsg.impossible "label not in jumpTable")
                | SOME(node) => node
           
           (*Add an edge from the given node to 
