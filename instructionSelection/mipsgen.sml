@@ -70,7 +70,7 @@ struct
 				    emit(A.OPER{assem="sw `s0, 0(`s1)\n", 
 				  	 src=[munchExp(e1), munchExp(e2)], dst=[], jump=NONE})
 				| munchStm(T.MOVE(T.TEMP i, e2)) = (* store results in temp *)
-				    emit(A.OPER{assem="add `d0, `s0, r0\n",
+				    emit(A.OPER{assem="move `d0, `s0, r0\n",
 			  	    src=[munchExp(e2)], dst=[i], jump=NONE})
 				| munchStm(T.LABEL lab) = (* simple label *)
 			      emit(A.LABEL{assem= S.name lab ^ "\n", lab=lab})

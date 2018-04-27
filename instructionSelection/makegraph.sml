@@ -14,8 +14,9 @@ struct
      associated with the given node. This is so a label is 
      associated with the instruction (node) after it.*)
   fun updateJTable(jTable, node, NONE) = jTable
-    | updateJTable(jTable, node, SOME(lab)) = 
-        S.enter(jTable, lab, node)
+    | updateJTable(jTable, node, SOME(lab)) =
+        (print("update: " ^ S.name(lab) ^ "\n");
+        S.enter(jTable, lab, node))
   (* Update the graph to include the dependency on the previous
      node (if present) *)
   fun addPrevNode(fromNode, NONE) = ()
@@ -49,7 +50,8 @@ struct
           fun getJumpNode(lab) =
             case S.look(jTable, lab) 
               of NONE => 
-                   ErrorMsg.impossible "label not in jumpeTable"
+                  (print(S.name(lab));
+                   ErrorMsg.impossible "label not in jumpeTable")
                | SOME(node) => node
           
           (*Add an edge from the given node to 

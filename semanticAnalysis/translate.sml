@@ -381,7 +381,7 @@ structure Translate : TRANSLATE = struct
     | irFunDec(Level(level), exp) = 
         procEntryExit(Level(level),
           Nx(Tr.MOVE(Tr.TEMP(F.RV), 
-                     F.procEntryExit1(#frame level, unEx(exp)))))
+                     (unEx(Nx(F.procEntryExit1(#frame level, unNx(exp))))))))
 
 end
     

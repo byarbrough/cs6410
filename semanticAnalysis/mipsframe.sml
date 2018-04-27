@@ -20,7 +20,7 @@ sig
 	val wordSize : int
 	val exp : access -> Tree.exp -> Tree.exp
 	val externalCall : string * Tree.exp list -> Tree.exp
-	val procEntryExit1 : frame * Tree.exp -> Tree.exp (*STUBBED*)
+	val procEntryExit1 : frame * Tree.stm -> Tree.stm 
 	val procEntryExit2 : frame * Assem.instr list -> Assem.instr list
 	val procEntryExit3 : frame * Assem.instr list ->
 						{prolog : string, body : Assem.instr list, epilog : string} 
@@ -82,9 +82,9 @@ struct
 		| STRING of Temp.label * string
   (*Allocate formal variables based on if they escape or not. *)
 	fun allocFormals({formals, numLoc, numForm, funName}) = fn(b) => 
-		if b orelse !numForm > 4 then (numForm := !numForm + 1;
+		if true orelse !numForm > 4 then (numForm := !numForm + 1;
 			InFrame(!numForm * wordSize))
-				 else InReg(Temp.newtemp())
+				 else (numForm := !numForm + 1; InReg(Temp.newtemp()))
 
 
 	(*create a new empty frame with formals allocated*)
@@ -124,9 +124,49 @@ struct
 
 	fun string(label, str) = 
 		Symbol.name label ^ ": .asciiz \"" ^ str ^ "\"\n"
- 	fun procEntryExit1(frame, body)= body
+ 	
+	(*assign temps for all the calleesaves and RA registers and 
+		then save and load to them around the body. 
+		Also move all of the argument registers into the frame*)
+ 	fun procEntryExit1(frame, body)= 
+ 		let 
+ 			fun seq([]) = Tree.EXP(Tree.CONST(0))
+        | seq(last :: []) = last
+        | seq(first :: rest) = Tree.SEQ(first, seq(rest))
+
+ 			val savedRegs = RA :: callesaves
+ 			val savedTemps = map (fn _ => Temp.newtemp()) savedRegs
+ 			fun moveTempToTemp([], []) = []
+ 				| moveTempToTemp(to :: tos, from :: froms) =
+ 						Tree.MOVE(Tree.TEMP(to), Tree.TEMP(from)) :: 
+ 						moveTempToTemp(tos, froms)
+ 				| moveTempToTemp(to, from) = 
+ 						ErrorMsg.impossible ("trying to move two " ^ 
+ 						"different size lists")
+			fun moveArgsToTemp([], []) = []
+ 				| moveArgsToTemp(arg :: args, access :: accList) = (
+ 						print("args: " ^ Int.toString(length(args) + 1)  ^ "\n");
+ 						print("acc: " ^ Int.toString(length(accList) + 1)  ^ "\n");
+
+ 						Tree.MOVE((exp access (Tree.TEMP (FP))), Tree.TEMP(arg)) :: 
+ 						moveArgsToTemp(args, accList))
+ 				| moveArgsToTemp(to, from) = []
+ 			val body' = seq([
+ 				seq(moveTempToTemp(savedTemps, savedRegs))
+ 											,body,
+ 											seq(moveTempToTemp(savedRegs, savedTemps))])
+ 		in
+ 			(case formals(frame) 
+ 				of [] => body'
+ 				| curformals => Tree.SEQ(seq(moveArgsToTemp(argregs, curformals)), body'))
+ 		end
+
+
+
+
+
  	fun procEntryExit2(frame, instr) =
-      instr @ [Assem.OPER{assem="",
+      instr @ [Assem.OPER{assem="test",
                 src=[ZERO,RA,FP,RV],
                 dst=[],
                 jump=NONE}]

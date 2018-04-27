@@ -77,8 +77,10 @@ struct
     This assumes that the node is required to be in the table*)
   fun getFrom(node, table) = 
       case T.look(table, node)
-        of NONE => ErrorMsg.impossible 
-                    "node not in table but should be"
+        of NONE => 
+        (print(Graph.nodename(node));
+        ErrorMsg.impossible 
+                    "node  not in table but should be")
          | SOME(v) => v
 
 
