@@ -1,6 +1,6 @@
 # Makefile for tiger compiler
 # Called by tigexe
-# Usage: "make TARGET=(file.tig)"
+# Usage: "make TARGET=file.tig"
 #
 
 TIGF=$(TARGET).s

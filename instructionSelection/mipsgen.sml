@@ -108,16 +108,17 @@ struct
 				result(fn r => emit(A.OPER(helpBinOp(r, trop, left, right))))
 			| munchExp(T.TEMP t) = t (* the temp *)
       | munchExp(T.NAME lab) = 
-          result(fn r => emit(A.OPER{assem="lw `d0, " ^ Symbol.name lab ^ "\n",
+          result(fn r => emit(A.OPER{assem="la `d0, " ^ Symbol.name lab ^ "\n",
                                 src=[],
                                 dst=[r],
                                 jump=NONE}))
       | munchExp(T.MEM(e)) =
-        result(fn r => emit(Assem.OPER{assem="la `d0, 0(`s0)\n",
+        result(fn r => emit(Assem.OPER{assem="lw `d0, 0(`s0)\n",
                               src=[munchExp e],
                               dst=[r], jump=NONE}))
       | munchExp(T.CALL(T.NAME(lab), args)) =
-        result(fn r => emit(A.OPER{assem="jal `j0\n", 
+        result(fn r => emit(A.OPER{assem="move `d0, `s0\n" ^
+                                          "jal `j0\n", 
                         src= munchArgs(0, args),
                         dst=Frame.calldefs,
                         jump=SOME([lab])}))

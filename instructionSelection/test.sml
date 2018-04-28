@@ -12,4 +12,4 @@ fun testCode(lab, i, instrs) =
 		TextIO.output(TextIO.stdOut, "\n\n\n"))
 	end;
 app testCode insrLists;*)
-Main.compile("../testcases/queens.tig");
+Main.compile("../testcases/factorial.tig");
