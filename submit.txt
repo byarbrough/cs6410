@@ -1,0 +1,16 @@
+Thomas Kowalski
+Brian Yarbrough
+
+Final Submission!
+
+
+To run this tiger compiler use the included makefile.
+Simply use:
+
+make TARGET=foo.tig
+
+where foo.tig is the tiger file you wish to compile.
+
+This will output an executable assembly file named
+foo.tig.s that can be run with SPIM or your MIPS
+emulator of choice.
