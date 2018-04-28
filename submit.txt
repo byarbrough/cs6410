@@ -14,3 +14,19 @@ where foo.tig is the tiger file you wish to compile.
 This will output an executable assembly file named
 foo.tig.s that can be run with SPIM or your MIPS
 emulator of choice.
+
+Unfortunately, we were unable to resolve a bug with
+label placement in register allocation. As a result,
+the final program does not successfully compile.
+Aside from this, to the best of our knowledge,
+things should be working properly.
+
+In order to keep things from crashing and allow
+as much compilation as possible, the lines in main
+that call register allocation have been commented out.
+To observe the marvelous fail, uncomment lines 
+29 and 32 in main.sml or instructionSelection/main.sml
+depedning on which directory you are in.
+
+While many of the bugs found in previous submissions
+have been resolved, there are some that linger.

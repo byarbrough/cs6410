@@ -1,0 +1,3 @@
+Instruction selection and registration allocation can be run
+independently in this directory using the test file or by
+using the makefile in the top level directory

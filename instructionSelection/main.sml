@@ -25,6 +25,7 @@ structure Main = struct
         val stms' = Canon.traceSchedule(Canon.basicBlocks stms)
         val instrs =   List.concat(map (MipsGen.codegen frame) stms')
         val instrs' = F.procEntryExit2(frame, instrs)
+        (* register allocation not working yet, lines 29 and 32 *)
         (* val (instrs', alloc) = R.alloc(instrs, frame) *)
         val format0 = Assem.format(makestring)
         val {prolog,body,epilog} = F.procEntryExit3(frame,instrs')   
