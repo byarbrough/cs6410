@@ -70,10 +70,10 @@ struct
 				    emit(A.OPER{assem="sw `s0, 0(`s1)\n", 
 				  	 src=[munchExp(e1), munchExp(e2)], dst=[], jump=NONE})
 				| munchStm(T.MOVE(T.TEMP i, e2)) = (* store results in temp *)
-				    emit(A.OPER{assem="move `d0, `s0, r0\n",
+				    emit(A.OPER{assem="move `d0, `s0\n",
 			  	    src=[munchExp(e2)], dst=[i], jump=NONE})
 				| munchStm(T.LABEL lab) = (* simple label *)
-			      emit(A.LABEL{assem= S.name lab ^ "\n", lab=lab})
+			      emit(A.LABEL{assem= S.name lab ^ ":\n", lab=lab})
         | munchStm(T.CJUMP(cop, l, r, t, f)) =
             emit(A.OPER{assem=helpCOp(cop) ^ " `s0, `s1, `j0\n",
                       src=[munchExp(l), munchExp(r)],
@@ -103,7 +103,7 @@ struct
           (munchStm s; munchExp e)
       | munchExp(T.CONST i ) = (* load constant *)
 			  result(fn r => emit(A.OPER
-			  {assem="addi `d0, r0, " ^ int i ^ "\n", src=[], dst=[r], jump=NONE}))
+			  {assem="addi `d0, $0, " ^ int i ^ "\n", src=[], dst=[r], jump=NONE}))
 			| munchExp(T.BINOP(trop, left, right)) = (* arithmetic *)
 				result(fn r => emit(A.OPER(helpBinOp(r, trop, left, right))))
 			| munchExp(T.TEMP t) = t (* the temp *)
